@@ -1,7 +1,5 @@
 package com.gabyquiles.eventy;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -11,7 +9,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class EventListFragment extends Fragment {
+    //Views
+    @BindView(R.id.empty_textview)
+    TextView mEmptyView;
+
+    @BindView(R.id.event_list)
+    RecyclerView mRecyclerView;
+
     private EventAdapter mAdapter;
 
     @Override
@@ -25,13 +33,12 @@ public class EventListFragment extends Fragment {
         // Inflate the layout for this fragment
         final View rootView = inflater.inflate(R.layout.fragment_event_list, container, false);
 
-        TextView emptyView = (TextView) rootView.findViewById(R.id.empty_textview);
+        ButterKnife.bind(this, rootView);
 
-        mAdapter = new EventAdapter(getActivity(), emptyView);
+        mAdapter = new EventAdapter(getActivity(), mEmptyView);
 
-        RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.event_list);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerView.setAdapter(mAdapter);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mRecyclerView.setAdapter(mAdapter);
 
         return rootView;
     }

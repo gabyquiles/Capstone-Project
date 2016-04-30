@@ -42,7 +42,7 @@
             app:backgroundTint="@color/accent"
             app:elevation="2dp"
             app:pressedTranslationZ="6dp"
-            android:id="@+id/share_fab"
+            android:id="@+id/add_event_fab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"

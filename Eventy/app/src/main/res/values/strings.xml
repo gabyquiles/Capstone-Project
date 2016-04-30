@@ -2,4 +2,6 @@
     <string name="app_name">Eventy</string>
 
     <string name="empty">No events available</string>
+    <string name="title_activity_event_details">EventDetailsActivity</string>
+    <string name="action_settings">Settings</string>
 </resources>

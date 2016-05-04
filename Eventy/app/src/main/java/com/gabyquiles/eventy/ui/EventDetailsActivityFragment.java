@@ -21,7 +21,7 @@ import butterknife.OnClick;
 public class EventDetailsActivityFragment extends Fragment {
 //    Views
     @BindView(R.id.event_title) TextView mTitle;
-    @BindView(R.id.event_place_textview) TextView mPlace;
+    @BindView(R.id.event_address) TextView mPlace;
 
 
     Firebase mDB;
@@ -44,7 +44,10 @@ public class EventDetailsActivityFragment extends Fragment {
 
     @OnClick(R.id.save_button)
     public void save() {
-        mEvent.setmTitle((String) mTitle.getText());
+        mEvent.setTitle(mTitle.getText().toString());
+        Firebase eventRef = mDB.child("events").push();
+        eventRef.setValue(mEvent);
+        String id = eventRef.getKey();
     }
 
 }

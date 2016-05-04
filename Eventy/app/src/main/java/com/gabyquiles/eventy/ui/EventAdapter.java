@@ -7,19 +7,23 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.firebase.client.Query;
 import com.gabyquiles.eventy.R;
+import com.gabyquiles.eventy.model.Event;
 
 /**
  * {@link EventAdapter} exposes a list of upcoming events
  * from a {@link android.database.Cursor} to a {@link RecyclerView}
  */
-public class EventAdapter extends RecyclerView.Adapter<EventAdapter.VH> {
+public class EventAdapter extends EventsFirebaseAdapter<Event> {
     private Context mContext;
     private View mEmptyView;
 
-    public EventAdapter(Context context, View emptyView) {
+    public EventAdapter(Query firebaseRef, Context context, View emptyView) {
+        super(firebaseRef, Event.class);
         mContext = context;
         mEmptyView = emptyView;
+
     }
 
     @Override
@@ -34,16 +38,8 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.VH> {
     }
 
     @Override
-    public void onBindViewHolder(VH holder, int position) {
-        //TODO: Implement the retrieval of cursor and fill fields
-        holder.mTitle.setText("Titulo");
-        holder.mDateTime.setText("Fecha");
-    }
-
-    @Override
-    public int getItemCount() {
-        //TODO: Implement the count of how many items from cursor
-        return 2;
+    public void populateHolder(RecyclerView.ViewHolder viewHolder, Event event) {
+        ((VH) viewHolder).mTitle.setText(event.getTitle());
     }
 
     class VH extends RecyclerView.ViewHolder {

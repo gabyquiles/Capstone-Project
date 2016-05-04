@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.firebase.client.Firebase;
 import com.gabyquiles.eventy.R;
 
 import butterknife.BindView;
@@ -17,6 +18,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class EventListFragment extends Fragment {
+    Firebase mDB;
+
     //Views
     @BindView(R.id.empty_textview) TextView mEmptyView;
     @BindView(R.id.event_list) RecyclerView mRecyclerView;
@@ -26,6 +29,15 @@ public class EventListFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //TODO: Abstract Firebase
+        mDB = new Firebase("https://eventy.firebaseio.com/events/data/events");
+    }
+
+    @Override
+    public void onStop() {
+        if(mAdapter != null) {
+            mAdapter.cleanUp();
+        }
     }
 
     @Override
@@ -34,8 +46,7 @@ public class EventListFragment extends Fragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_event_list, container, false);
         ButterKnife.bind(this, rootView);
-
-        mAdapter = new EventAdapter(getActivity(), mEmptyView);
+        mAdapter = new EventAdapter(mDB, getActivity(), mEmptyView);
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRecyclerView.setAdapter(mAdapter);

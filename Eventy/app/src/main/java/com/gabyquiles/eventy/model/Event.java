@@ -10,27 +10,27 @@ public class Event {
     private Date mDate;
     private String mPlace;
 
-    public String getmTitle() {
+    public String getTitle() {
         return mTitle;
     }
 
-    public void setmTitle(String mTitle) {
+    public void setTitle(String mTitle) {
         this.mTitle = mTitle;
     }
 
-    public Date getmDate() {
+    public Date getDate() {
         return mDate;
     }
 
-    public void setmDate(Date mDate) {
+    public void setDate(Date mDate) {
         this.mDate = mDate;
     }
 
-    public String getmPlace() {
+    public String getPlace() {
         return mPlace;
     }
 
-    public void setmPlace(String mPlace) {
+    public void setPlace(String mPlace) {
         this.mPlace = mPlace;
     }
 }

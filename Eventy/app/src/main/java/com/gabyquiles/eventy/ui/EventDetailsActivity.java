@@ -1,7 +1,9 @@
-package com.gabyquiles.eventy;
+package com.gabyquiles.eventy.ui;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+
+import com.gabyquiles.eventy.R;
 
 public class EventDetailsActivity extends AppCompatActivity {
 

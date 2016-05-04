@@ -1,4 +1,4 @@
-package com.gabyquiles.eventy;
+package com.gabyquiles.eventy.ui;
 
 import android.net.Uri;
 import android.os.Bundle;
@@ -9,6 +9,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.gabyquiles.eventy.R;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

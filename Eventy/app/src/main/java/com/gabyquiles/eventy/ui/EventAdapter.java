@@ -1,4 +1,4 @@
-package com.gabyquiles.eventy;
+package com.gabyquiles.eventy.ui;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -6,6 +6,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.gabyquiles.eventy.R;
 
 /**
  * {@link EventAdapter} exposes a list of upcoming events

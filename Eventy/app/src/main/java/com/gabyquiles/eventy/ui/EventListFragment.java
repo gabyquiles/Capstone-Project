@@ -34,7 +34,16 @@ public class EventListFragment extends Fragment {
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        if(mAdapter != null) {
+            mAdapter.setup();
+        }
+    }
+
+    @Override
     public void onStop() {
+        super.onStop();
         if(mAdapter != null) {
             mAdapter.cleanUp();
         }

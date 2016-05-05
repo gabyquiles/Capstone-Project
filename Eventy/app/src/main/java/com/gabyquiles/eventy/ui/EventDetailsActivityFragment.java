@@ -26,6 +26,7 @@ public class EventDetailsActivityFragment extends Fragment {
 
     Firebase mDB;
     Event mEvent;
+    String mId;
 
     public EventDetailsActivityFragment() {
         mEvent = new Event();
@@ -45,9 +46,15 @@ public class EventDetailsActivityFragment extends Fragment {
     @OnClick(R.id.save_button)
     public void save() {
         mEvent.setTitle(mTitle.getText().toString());
-        Firebase eventRef = mDB.child("events").push();
+        mEvent.setPlace(mPlace.getText().toString());
+        Firebase eventRef = mDB.child("events");
+        if(mId == null) {
+            eventRef = eventRef.push();
+        } else {
+            eventRef = eventRef.child(mId);
+        }
         eventRef.setValue(mEvent);
-        String id = eventRef.getKey();
+        mId = eventRef.getKey();
     }
 
 }

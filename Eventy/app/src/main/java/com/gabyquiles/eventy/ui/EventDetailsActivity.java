@@ -11,7 +11,18 @@ public class EventDetailsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_details);
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        // If this activity is newly created
+        if(savedInstanceState == null) {
+            Bundle arguments = new Bundle();
+            arguments.putParcelable(EventDetailsActivityFragment.EVENT_URI, getIntent().getData());
+
+            EventDetailsActivityFragment fragment = new EventDetailsActivityFragment();
+            fragment.setArguments(arguments);
+            getSupportFragmentManager().beginTransaction().add(R.id.details_container, fragment)
+                    .commit();
+
+        }
     }
 
 }

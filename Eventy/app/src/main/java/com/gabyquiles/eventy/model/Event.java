@@ -1,14 +1,22 @@
 package com.gabyquiles.eventy.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import java.util.Date;
 
 /**
  * Represents an event
  */
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Event {
     private String mTitle;
     private Date mDate;
     private String mPlace;
+
+    @JsonIgnore
+    private String key;
 
     public String getTitle() {
         return mTitle;
@@ -32,5 +40,13 @@ public class Event {
 
     public void setPlace(String mPlace) {
         this.mPlace = mPlace;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
     }
 }

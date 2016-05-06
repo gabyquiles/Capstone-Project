@@ -18,6 +18,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class EventListFragment extends Fragment {
+    final String FIREBASE_URL = "https://eventy.firebaseio.com/events/data/events";
+    final Uri FIREBASE_URI = Uri.parse(FIREBASE_URL);
     Firebase mDB;
 
     //Views
@@ -30,7 +32,7 @@ public class EventListFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //TODO: Abstract Firebase
-        mDB = new Firebase("https://eventy.firebaseio.com/events/data/events");
+        mDB = new Firebase(FIREBASE_URI.toString());
     }
 
     @Override
@@ -55,7 +57,14 @@ public class EventListFragment extends Fragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_event_list, container, false);
         ButterKnife.bind(this, rootView);
-        mAdapter = new EventAdapter(mDB, getActivity(), mEmptyView);
+        mAdapter = new EventAdapter(mDB, getActivity(), mEmptyView, new EventAdapter.EventAdapterOnClickHandler() {
+
+            @Override
+            public void onClick(String key, EventAdapter.VH holder) {
+                Uri eventUri = FIREBASE_URI.buildUpon().appendPath(key).build();
+                ((Callback) getActivity()).showEventDetails(eventUri);
+            }
+        });
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRecyclerView.setAdapter(mAdapter);

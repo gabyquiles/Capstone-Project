@@ -2,6 +2,7 @@ package com.gabyquiles.eventy.ui;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,14 +17,16 @@ import com.gabyquiles.eventy.model.Event;
  * from a {@link android.database.Cursor} to a {@link RecyclerView}
  */
 public class EventAdapter extends EventsFirebaseAdapter<Event> {
+    private final String LOG_TAG = EventAdapter.class.getSimpleName();
     private Context mContext;
     private View mEmptyView;
+    private EventAdapterOnClickHandler mClickHandler;
 
-    public EventAdapter(Query firebaseRef, Context context, View emptyView) {
+    public EventAdapter(Query firebaseRef, Context context, View emptyView, EventAdapterOnClickHandler clickHandler) {
         super(firebaseRef, Event.class);
         mContext = context;
         mEmptyView = emptyView;
-
+        mClickHandler = clickHandler;
     }
 
     @Override
@@ -42,7 +45,12 @@ public class EventAdapter extends EventsFirebaseAdapter<Event> {
         ((VH) viewHolder).mTitle.setText(event.getTitle());
     }
 
-    class VH extends RecyclerView.ViewHolder {
+    @Override
+    public void setModelKey(String key, Event event) {
+        event.setKey(key);
+    }
+
+    class VH extends RecyclerView.ViewHolder implements View.OnClickListener {
         public final TextView mTitle;
         public final TextView mDateTime;
 
@@ -50,8 +58,19 @@ public class EventAdapter extends EventsFirebaseAdapter<Event> {
             super(view);
             mTitle = (TextView) view.findViewById(R.id.event_title_textview);
             mDateTime = (TextView) view.findViewById(R.id.event_datetime_textview);
+            view.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View view) {
+            Log.v(LOG_TAG, "OnClick ViewHolder");
+            int adapterPosition = getAdapterPosition();
+            Event event = mModels.get(adapterPosition);
+            mClickHandler.onClick(event.getKey(), this);
         }
     }
 
-
+    public interface EventAdapterOnClickHandler {
+        void onClick(String key, VH holder);
+    }
 }

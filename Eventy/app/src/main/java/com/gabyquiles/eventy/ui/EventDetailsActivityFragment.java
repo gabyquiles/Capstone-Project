@@ -1,9 +1,11 @@
 package com.gabyquiles.eventy.ui;
 
 import android.app.DatePickerDialog;
-import android.app.Fragment;
+import android.net.Uri;
+import android.support.v4.app.Fragment;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +13,10 @@ import android.widget.DatePicker;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
+import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
 import com.gabyquiles.eventy.R;
 import com.gabyquiles.eventy.model.Event;
 
@@ -21,15 +26,16 @@ import java.util.Calendar;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import butterknife.OnEditorAction;
 import butterknife.OnFocusChange;
-import butterknife.OnItemClick;
-import butterknife.OnTouch;
 
 /**
  * A placeholder fragment containing a simple view.
  */
 public class EventDetailsActivityFragment extends Fragment {
+    private final String LOG_TAG = EventDetailsActivityFragment.class.getSimpleName();
+
+    static final String EVENT_URI = "event_uri";
+
 //    Views
     @BindView(R.id.event_title) TextView mTitle;
     @BindView(R.id.event_date) TextView mDate;
@@ -43,13 +49,37 @@ public class EventDetailsActivityFragment extends Fragment {
 
     public EventDetailsActivityFragment() {
         mEvent = new Event();
-        //TODO: Should I abstract the DB interactions? Maybe yes
-        mDB = new Firebase("https://eventy.firebaseio.com/events/data");
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        //TODO: Should I abstract the DB interactions? Maybe yes
+        String firebase_url = "https://eventy.firebaseio.com/events/data";
+
+        Bundle arguments = getArguments();
+        if(arguments != null) {
+            firebase_url = arguments.getParcelable(EVENT_URI).toString();
+        }
+        mDB = new Firebase(firebase_url);
+
+        // Listen for floor changes
+        mDB.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Event event = dataSnapshot.getValue(Event.class);
+                mTitle.setText(event.getTitle());
+                mPlace.setText(event.getPlace());
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                Log.v(LOG_TAG, "Floor update canceled: " + firebaseError.getMessage());
+
+            }
+        });
+
         View rootView = inflater.inflate(R.layout.fragment_event_details, container, false);
         ButterKnife.bind(this, rootView);
 

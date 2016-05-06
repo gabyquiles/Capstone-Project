@@ -15,7 +15,7 @@ import java.util.List;
  */
 public abstract class EventsFirebaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private Query mQuery;
-    private List<T> mModels;
+    protected List<T> mModels;
     private List<String> mKeys;
     private Class<T> mModelClass;
     private ChildEventListener mListener;
@@ -39,6 +39,7 @@ public abstract class EventsFirebaseAdapter<T> extends RecyclerView.Adapter<Recy
                 public void onChildAdded(DataSnapshot dataSnapshot, String previousChildKey) {
                     T model = dataSnapshot.getValue(mModelClass);
                     String key = dataSnapshot.getKey();
+                    setModelKey(key, model);
 
                     if (previousChildKey == null) {
                         mModels.add(0, model);
@@ -107,4 +108,5 @@ public abstract class EventsFirebaseAdapter<T> extends RecyclerView.Adapter<Recy
     }
 
     protected abstract void populateHolder(RecyclerView.ViewHolder viewHolder, T model);
+    protected abstract void setModelKey(String key, T model);
 }

@@ -1,8 +1,12 @@
 package com.gabyquiles.eventy.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -10,13 +14,31 @@ import java.util.Date;
  */
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Event {
+public class Event implements Parcelable{
     private String mTitle;
     private Date mDate;
     private String mPlace;
 
     @JsonIgnore
-    private String key;
+    private String mKey;
+
+    public Event() {
+        Calendar cal = Calendar.getInstance();
+        mKey = "";
+        mTitle = "";
+        mDate = cal.getTime();
+        mPlace = "";
+    }
+
+    public Event(Parcel in) {
+        mKey = in.readString();
+        mTitle = in.readString();
+        mPlace = in.readString();
+
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(in.readLong());
+        mDate = cal.getTime();
+    }
 
     public String getTitle() {
         return mTitle;
@@ -43,10 +65,35 @@ public class Event {
     }
 
     public String getKey() {
-        return key;
+        return mKey;
     }
 
-    public void setKey(String key) {
-        this.key = key;
+    public void setKey(String mKey) {
+        this.mKey = mKey;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int flags) {
+        parcel.writeString(mKey);
+        parcel.writeString(mTitle);
+        parcel.writeString(mPlace);
+        parcel.writeLong(mDate.getTime());
+    }
+
+    public final static Parcelable.Creator<Event> CREATOR = new Parcelable.Creator<Event>() {
+        @Override
+        public Event createFromParcel(Parcel parcel) {
+            return new Event(parcel);
+        }
+
+        @Override
+        public Event[] newArray(int i) {
+            return new Event[0];
+        }
+    };
 }

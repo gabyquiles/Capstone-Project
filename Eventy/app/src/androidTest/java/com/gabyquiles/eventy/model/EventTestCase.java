@@ -8,9 +8,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
-
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * Test that an event is being parced and retrieved correctly
@@ -35,10 +34,7 @@ public class EventTestCase {
         dest.setDataPosition(0);
         Event unparcelled = Event.CREATOR.createFromParcel(dest);
 
-        //TODO: is is not working for full event
-        assertThat(eventUnderTest.getDate(), is(unparcelled.getDate()));
-        assertThat(eventUnderTest.getTitle(), is(unparcelled.getTitle()));
-        assertThat(eventUnderTest.getPlace(), is(unparcelled.getPlace()));
+        assertThat(eventUnderTest, is(unparcelled));
     }
 
     private Event getEvent() {

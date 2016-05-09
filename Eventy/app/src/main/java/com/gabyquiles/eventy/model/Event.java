@@ -73,6 +73,42 @@ public class Event implements Parcelable{
     }
 
     @Override
+    public boolean equals(Object o) {
+        if(this == o) {
+            return true;
+        }
+
+        if(!(o instanceof Event)) {
+            return false;
+        }
+
+        Event e = (Event) o;
+//        TODO: Check that all properties are being checked
+        if(!mTitle.equals(e.mTitle)) {
+            return false;
+        }
+        if(!mDate.equals(e.mDate)) {
+            return false;
+        }
+        if(!mPlace.equals(e.mPlace)) {
+            return false;
+        }
+        if(!mKey.equals(e.mKey)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = mTitle.hashCode();
+        result = 31 * result + mDate.hashCode();
+        result = 31 * result + mPlace.hashCode();
+        return result;
+    }
+
+    @Override
     public int describeContents() {
         return 0;
     }

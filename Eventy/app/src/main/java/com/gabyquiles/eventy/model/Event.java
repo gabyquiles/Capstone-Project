@@ -11,6 +11,8 @@ import java.util.Date;
 
 /**
  * Represents an event
+ *
+ * @author gabrielquiles-perez
  */
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -24,10 +26,7 @@ public class Event implements Parcelable{
 
     public Event() {
         Calendar cal = Calendar.getInstance();
-        mKey = "";
-        mTitle = "";
         mDate = cal.getTime();
-        mPlace = "";
     }
 
     public Event(Parcel in) {

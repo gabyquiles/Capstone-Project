@@ -10,17 +10,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.firebase.client.Firebase;
 import com.gabyquiles.eventy.R;
+import com.gabyquiles.eventy.firebase.FirebaseManager;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+/**
+ * Fragment that shows the list of next events
+ *
+ * @author gabrielquiles-perez
+ */
 public class EventListFragment extends Fragment {
-    final String FIREBASE_URL = "https://eventy.firebaseio.com/events/data/events";
-    final Uri FIREBASE_URI = Uri.parse(FIREBASE_URL);
-    Firebase mDB;
+    FirebaseManager mDBManager;
 
     //Views
     @BindView(R.id.empty_textview) TextView mEmptyView;
@@ -31,8 +34,8 @@ public class EventListFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //TODO: Abstract Firebase
-        mDB = new Firebase(FIREBASE_URI.toString());
+
+        mDBManager = new FirebaseManager(null);
     }
 
     @Override
@@ -40,6 +43,7 @@ public class EventListFragment extends Fragment {
         super.onStart();
         if(mAdapter != null) {
             mAdapter.setup();
+            mDBManager.addChildEventListener(mAdapter);
         }
     }
 
@@ -47,6 +51,7 @@ public class EventListFragment extends Fragment {
     public void onStop() {
         super.onStop();
         if(mAdapter != null) {
+            mDBManager.removeEventListener(mAdapter);
             mAdapter.cleanUp();
         }
     }
@@ -57,15 +62,14 @@ public class EventListFragment extends Fragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_event_list, container, false);
         ButterKnife.bind(this, rootView);
-        mAdapter = new EventAdapter(mDB, getActivity(), mEmptyView, new EventAdapter.EventAdapterOnClickHandler() {
+        mAdapter = new EventAdapter(getActivity(), mEmptyView, new EventAdapter.EventAdapterOnClickHandler() {
 
             @Override
             public void onClick(String key, EventAdapter.VH holder) {
-                Uri eventUri = FIREBASE_URI.buildUpon().appendPath(key).build();
+                Uri eventUri = FirebaseManager.EVENTS_URI.buildUpon().appendPath(key).build();
                 ((Callback) getActivity()).showEventDetails(eventUri);
             }
         });
-
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRecyclerView.setAdapter(mAdapter);
 

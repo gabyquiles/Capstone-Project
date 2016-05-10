@@ -8,13 +8,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.firebase.client.Query;
 import com.gabyquiles.eventy.R;
 import com.gabyquiles.eventy.model.Event;
 
 /**
  * {@link EventAdapter} exposes a list of upcoming events
  * from a {@link android.database.Cursor} to a {@link RecyclerView}
+ *
+ * @author gabrielquiles-perez
  */
 public class EventAdapter extends EventsFirebaseAdapter<Event> {
     private final String LOG_TAG = EventAdapter.class.getSimpleName();
@@ -22,8 +23,8 @@ public class EventAdapter extends EventsFirebaseAdapter<Event> {
     private View mEmptyView;
     private EventAdapterOnClickHandler mClickHandler;
 
-    public EventAdapter(Query firebaseRef, Context context, View emptyView, EventAdapterOnClickHandler clickHandler) {
-        super(firebaseRef, Event.class);
+    public EventAdapter(Context context, View emptyView, EventAdapterOnClickHandler clickHandler) {
+        super(Event.class);
         mContext = context;
         mEmptyView = emptyView;
         mClickHandler = clickHandler;

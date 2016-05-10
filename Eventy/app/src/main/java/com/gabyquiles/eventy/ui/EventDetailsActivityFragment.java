@@ -13,10 +13,10 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 
 import com.firebase.client.DataSnapshot;
-import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 import com.gabyquiles.eventy.R;
+import com.gabyquiles.eventy.firebase.FirebaseManager;
 import com.gabyquiles.eventy.model.Event;
 
 import java.text.DateFormatSymbols;
@@ -28,9 +28,11 @@ import butterknife.OnClick;
 import butterknife.OnFocusChange;
 
 /**
- * A placeholder fragment containing a simple view.
+ * Fragment that shows the details of an event
+ *
+ * @author gabrielquiles-perez
  */
-public class EventDetailsActivityFragment extends Fragment {
+public class EventDetailsActivityFragment extends Fragment implements ValueEventListener{
     private final String LOG_TAG = EventDetailsActivityFragment.class.getSimpleName();
 
     static final String EVENT_URI = "event_uri";
@@ -41,43 +43,22 @@ public class EventDetailsActivityFragment extends Fragment {
     @BindView(R.id.event_time) TextView mTime;
     @BindView(R.id.event_address) TextView mPlace;
 
-
-    Firebase mDB;
+    FirebaseManager mDBManager;
     Event mEvent;
-    String mId;
-
-    public EventDetailsActivityFragment() {
-        mEvent = new Event();
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        mEvent = new Event();
         //TODO: Should I abstract the Firebase interactions? yes
         Bundle arguments = getArguments();
         if(arguments != null && arguments.getParcelable(EVENT_URI) != null) {
             String firebase_url = arguments.getParcelable(EVENT_URI).toString();
-            mDB = new Firebase(firebase_url);
-
-            // Listen for floor changes
-            mDB.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    Event event = dataSnapshot.getValue(Event.class);
-                    mTitle.setText(event.getTitle());
-                    mPlace.setText(event.getPlace());
-                }
-
-                @Override
-                public void onCancelled(FirebaseError firebaseError) {
-                    Log.v(LOG_TAG, "Floor update canceled: " + firebaseError.getMessage());
-
-                }
-            });
+            mDBManager = new FirebaseManager(firebase_url);
+            mDBManager.addValueEventListener(this);
         } else {
-            String firebase_url = "https://eventy.firebaseio.com/events/data";
-            mDB = new Firebase(firebase_url);
+            mDBManager = new FirebaseManager(null);
         }
 
 
@@ -87,18 +68,25 @@ public class EventDetailsActivityFragment extends Fragment {
         return rootView;
     }
 
+    @Override
+    public void onDataChange(DataSnapshot dataSnapshot) {
+        mEvent = dataSnapshot.getValue(Event.class);
+        mTitle.setText(mEvent.getTitle());
+        mPlace.setText(mEvent.getPlace());
+    }
+
+    @Override
+    public void onCancelled(FirebaseError firebaseError) {
+        Log.v(LOG_TAG, "Floor update canceled: " + firebaseError.getMessage());
+
+    }
+
     @OnClick(R.id.save_button)
     public void save() {
         mEvent.setTitle(mTitle.getText().toString());
         mEvent.setPlace(mPlace.getText().toString());
-        Firebase eventRef = mDB.child("events");
-        if(mId == null) {
-            eventRef = eventRef.push();
-        } else {
-            eventRef = eventRef.child(mId);
-        }
-        eventRef.setValue(mEvent);
-        mId = eventRef.getKey();
+        mEvent = mDBManager.save(mEvent);
+        mDBManager.addValueEventListener(this);
     }
 
     @OnFocusChange(R.id.event_date)

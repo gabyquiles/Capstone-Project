@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.gabyquiles.eventy.R;
+import com.gabyquiles.eventy.Utility;
 import com.gabyquiles.eventy.model.Event;
 
 /**
@@ -44,6 +45,8 @@ public class EventAdapter extends EventsFirebaseAdapter<Event> {
     @Override
     public void populateHolder(RecyclerView.ViewHolder viewHolder, Event event) {
         ((VH) viewHolder).mTitle.setText(event.getTitle());
+        ((VH) viewHolder).mPlace.setText(event.getPlace());
+        ((VH) viewHolder).mDateTime.setText(Utility.formatDate(event.getDate()));
     }
 
     @Override
@@ -54,11 +57,13 @@ public class EventAdapter extends EventsFirebaseAdapter<Event> {
     class VH extends RecyclerView.ViewHolder implements View.OnClickListener {
         public final TextView mTitle;
         public final TextView mDateTime;
+        public final TextView mPlace;
 
         public VH(View view) {
             super(view);
             mTitle = (TextView) view.findViewById(R.id.event_title_textview);
             mDateTime = (TextView) view.findViewById(R.id.event_datetime_textview);
+            mPlace = (TextView) view.findViewById(R.id.event_place_textview);
             view.setOnClickListener(this);
         }
 

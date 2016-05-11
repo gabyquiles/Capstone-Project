@@ -1,6 +1,7 @@
 package com.gabyquiles.eventy.ui;
 
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 
 import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
@@ -19,6 +20,7 @@ public abstract class EventsFirebaseAdapter<T> extends RecyclerView.Adapter<Recy
     protected List<T> mModels;
     private List<String> mKeys;
     private Class<T> mModelClass;
+    protected View mEmptyView;
 
     public EventsFirebaseAdapter(Class<T> modelClass) {
         mModelClass = modelClass;
@@ -41,22 +43,29 @@ public abstract class EventsFirebaseAdapter<T> extends RecyclerView.Adapter<Recy
 
     @Override
     public void onChildAdded(DataSnapshot dataSnapshot, String previousChildKey) {
-        T model = dataSnapshot.getValue(mModelClass);
-        String key = dataSnapshot.getKey();
-        setModelKey(key, model);
+//        Show empty view if there are no children
+        if(mEmptyView != null) {
+            mEmptyView.setVisibility(dataSnapshot.hasChildren() ? View.GONE : View.VISIBLE);
+        }
 
-        if (previousChildKey == null) {
-            mModels.add(0, model);
-            mKeys.add(0, key);
-        } else {
-            int previousKeyIdx = mKeys.indexOf(previousChildKey);
-            int currentIdx = previousKeyIdx + 1;
-            if (currentIdx >= mModels.size()) {
-                mModels.add(model);
-                mKeys.add(key);
+        if(dataSnapshot.hasChildren()) {
+            T model = dataSnapshot.getValue(mModelClass);
+            String key = dataSnapshot.getKey();
+            setModelKey(key, model);
+
+            if (previousChildKey == null) {
+                mModels.add(0, model);
+                mKeys.add(0, key);
             } else {
-                mModels.add(currentIdx, model);
-                mKeys.add(currentIdx, key);
+                int previousKeyIdx = mKeys.indexOf(previousChildKey);
+                int currentIdx = previousKeyIdx + 1;
+                if (currentIdx >= mModels.size()) {
+                    mModels.add(model);
+                    mKeys.add(key);
+                } else {
+                    mModels.add(currentIdx, model);
+                    mKeys.add(currentIdx, key);
+                }
             }
         }
         notifyDataSetChanged();

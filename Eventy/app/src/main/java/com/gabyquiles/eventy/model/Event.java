@@ -7,7 +7,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.util.Calendar;
-import java.util.Date;
 
 /**
  * Represents an event
@@ -18,7 +17,7 @@ import java.util.Date;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Event implements Parcelable{
     private String mTitle;
-    private Date mDate;
+    private long mDate;
     private String mPlace;
 
     @JsonIgnore
@@ -26,17 +25,14 @@ public class Event implements Parcelable{
 
     public Event() {
         Calendar cal = Calendar.getInstance();
-        mDate = cal.getTime();
+        mDate = cal.getTimeInMillis();
     }
 
     public Event(Parcel in) {
         mKey = in.readString();
         mTitle = in.readString();
         mPlace = in.readString();
-
-        Calendar cal = Calendar.getInstance();
-        cal.setTimeInMillis(in.readLong());
-        mDate = cal.getTime();
+        mDate = in.readLong();
     }
 
     public String getTitle() {
@@ -47,11 +43,11 @@ public class Event implements Parcelable{
         this.mTitle = mTitle;
     }
 
-    public Date getDate() {
+    public long getDate() {
         return mDate;
     }
 
-    public void setDate(Date mDate) {
+    public void setDate(long mDate) {
         this.mDate = mDate;
     }
 
@@ -86,7 +82,7 @@ public class Event implements Parcelable{
         if(!mTitle.equals(e.mTitle)) {
             return false;
         }
-        if(!mDate.equals(e.mDate)) {
+        if(mDate != e.mDate) {
             return false;
         }
         if(!mPlace.equals(e.mPlace)) {
@@ -102,7 +98,7 @@ public class Event implements Parcelable{
     @Override
     public int hashCode() {
         int result = mTitle.hashCode();
-        result = 31 * result + mDate.hashCode();
+        result = 31 * result + (new Long(mDate)).hashCode();
         result = 31 * result + mPlace.hashCode();
         return result;
     }
@@ -117,7 +113,7 @@ public class Event implements Parcelable{
         parcel.writeString(mKey);
         parcel.writeString(mTitle);
         parcel.writeString(mPlace);
-        parcel.writeLong(mDate.getTime());
+        parcel.writeLong(mDate);
     }
 
     public final static Parcelable.Creator<Event> CREATOR = new Parcelable.Creator<Event>() {

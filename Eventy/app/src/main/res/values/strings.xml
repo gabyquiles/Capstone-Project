@@ -4,4 +4,6 @@
     <string name="empty">No events available</string>
     <string name="title_activity_event_details">EventDetailsActivity</string>
     <string name="action_settings">Settings</string>
+    <string name="title_placeholder">Title</string>
+    <string name="place_placeholder">Place</string>
 </resources>

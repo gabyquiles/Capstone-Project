@@ -21,7 +21,6 @@ import com.gabyquiles.eventy.model.Event;
 public class EventAdapter extends EventsFirebaseAdapter<Event> {
     private final String LOG_TAG = EventAdapter.class.getSimpleName();
     private Context mContext;
-    private View mEmptyView;
     private EventAdapterOnClickHandler mClickHandler;
 
     public EventAdapter(Context context, View emptyView, EventAdapterOnClickHandler clickHandler) {
@@ -46,7 +45,7 @@ public class EventAdapter extends EventsFirebaseAdapter<Event> {
     public void populateHolder(RecyclerView.ViewHolder viewHolder, Event event) {
         ((VH) viewHolder).mTitle.setText(event.getTitle());
         ((VH) viewHolder).mPlace.setText(event.getPlace());
-        ((VH) viewHolder).mDateTime.setText(Utility.formatDate(event.getDate()));
+        ((VH) viewHolder).mDateTime.setText(Utility.formatFullDate(event.getDate()));
     }
 
     @Override

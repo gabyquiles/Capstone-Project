@@ -18,12 +18,10 @@ import com.firebase.client.ValueEventListener;
 import com.gabyquiles.eventy.BuildConfig;
 import com.gabyquiles.eventy.R;
 import com.gabyquiles.eventy.Utility;
-import com.gabyquiles.eventy.firebase.FirebaseManager;
+import com.gabyquiles.eventy.firebase.FirebaseWriter;
 import com.gabyquiles.eventy.model.Event;
 
-import java.text.DateFormatSymbols;
 import java.util.Calendar;
-import java.util.Date;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -46,7 +44,7 @@ public class EventDetailsActivityFragment extends Fragment implements ValueEvent
     @BindView(R.id.event_time) TextView mTime;
     @BindView(R.id.event_address) TextView mPlace;
 
-    FirebaseManager mDBManager;
+    FirebaseWriter mDBManager;
     Event mEvent;
 
     @Override
@@ -57,10 +55,10 @@ public class EventDetailsActivityFragment extends Fragment implements ValueEvent
         Bundle arguments = getArguments();
         if(arguments != null && arguments.getParcelable(EVENT_URI) != null) {
             String firebase_url = arguments.getParcelable(EVENT_URI).toString();
-            mDBManager = new FirebaseManager(firebase_url);
+            mDBManager = new FirebaseWriter(firebase_url);
             mDBManager.addValueEventListener(this);
         } else {
-            mDBManager = new FirebaseManager(null);
+            mDBManager = new FirebaseWriter(null);
         }
 
 

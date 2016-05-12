@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.gabyquiles.eventy.R;
 import com.gabyquiles.eventy.firebase.FirebaseManager;
+import com.gabyquiles.eventy.firebase.FirebaseReader;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -35,7 +36,7 @@ public class EventListFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mDBManager = new FirebaseManager(null);
+        mDBManager = new FirebaseReader(null);
     }
 
     @Override

@@ -76,6 +76,8 @@ public class EventDetailsActivityFragment extends Fragment implements ValueEvent
     @Override
     public void onDataChange(DataSnapshot dataSnapshot) {
         mEvent = dataSnapshot.getValue(Event.class);
+        mEvent.setKey(dataSnapshot.getKey());
+
         mTitle.setText(mEvent.getTitle());
         mDate.setText(Utility.formatShortDate(mEvent.getDate()));
         mTime.setText(Utility.formatTime(mEvent.getDate()));

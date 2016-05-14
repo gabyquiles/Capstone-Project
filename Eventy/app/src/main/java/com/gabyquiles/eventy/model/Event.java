@@ -6,7 +6,9 @@ import android.os.Parcelable;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 /**
  * Represents an event
@@ -19,6 +21,7 @@ public class Event implements Parcelable{
     private String mTitle;
     private long mDate;
     private String mPlace;
+    private List<Guest> mGuestList;
 
     @JsonIgnore
     private String mKey;
@@ -26,6 +29,7 @@ public class Event implements Parcelable{
     public Event() {
         Calendar cal = Calendar.getInstance();
         mDate = cal.getTimeInMillis();
+        mGuestList = new ArrayList<>();
     }
 
     public Event(Parcel in) {
@@ -39,32 +43,32 @@ public class Event implements Parcelable{
         return mTitle;
     }
 
-    public void setTitle(String mTitle) {
-        this.mTitle = mTitle;
+    public void setTitle(String title) {
+        this.mTitle = title;
     }
 
     public long getDate() {
         return mDate;
     }
 
-    public void setDate(long mDate) {
-        this.mDate = mDate;
+    public void setDate(long date) {
+        this.mDate = date;
     }
 
     public String getPlace() {
         return mPlace;
     }
 
-    public void setPlace(String mPlace) {
-        this.mPlace = mPlace;
+    public void setPlace(String place) {
+        this.mPlace = place;
     }
 
     public String getKey() {
         return mKey;
     }
 
-    public void setKey(String mKey) {
-        this.mKey = mKey;
+    public void setKey(String key) {
+        this.mKey = key;
     }
 
     @Override
@@ -127,4 +131,16 @@ public class Event implements Parcelable{
             return new Event[0];
         }
     };
+
+    public List<Guest> getGuestList() {
+        return mGuestList;
+    }
+
+    public void setGuestList(List<Guest> guestList) {
+        this.mGuestList = guestList;
+    }
+
+    public void addGuest(Guest guest) {
+        mGuestList.add(guest);
+    }
 }

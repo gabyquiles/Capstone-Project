@@ -1,6 +1,11 @@
 package com.gabyquiles.eventy.ui;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
+import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
+import android.provider.ContactsContract;
 import android.support.v4.app.Fragment;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
@@ -20,6 +25,7 @@ import com.gabyquiles.eventy.R;
 import com.gabyquiles.eventy.Utility;
 import com.gabyquiles.eventy.firebase.FirebaseWriter;
 import com.gabyquiles.eventy.model.Event;
+import com.gabyquiles.eventy.model.Guest;
 
 import java.util.Calendar;
 
@@ -37,6 +43,7 @@ public class EventDetailsActivityFragment extends Fragment implements ValueEvent
     private final String LOG_TAG = EventDetailsActivityFragment.class.getSimpleName();
 
     static final String EVENT_URI = "event_uri";
+    static final int PICK_CONTACT_REQUEST = 1;  // The request code
 
 //    Views
     @BindView(R.id.event_title) TextView mTitle;
@@ -98,6 +105,13 @@ public class EventDetailsActivityFragment extends Fragment implements ValueEvent
         mDBManager.addValueEventListener(this);
     }
 
+    @OnClick(R.id.add_guests_button)
+    public void addGuests() {
+        Intent pickContactIntent = new Intent(Intent.ACTION_PICK, Uri.parse("content://contacts"));
+        pickContactIntent.setType(ContactsContract.CommonDataKinds.Email.CONTENT_TYPE); // Show user only contacts w/ phone numbers
+        startActivityForResult(pickContactIntent, PICK_CONTACT_REQUEST);
+    }
+
     @OnFocusChange(R.id.event_date)
     public void showDatePicker(boolean focused) {
         if(focused) {
@@ -136,6 +150,34 @@ public class EventDetailsActivityFragment extends Fragment implements ValueEvent
                 }
             }, hour, minutes, false);
             timePicker.show();
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // Check which request we're responding to
+        if (requestCode == PICK_CONTACT_REQUEST) {
+            int i =1;
+            // Make sure the request was successful
+            if (resultCode == Activity.RESULT_OK) {
+                String fullNameIdx = ContactsContract.CommonDataKinds.StructuredName.DISPLAY_NAME;
+                String emailIdx = ContactsContract.CommonDataKinds.Email.ADDRESS;
+
+                // The user picked a contact.
+                Uri contactUri = data.getData();
+                String[] fields = { emailIdx, fullNameIdx };
+
+                Cursor cursor = getContext().getContentResolver().query(contactUri, fields, null, null, null);
+                if(cursor.moveToFirst()) {
+                    int fullnameColumn = cursor.getColumnIndex(fullNameIdx);
+                    String fullName = cursor.getString(fullnameColumn);
+                    int emailColumn = cursor.getColumnIndex(emailIdx);
+                    String email = cursor.getString(emailColumn);
+
+                    Guest guest = new Guest(fullName, email);
+                    mEvent.addGuest(guest);
+                }
+            }
         }
     }
 }

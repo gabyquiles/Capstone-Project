@@ -18,6 +18,11 @@ public class Guest {
     private int mStatus;
     private String mThing;
 
+    public Guest() {
+        mStatus = INVITED;
+        mThing = null;
+    }
+
     public Guest(String name, String email) {
         mName = name;
         mEmail = email;
@@ -55,5 +60,34 @@ public class Guest {
 
     public void setThing(String thing) {
         this.mThing = thing;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if(this == o) {
+            return true;
+        }
+
+        if(!(o instanceof Guest)) {
+            return false;
+        }
+
+        Guest guest = (Guest) o;
+        if(!mName.equals(guest.mName)) {
+            return false;
+        }
+        if(!mEmail.equals(guest.mEmail)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = mName.hashCode();
+        result = 31 * result + mEmail.hashCode();
+        return result;
     }
 }

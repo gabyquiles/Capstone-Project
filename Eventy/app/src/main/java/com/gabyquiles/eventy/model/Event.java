@@ -92,7 +92,7 @@ public class Event implements Parcelable{
         if(!mPlace.equals(e.mPlace)) {
             return false;
         }
-        if(!mKey.equals(e.mKey)) {
+        if((mKey != null && e.mKey != null) && !mKey.equals(e.mKey)) {
             return false;
         }
 
@@ -141,6 +141,9 @@ public class Event implements Parcelable{
     }
 
     public void addGuest(Guest guest) {
-        mGuestList.add(guest);
+        // Add a guest if it is not already on the list
+        if(mGuestList.indexOf(guest) == -1) {
+            mGuestList.add(guest);
+        }
     }
 }

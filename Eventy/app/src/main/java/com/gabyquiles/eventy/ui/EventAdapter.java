@@ -11,6 +11,10 @@ import android.widget.TextView;
 import com.gabyquiles.eventy.R;
 import com.gabyquiles.eventy.Utility;
 import com.gabyquiles.eventy.model.Event;
+import com.gabyquiles.eventy.model.Guest;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  * {@link EventAdapter} exposes a list of upcoming events
@@ -46,6 +50,8 @@ public class EventAdapter extends EventsFirebaseAdapter<Event> {
         ((VH) viewHolder).mTitle.setText(event.getTitle());
         ((VH) viewHolder).mPlace.setText(event.getPlace());
         ((VH) viewHolder).mDateTime.setText(Utility.formatFullDate(event.getDate()));
+        String guestsCount = event.getGuestsCountByStatus(Guest.GOING) + " / " + event.getGuestsCount();
+        ((VH) viewHolder).mGuestsCount.setText(guestsCount);
     }
 
     @Override
@@ -54,15 +60,14 @@ public class EventAdapter extends EventsFirebaseAdapter<Event> {
     }
 
     class VH extends RecyclerView.ViewHolder implements View.OnClickListener {
-        public final TextView mTitle;
-        public final TextView mDateTime;
-        public final TextView mPlace;
+        @BindView(R.id.event_title_textview) TextView mTitle;
+        @BindView(R.id.event_datetime_textview) TextView mDateTime;
+        @BindView(R.id.event_place_textview) TextView mPlace;
+        @BindView(R.id.guests_count_textview) TextView mGuestsCount;
 
         public VH(View view) {
             super(view);
-            mTitle = (TextView) view.findViewById(R.id.event_title_textview);
-            mDateTime = (TextView) view.findViewById(R.id.event_datetime_textview);
-            mPlace = (TextView) view.findViewById(R.id.event_place_textview);
+            ButterKnife.bind(this, view);
             view.setOnClickListener(this);
         }
 

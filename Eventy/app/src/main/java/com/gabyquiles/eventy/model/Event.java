@@ -146,4 +146,18 @@ public class Event implements Parcelable{
             mGuestList.add(guest);
         }
     }
+
+    public int getGuestsCount() {
+        return mGuestList.size();
+    }
+
+    public int getGuestsCountByStatus(int status) {
+        int counter = 0;
+        for (Guest guest : mGuestList) {
+            if(guest.getStatus() == status) {
+                counter++;
+            }
+        }
+        return counter;
+    }
 }

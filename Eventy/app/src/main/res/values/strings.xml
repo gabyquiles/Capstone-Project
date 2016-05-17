@@ -6,4 +6,7 @@
     <string name="action_settings">Settings</string>
     <string name="title_placeholder">Title</string>
     <string name="place_placeholder">Place</string>
+    <string name="login">Login</string>
+
+    <string name="login_error">There was an error in the login process.</string>
 </resources>

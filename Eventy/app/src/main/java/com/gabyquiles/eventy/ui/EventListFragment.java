@@ -10,9 +10,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.firebase.client.AuthData;
+import com.firebase.client.Firebase;
 import com.gabyquiles.eventy.R;
-import com.gabyquiles.eventy.firebase.FirebaseManager;
-import com.gabyquiles.eventy.firebase.FirebaseReader;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -24,62 +24,65 @@ import butterknife.OnClick;
  * @author gabrielquiles-perez
  */
 public class EventListFragment extends Fragment {
-    FirebaseManager mDBManager;
+
+    static final String FIREBASE_URI = "URI";
 
     //Views
     @BindView(R.id.empty_textview) TextView mEmptyView;
     @BindView(R.id.event_list) RecyclerView mRecyclerView;
 
     private EventAdapter mAdapter;
+    private Firebase mFirebase;
+    private Uri mFirebaseUrl;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        mDBManager = new FirebaseReader(null);
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        if(mAdapter != null) {
-            mAdapter.setup();
-            mDBManager.addChildEventListener(mAdapter);
-        }
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        if(mAdapter != null) {
-            mDBManager.removeEventListener(mAdapter);
-            mAdapter.cleanUp();
-        }
+    public void onDestroy() {
+        super.onDestroy();
+        mAdapter.cleanup();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Bundle arguments = getArguments();
+        if (arguments != null) {
+            mFirebaseUrl = arguments.getParcelable(FIREBASE_URI);
+            if(mFirebaseUrl != null) {
+                // Should receive the user base url. Have to add events in order to point to correct data.
+                mFirebaseUrl = mFirebaseUrl.buildUpon().appendPath("events").build();
+            }
+        }
+
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_event_list, container, false);
         ButterKnife.bind(this, rootView);
-        mAdapter = new EventAdapter(getActivity(), mEmptyView, new EventAdapter.EventAdapterOnClickHandler() {
 
-            @Override
-            public void onClick(String key, EventAdapter.VH holder) {
-                Uri eventUri = FirebaseManager.EVENTS_URI.buildUpon().appendPath(key).build();
-                ((Callback) getActivity()).showEventDetails(eventUri);
-            }
-        });
+        mFirebase = new Firebase(mFirebaseUrl.toString());
+        AuthData  authData = mFirebase.getAuth();
+
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mRecyclerView.setAdapter(mAdapter);
+        if(authData != null) {
+            mAdapter = new EventAdapter(mFirebase, new EventAdapter.EventAdapterOnClickHandler() {
+                @Override
+                public void onClick(String key) {
+                    Uri eventUri = mFirebaseUrl.buildUpon().appendPath(key).build();
+                    ((Callback) getActivity()).showEventDetails(eventUri);
+                }
+            });
+            mRecyclerView.setAdapter(mAdapter);
+        }
 
         return rootView;
     }
 
     @OnClick(R.id.add_event_fab)
     public void addEvent() {
-        ((Callback) getActivity()).showEventDetails(null);
+        ((Callback) getActivity()).showEventDetails(mFirebaseUrl);
     }
 
     /**
@@ -90,7 +93,7 @@ public class EventListFragment extends Fragment {
     interface Callback {
         /**
          * Callback for when an event has been selected or when a new event will be added
-         * @param uri
+         * @param uri Base uri that contains event details
          */
         void showEventDetails(Uri uri);
     }

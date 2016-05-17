@@ -1,5 +1,9 @@
 package com.gabyquiles.eventy;
 
+import android.content.Context;
+
+import com.firebase.client.AuthData;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -48,4 +52,15 @@ public class Utility {
 
         return calendar.getTimeInMillis();
     }
+
+    public static String getFirebaseBaseUrl(Context context, AuthData authData) {
+        String baseUrl = context.getString(R.string.firebase_base_url)
+                + context.getString(R.string.firebase_users_path);
+        if(authData != null) {
+            baseUrl += authData.getUid();
+        }
+        return baseUrl;
+    }
+
+
 }

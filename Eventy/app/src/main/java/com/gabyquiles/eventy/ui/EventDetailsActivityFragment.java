@@ -18,12 +18,12 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 
 import com.firebase.client.DataSnapshot;
+import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 import com.gabyquiles.eventy.BuildConfig;
 import com.gabyquiles.eventy.R;
 import com.gabyquiles.eventy.Utility;
-import com.gabyquiles.eventy.firebase.FirebaseWriter;
 import com.gabyquiles.eventy.model.Event;
 import com.gabyquiles.eventy.model.Guest;
 
@@ -51,7 +51,8 @@ public class EventDetailsActivityFragment extends Fragment implements ValueEvent
     @BindView(R.id.event_time) TextView mTime;
     @BindView(R.id.event_address) TextView mPlace;
 
-    FirebaseWriter mDBManager;
+    Firebase mFirebase;
+    Uri mFirebaseUri;
     Event mEvent;
 
     @Override
@@ -61,13 +62,12 @@ public class EventDetailsActivityFragment extends Fragment implements ValueEvent
         mEvent = new Event();
         Bundle arguments = getArguments();
         if(arguments != null && arguments.getParcelable(EVENT_URI) != null) {
-            String firebase_url = arguments.getParcelable(EVENT_URI).toString();
-            mDBManager = new FirebaseWriter(firebase_url);
-            mDBManager.addValueEventListener(this);
-        } else {
-            mDBManager = new FirebaseWriter(null);
+            mFirebaseUri= arguments.getParcelable(EVENT_URI);
+            if(mFirebaseUri != null) {
+                mFirebase = new Firebase(mFirebaseUri.toString());
+                mFirebase.addValueEventListener(this);
+            }
         }
-
 
         View rootView = inflater.inflate(R.layout.fragment_event_details, container, false);
         ButterKnife.bind(this, rootView);
@@ -81,12 +81,16 @@ public class EventDetailsActivityFragment extends Fragment implements ValueEvent
     @Override
     public void onDataChange(DataSnapshot dataSnapshot) {
         mEvent = dataSnapshot.getValue(Event.class);
-        mEvent.setKey(dataSnapshot.getKey());
+        if(!dataSnapshot.getKey().equals("events")) {
+            mEvent.setKey(dataSnapshot.getKey());
 
-        mTitle.setText(mEvent.getTitle());
-        mDate.setText(Utility.formatShortDate(mEvent.getDate()));
-        mTime.setText(Utility.formatTime(mEvent.getDate()));
-        mPlace.setText(mEvent.getPlace());
+            mTitle.setText(mEvent.getTitle());
+            mDate.setText(Utility.formatShortDate(mEvent.getDate()));
+            mTime.setText(Utility.formatTime(mEvent.getDate()));
+            mPlace.setText(mEvent.getPlace());
+        } else {
+            mEvent = new Event();
+        }
     }
 
     @Override
@@ -101,8 +105,16 @@ public class EventDetailsActivityFragment extends Fragment implements ValueEvent
         mEvent.setTitle(mTitle.getText().toString());
         mEvent.setPlace(mPlace.getText().toString());
 
-        mEvent = mDBManager.save(mEvent);
-        mDBManager.addValueEventListener(this);
+        String key = mEvent.getKey();
+        if(key == null) {
+            mFirebase.removeEventListener(this);
+            mFirebase = mFirebase.push();
+            mFirebase.setValue(mEvent);
+            mEvent.setKey(mFirebase.getKey());
+            mFirebase.addValueEventListener(this);
+        } else {
+            mFirebase.setValue(mEvent);
+        }
     }
 
     @OnClick(R.id.add_guests_button)
@@ -168,14 +180,17 @@ public class EventDetailsActivityFragment extends Fragment implements ValueEvent
                 String[] fields = { emailIdx, fullNameIdx };
 
                 Cursor cursor = getContext().getContentResolver().query(contactUri, fields, null, null, null);
-                if(cursor.moveToFirst()) {
-                    int fullnameColumn = cursor.getColumnIndex(fullNameIdx);
-                    String fullName = cursor.getString(fullnameColumn);
-                    int emailColumn = cursor.getColumnIndex(emailIdx);
-                    String email = cursor.getString(emailColumn);
+                if(cursor != null) {
+                    if (cursor.moveToFirst()) {
+                        int fullnameColumn = cursor.getColumnIndex(fullNameIdx);
+                        String fullName = cursor.getString(fullnameColumn);
+                        int emailColumn = cursor.getColumnIndex(emailIdx);
+                        String email = cursor.getString(emailColumn);
 
-                    Guest guest = new Guest(fullName, email);
-                    mEvent.addGuest(guest);
+                        Guest guest = new Guest(fullName, email);
+                        mEvent.addGuest(guest);
+                    }
+                    cursor.close();
                 }
             }
         }

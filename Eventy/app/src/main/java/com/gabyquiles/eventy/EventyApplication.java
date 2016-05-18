@@ -9,6 +9,7 @@ public class EventyApplication extends android.app.Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        //TODO: Set persistence of DB
         Firebase.setAndroidContext(this);
     }
 }

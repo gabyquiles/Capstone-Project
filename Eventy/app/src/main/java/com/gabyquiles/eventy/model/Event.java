@@ -27,6 +27,7 @@ public class Event implements Parcelable{
     private String mKey;
 
     public Event() {
+//        TODO: Validate before saving
         Calendar cal = Calendar.getInstance();
         mDate = cal.getTimeInMillis();
         mGuestList = new ArrayList<>();

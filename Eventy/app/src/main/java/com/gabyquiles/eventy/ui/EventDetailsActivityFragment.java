@@ -26,6 +26,12 @@ import com.gabyquiles.eventy.R;
 import com.gabyquiles.eventy.Utility;
 import com.gabyquiles.eventy.model.Event;
 import com.gabyquiles.eventy.model.Guest;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.Calendar;
 
@@ -39,7 +45,8 @@ import butterknife.OnFocusChange;
  *
  * @author gabrielquiles-perez
  */
-public class EventDetailsActivityFragment extends Fragment implements ValueEventListener{
+public class EventDetailsActivityFragment extends Fragment implements ValueEventListener,
+        OnMapReadyCallback {
     private final String LOG_TAG = EventDetailsActivityFragment.class.getSimpleName();
 
     static final String EVENT_URI = "event_uri";
@@ -51,9 +58,10 @@ public class EventDetailsActivityFragment extends Fragment implements ValueEvent
     @BindView(R.id.event_time) TextView mTime;
     @BindView(R.id.event_address) TextView mPlace;
 
-    Firebase mFirebase;
-    Uri mFirebaseUri;
-    Event mEvent;
+    private Firebase mFirebase;
+    private Uri mFirebaseUri;
+    private Event mEvent;
+    private GoogleMap mMap;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -75,6 +83,15 @@ public class EventDetailsActivityFragment extends Fragment implements ValueEvent
         mDate.setText(Utility.formatShortDate(mEvent.getDate()));
         mTime.setText(Utility.formatTime(mEvent.getDate()));
 
+        SupportMapFragment frag = ((SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map));//.getMapAsync(this);
+        frag.getMapAsync(this);
+//        frag.getView().setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Intent mapIntent = new Intent(getActivity(), MapsActivity.class);
+//                ActivityCompat.startActivity(getActivity(), mapIntent, null);
+//            }
+//        });
         return rootView;
     }
 
@@ -115,6 +132,16 @@ public class EventDetailsActivityFragment extends Fragment implements ValueEvent
         } else {
             mFirebase.setValue(mEvent);
         }
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+
+        // Add a marker in Sydney, Australia, and move the camera.
+        LatLng sydney = new LatLng(18, -66);
+        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sydney, 15));
     }
 
     @OnClick(R.id.add_guests_button)

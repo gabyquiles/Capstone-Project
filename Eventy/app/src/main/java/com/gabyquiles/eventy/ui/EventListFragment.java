@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.gabyquiles.eventy.R;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -34,8 +35,9 @@ public class EventListFragment extends Fragment {
 
     private EventAdapter mAdapter;
     private DatabaseReference mFirebase;
-    private FirebaseAuth mAuth;
+//    private FirebaseAuth mAuth;
     private Uri mFirebaseUrl;
+    private FirebaseUser mUser;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -64,44 +66,32 @@ public class EventListFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_event_list, container, false);
         ButterKnife.bind(this, rootView);
 
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        mUser = auth.getCurrentUser();
+
         mFirebase = FirebaseDatabase.getInstance().getReference().child(getString(R.string.firebase_users_path));
-        mFirebase = mFirebase.child(getString(R.string.user_id));
+        mFirebase = mFirebase.child(mUser.getUid());
         mFirebase = mFirebase.child("events");
-//        AuthData  authData = mFirebase.getAuth();
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-//        if(authData != null) {
+        if(mUser != null) {
             mAdapter = new EventAdapter(mFirebase, new EventAdapter.EventAdapterOnClickHandler() {
                 @Override
                 public void onClick(String key) {
-//                    Uri eventUri = mFirebaseUrl.buildUpon().appendPath(key).build();
-//                    ((Callback) getActivity()).showEventDetails(eventUri);
+                    Uri eventUri = Uri.parse(mFirebase.toString()).buildUpon().appendPath(key).build();
+                    ((Callback) getActivity()).showEventDetails(eventUri);
                 }
             });
-
-//        mAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
-//            @Override
-//            public void onItemRangeInserted(int positionStart, int itemCount) {
-//                super.onItemRangeInserted(positionStart, itemCount);
-//                int friendlyMessageCount = mAdapter.getItemCount();
-////                int lastVisiblePosition = mLinearLayoutManager.findLastCompletelyVisibleItemPosition();
-//                // If the recycler view is initially being loaded or the user is at the bottom of the list, scroll
-//                // to the bottom of the list to show the newly added message.
-//                if (lastVisiblePosition == -1 ||
-//                        (positionStart >= (friendlyMessageCount - 1) && lastVisiblePosition == (positionStart - 1))) {
-//                    mMessageRecyclerView.scrollToPosition(positionStart);
-//                }
-//            }
-//        });
             mRecyclerView.setAdapter(mAdapter);
-//        }
+        }
 
         return rootView;
     }
 
     @OnClick(R.id.add_event_fab)
     public void addEvent() {
-        ((Callback) getActivity()).showEventDetails(mFirebaseUrl);
+        Uri newEventUri = Uri.parse(mFirebase.toString());
+        ((Callback) getActivity()).showEventDetails(newEventUri);
     }
 
     /**

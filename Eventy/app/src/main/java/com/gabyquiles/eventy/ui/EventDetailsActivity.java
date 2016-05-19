@@ -15,9 +15,9 @@ public class EventDetailsActivity extends AppCompatActivity {
         // If this activity is newly created
         if(savedInstanceState == null) {
             Bundle arguments = new Bundle();
-            arguments.putParcelable(EventDetailsActivityFragment.EVENT_URI, getIntent().getData());
+            arguments.putParcelable(EventDetailsFragment.EVENT_URI, getIntent().getData());
 
-            EventDetailsActivityFragment fragment = new EventDetailsActivityFragment();
+            EventDetailsFragment fragment = new EventDetailsFragment();
             fragment.setArguments(arguments);
             getSupportFragmentManager().beginTransaction().add(R.id.details_container, fragment)
                     .commit();

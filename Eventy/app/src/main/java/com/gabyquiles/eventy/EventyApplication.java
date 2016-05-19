@@ -10,6 +10,6 @@ public class EventyApplication extends android.app.Application {
     public void onCreate() {
         super.onCreate();
         // Set persistence of DB
-        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+//        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
     }
 }

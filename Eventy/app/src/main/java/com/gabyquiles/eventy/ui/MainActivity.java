@@ -2,15 +2,11 @@ package com.gabyquiles.eventy.ui;
 
 import android.content.Intent;
 import android.net.Uri;
-import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
 import com.gabyquiles.eventy.R;
-import com.google.android.gms.auth.api.Auth;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class MainActivity extends AppCompatActivity implements EventListFragment.Callback, SignInFragment.LoginInterface {
@@ -25,7 +21,6 @@ public class MainActivity extends AppCompatActivity implements EventListFragment
         mAuth = FirebaseAuth.getInstance();
 
         setContentView(R.layout.activity_main);
-//        showLoginForm();
     }
 
     @Override
@@ -63,8 +58,6 @@ public class MainActivity extends AppCompatActivity implements EventListFragment
     }
 
     public boolean isSignedIn() {
-//        return (mAuth.getCurrentUser() != null);
-        //TODO: Setup login
-        return true;
+        return (mAuth.getCurrentUser() != null);
     }
 }

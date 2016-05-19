@@ -4,8 +4,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
-import com.firebase.client.Query;
-import com.firebase.ui.FirebaseRecyclerAdapter;
+import com.google.firebase.database.Query;
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.gabyquiles.eventy.R;
 import com.gabyquiles.eventy.Utility;
 import com.gabyquiles.eventy.model.Event;
@@ -16,7 +16,7 @@ import butterknife.ButterKnife;
 
 /**
  * {@link EventAdapter} exposes a list of upcoming events
- * from a {@link com.firebase.client.Firebase} to a {@link RecyclerView}
+ * from a {@link com.google.firebase.database.FirebaseDatabase} to a {@link RecyclerView}
  *
  * @author gabrielquiles-perez
  */

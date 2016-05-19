@@ -17,10 +17,6 @@ import android.widget.DatePicker;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
-import com.firebase.client.DataSnapshot;
-import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
-import com.firebase.client.ValueEventListener;
 import com.gabyquiles.eventy.BuildConfig;
 import com.gabyquiles.eventy.R;
 import com.gabyquiles.eventy.Utility;
@@ -32,6 +28,10 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.Calendar;
 
@@ -58,7 +58,7 @@ public class EventDetailsActivityFragment extends Fragment implements ValueEvent
     @BindView(R.id.event_time) TextView mTime;
     @BindView(R.id.event_address) TextView mPlace;
 
-    private Firebase mFirebase;
+    private FirebaseDatabase mFirebase;
     private Uri mFirebaseUri;
     private Event mEvent;
     private GoogleMap mMap;
@@ -72,8 +72,8 @@ public class EventDetailsActivityFragment extends Fragment implements ValueEvent
         if(arguments != null && arguments.getParcelable(EVENT_URI) != null) {
             mFirebaseUri= arguments.getParcelable(EVENT_URI);
             if(mFirebaseUri != null) {
-                mFirebase = new Firebase(mFirebaseUri.toString());
-                mFirebase.addValueEventListener(this);
+//                mFirebase = new FirebaseDatabase(mFirebaseUri.toString());
+//                mFirebase.addValueEventListener(this);
             }
         }
 
@@ -111,7 +111,7 @@ public class EventDetailsActivityFragment extends Fragment implements ValueEvent
     }
 
     @Override
-    public void onCancelled(FirebaseError firebaseError) {
+    public void onCancelled(DatabaseError firebaseError) {
         if(BuildConfig.DEBUG) {
             Log.v(LOG_TAG, "Floor update canceled: " + firebaseError.getMessage());
         }
@@ -123,15 +123,15 @@ public class EventDetailsActivityFragment extends Fragment implements ValueEvent
         mEvent.setPlace(mPlace.getText().toString());
 
         String key = mEvent.getKey();
-        if(key == null) {
-            mFirebase.removeEventListener(this);
-            mFirebase = mFirebase.push();
-            mFirebase.setValue(mEvent);
-            mEvent.setKey(mFirebase.getKey());
-            mFirebase.addValueEventListener(this);
-        } else {
-            mFirebase.setValue(mEvent);
-        }
+//        if(key == null) {
+//            mFirebase.removeEventListener(this);
+//            mFirebase = mFirebase.push();
+//            mFirebase.setValue(mEvent);
+//            mEvent.setKey(mFirebase.getKey());
+//            mFirebase.addValueEventListener(this);
+//        } else {
+//            mFirebase.setValue(mEvent);
+//        }
     }
 
     @Override

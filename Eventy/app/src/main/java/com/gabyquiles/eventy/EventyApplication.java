@@ -1,6 +1,6 @@
 package com.gabyquiles.eventy;
 
-import com.firebase.client.Firebase;
+import com.google.firebase.database.FirebaseDatabase;
 
 /**
  * Created by gabrielquiles-perez on 5/9/16.
@@ -9,7 +9,7 @@ public class EventyApplication extends android.app.Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        //TODO: Set persistence of DB
-        Firebase.setAndroidContext(this);
+        // Set persistence of DB
+        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
     }
 }

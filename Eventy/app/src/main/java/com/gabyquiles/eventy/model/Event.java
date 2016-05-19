@@ -3,8 +3,7 @@ package com.gabyquiles.eventy.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.google.firebase.database.Exclude;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -16,14 +15,13 @@ import java.util.List;
  * @author gabrielquiles-perez
  */
 
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class Event implements Parcelable{
     private String mTitle;
     private long mDate;
     private String mPlace;
     private List<Guest> mGuestList;
 
-    @JsonIgnore
+    @Exclude
     private String mKey;
 
     public Event() {

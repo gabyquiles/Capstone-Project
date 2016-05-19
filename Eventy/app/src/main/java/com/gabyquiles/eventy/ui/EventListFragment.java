@@ -10,9 +10,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.firebase.client.AuthData;
-import com.firebase.client.Firebase;
 import com.gabyquiles.eventy.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -32,7 +33,8 @@ public class EventListFragment extends Fragment {
     @BindView(R.id.event_list) RecyclerView mRecyclerView;
 
     private EventAdapter mAdapter;
-    private Firebase mFirebase;
+    private DatabaseReference mFirebase;
+    private FirebaseAuth mAuth;
     private Uri mFirebaseUrl;
 
     @Override
@@ -49,33 +51,50 @@ public class EventListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        Bundle arguments = getArguments();
-        if (arguments != null) {
-            mFirebaseUrl = arguments.getParcelable(FIREBASE_URI);
-            if(mFirebaseUrl != null) {
-                // Should receive the user base url. Have to add events in order to point to correct data.
-                mFirebaseUrl = mFirebaseUrl.buildUpon().appendPath("events").build();
-            }
-        }
+//        Bundle arguments = getArguments();
+//        if (arguments != null) {
+//            mFirebaseUrl = arguments.getParcelable(FIREBASE_URI);
+//            if(mFirebaseUrl != null) {
+//                // Should receive the user base url. Have to add events in order to point to correct data.
+//                mFirebaseUrl = mFirebaseUrl.buildUpon().appendPath("events").build();
+//            }
+//        }
 
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_event_list, container, false);
         ButterKnife.bind(this, rootView);
 
-        mFirebase = new Firebase(mFirebaseUrl.toString());
-        AuthData  authData = mFirebase.getAuth();
+        mFirebase = FirebaseDatabase.getInstance().getReference().child(getString(R.string.firebase_users_path));
+        mFirebase = mFirebase.child(getString(R.string.user_id));
+        mFirebase = mFirebase.child("events");
+//        AuthData  authData = mFirebase.getAuth();
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        if(authData != null) {
+//        if(authData != null) {
             mAdapter = new EventAdapter(mFirebase, new EventAdapter.EventAdapterOnClickHandler() {
                 @Override
                 public void onClick(String key) {
-                    Uri eventUri = mFirebaseUrl.buildUpon().appendPath(key).build();
-                    ((Callback) getActivity()).showEventDetails(eventUri);
+//                    Uri eventUri = mFirebaseUrl.buildUpon().appendPath(key).build();
+//                    ((Callback) getActivity()).showEventDetails(eventUri);
                 }
             });
+
+//        mAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+//            @Override
+//            public void onItemRangeInserted(int positionStart, int itemCount) {
+//                super.onItemRangeInserted(positionStart, itemCount);
+//                int friendlyMessageCount = mAdapter.getItemCount();
+////                int lastVisiblePosition = mLinearLayoutManager.findLastCompletelyVisibleItemPosition();
+//                // If the recycler view is initially being loaded or the user is at the bottom of the list, scroll
+//                // to the bottom of the list to show the newly added message.
+//                if (lastVisiblePosition == -1 ||
+//                        (positionStart >= (friendlyMessageCount - 1) && lastVisiblePosition == (positionStart - 1))) {
+//                    mMessageRecyclerView.scrollToPosition(positionStart);
+//                }
+//            }
+//        });
             mRecyclerView.setAdapter(mAdapter);
-        }
+//        }
 
         return rootView;
     }

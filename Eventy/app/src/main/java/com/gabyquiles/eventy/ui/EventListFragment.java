@@ -35,8 +35,6 @@ public class EventListFragment extends Fragment {
 
     private EventAdapter mAdapter;
     private DatabaseReference mFirebase;
-//    private FirebaseAuth mAuth;
-    private Uri mFirebaseUrl;
     private FirebaseUser mUser;
 
     @Override
@@ -53,14 +51,6 @@ public class EventListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-//        Bundle arguments = getArguments();
-//        if (arguments != null) {
-//            mFirebaseUrl = arguments.getParcelable(FIREBASE_URI);
-//            if(mFirebaseUrl != null) {
-//                // Should receive the user base url. Have to add events in order to point to correct data.
-//                mFirebaseUrl = mFirebaseUrl.buildUpon().appendPath("events").build();
-//            }
-//        }
 
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_event_list, container, false);

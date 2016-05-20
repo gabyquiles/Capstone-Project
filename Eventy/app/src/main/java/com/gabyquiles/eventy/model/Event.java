@@ -20,6 +20,7 @@ public class Event implements Parcelable{
     private long mDate;
     private String mPlace;
     private List<Guest> mGuestList;
+    private List<String> mThingList;
 
     @Exclude
     private String mKey;
@@ -29,6 +30,7 @@ public class Event implements Parcelable{
         Calendar cal = Calendar.getInstance();
         mDate = cal.getTimeInMillis();
         mGuestList = new ArrayList<>();
+        mThingList = new ArrayList<>();
     }
 
     public Event(Parcel in) {
@@ -144,6 +146,18 @@ public class Event implements Parcelable{
         if(mGuestList.indexOf(guest) == -1) {
             mGuestList.add(guest);
         }
+    }
+
+    public List<String> getThingList() {
+        return mThingList;
+    }
+
+    public void setThingList(List<String> thingList) {
+        this.mThingList = thingList;
+    }
+
+    public void addThing(String thing) {
+        mThingList.add(thing);
     }
 
     public int getGuestsCount() {

@@ -49,12 +49,6 @@ public class EventAdapter extends FirebaseRecyclerAdapter<Event, EventAdapter.Ev
         return count;
     }
 
-//    @Override
-//    public void onBindViewHolder(EventAdapter.EventHolder viewHolder, int position) {
-//        mEmptyView.setVisibility(getItemCount() == 0 ? View.VISIBLE : View.GONE);
-//        onBindViewHolder(viewHolder, position);
-//    }
-
     public void onClick(int position) {
         String key = getRef(position).getKey();
         mClickHandler.onClick(key);

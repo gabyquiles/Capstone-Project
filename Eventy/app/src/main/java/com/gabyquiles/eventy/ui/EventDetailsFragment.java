@@ -9,12 +9,14 @@ import android.provider.ContactsContract;
 import android.support.v4.app.Fragment;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
-import android.widget.TextView;
+import android.widget.EditText;
 import android.widget.TimePicker;
 
 import com.gabyquiles.eventy.BuildConfig;
@@ -54,15 +56,20 @@ public class EventDetailsFragment extends Fragment implements ValueEventListener
     static final int PICK_CONTACT_REQUEST = 1;  // The request code
 
 //    Views
-    @BindView(R.id.event_title) TextView mTitle;
-    @BindView(R.id.event_date) TextView mDate;
-    @BindView(R.id.event_time) TextView mTime;
-    @BindView(R.id.event_address) TextView mPlace;
+    @BindView(R.id.event_title) EditText mTitle;
+    @BindView(R.id.event_date) EditText mDate;
+    @BindView(R.id.event_time) EditText mTime;
+    @BindView(R.id.event_address) EditText mPlace;
+    @BindView(R.id.new_thing) EditText mNewThing;
+    @BindView(R.id.guest_list) RecyclerView mGuestList;
+    @BindView(R.id.things_list) RecyclerView mThingsList;
 
     private DatabaseReference mFirebase;
     private Uri mFirebaseUri;
     private Event mEvent;
     private GoogleMap mMap;
+    private GuestsAdapter mGuestAdapter;
+    private ThingsAdapter mThingsAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -73,7 +80,6 @@ public class EventDetailsFragment extends Fragment implements ValueEventListener
         if(arguments != null && arguments.getParcelable(EVENT_URI) != null) {
             mFirebaseUri= arguments.getParcelable(EVENT_URI);
             if(mFirebaseUri != null) {
-//                mFirebase = new FirebaseDatabase(mFirebaseUri.toString());
                 mFirebase = FirebaseDatabase.getInstance().getReferenceFromUrl(mFirebaseUri.toString());
                 mFirebase.addValueEventListener(this);
             }
@@ -87,6 +93,14 @@ public class EventDetailsFragment extends Fragment implements ValueEventListener
 
         SupportMapFragment frag = ((SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map));//.getMapAsync(this);
         frag.getMapAsync(this);
+
+        mGuestList.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mGuestAdapter = new GuestsAdapter(getActivity(), mEvent.getGuestList(), null);
+        mGuestList.setAdapter(mGuestAdapter);
+
+        mThingsList.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mThingsAdapter = new ThingsAdapter(getActivity(), mEvent.getThingList(), null);
+        mThingsList.setAdapter(mThingsAdapter);
 //        frag.getView().setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View view) {
@@ -107,6 +121,8 @@ public class EventDetailsFragment extends Fragment implements ValueEventListener
             mDate.setText(Utility.formatShortDate(mEvent.getDate()));
             mTime.setText(Utility.formatTime(mEvent.getDate()));
             mPlace.setText(mEvent.getPlace());
+            updateThingsList(null);
+            updateGuestList(null);
         } else {
             mEvent = new Event();
         }
@@ -151,6 +167,12 @@ public class EventDetailsFragment extends Fragment implements ValueEventListener
         Intent pickContactIntent = new Intent(Intent.ACTION_PICK, Uri.parse("content://contacts"));
         pickContactIntent.setType(ContactsContract.CommonDataKinds.Email.CONTENT_TYPE); // Show user only contacts w/ phone numbers
         startActivityForResult(pickContactIntent, PICK_CONTACT_REQUEST);
+    }
+
+    @OnClick(R.id.add_things_button)
+    public void addThings() {
+        String thing = mNewThing.getText().toString();
+        updateThingsList(thing);
     }
 
     @OnFocusChange(R.id.event_date)
@@ -217,11 +239,25 @@ public class EventDetailsFragment extends Fragment implements ValueEventListener
                         String email = cursor.getString(emailColumn);
 
                         Guest guest = new Guest(fullName, email);
-                        mEvent.addGuest(guest);
+                        updateGuestList(guest);
                     }
                     cursor.close();
                 }
             }
         }
+    }
+
+    private void updateGuestList(Guest guest) {
+        if (guest != null) {
+            mEvent.addGuest(guest);
+        }
+        mGuestAdapter.updateList(mEvent.getGuestList());
+    }
+
+    private void updateThingsList(String thing) {
+        if (thing != null) {
+            mEvent.addThing(thing);
+        }
+        mThingsAdapter.updateList(mEvent.getThingList());
     }
 }

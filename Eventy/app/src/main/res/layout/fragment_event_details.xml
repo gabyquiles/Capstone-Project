@@ -53,9 +53,31 @@
             android:text="Guests"/>
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/event_list"
+            android:id="@+id/guest_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:minHeight="200dp"
+            app:layout_gravity="fill_vertical"
+            app:layout_columnSpan="2"/>
+        <EditText
+            android:id="@+id/new_thing"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:hint="New thing"
+            app:layout_columnSpan="2"/>
+        <Button
+            android:id="@+id/add_things_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_columnSpan="2"
+            android:text="Things"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/things_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:minHeight="200dp"
+            app:layout_gravity="fill_vertical"
             app:layout_columnSpan="2"/>
 
         <Button
@@ -65,76 +87,4 @@
             app:layout_columnSpan="2"
             android:text="Save"/>
     </android.support.v7.widget.GridLayout>
-
-
-    <!--<LinearLayout-->
-        <!--android:orientation="vertical"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--tools:context=".ui.EventDetailsActivityFragment">-->
-
-        <!--<EditText-->
-            <!--android:id="@+id/event_title"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--app:layout_columnSpan="2"-->
-            <!--android:hint="@string/title_placeholder"/>-->
-
-        <!--<LinearLayout-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:orientation="horizontal">-->
-
-            <!--<EditText-->
-                <!--android:id="@+id/event_date"-->
-                <!--android:inputType="date"-->
-                <!--android:layout_width="0dp"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_weight="1" />-->
-
-            <!--<EditText-->
-                <!--android:id="@+id/event_time"-->
-                <!--android:inputType="time"-->
-                <!--android:layout_width="0dp"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_weight="1" />-->
-        <!--</LinearLayout>-->
-        <!--<LinearLayout-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:orientation="horizontal">-->
-
-            <!--<EditText-->
-                <!--android:id="@+id/event_address"-->
-                <!--android:layout_width="0dp"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:hint="@string/place_placeholder"-->
-                <!--android:layout_weight="1" />-->
-
-            <!--<fragment-->
-                <!--android:layout_width="0dp"-->
-                <!--android:layout_height="match_parent"-->
-                <!--android:layout_weight="1"-->
-                <!--android:id="@+id/map"-->
-                <!--android:name="com.google.android.gms.maps.SupportMapFragment" />-->
-        <!--</LinearLayout>-->
-
-        <!--<Button-->
-            <!--android:id="@+id/add_guests_button"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:text="Guests"/>-->
-
-        <!--<android.support.v7.widget.RecyclerView-->
-            <!--android:id="@+id/event_list"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="0dp"-->
-            <!--android:layout_weight="1"/>-->
-
-        <!--<Button-->
-            <!--android:id="@+id/save_button"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:text="Save"/>-->
-    <!--</LinearLayout>-->
 </ScrollView>

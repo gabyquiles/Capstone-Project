@@ -100,7 +100,7 @@ public class EventDetailsFragment extends Fragment implements ValueEventListener
     @Override
     public void onDataChange(DataSnapshot dataSnapshot) {
         mEvent = dataSnapshot.getValue(Event.class);
-        if(!dataSnapshot.getKey().equals("events")) {
+        if(!dataSnapshot.getKey().equals("events") && mEvent != null) {
             mEvent.setKey(dataSnapshot.getKey());
 
             mTitle.setText(mEvent.getTitle());

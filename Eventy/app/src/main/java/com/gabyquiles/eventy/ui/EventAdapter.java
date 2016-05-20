@@ -23,11 +23,12 @@ import butterknife.ButterKnife;
 public class EventAdapter extends FirebaseRecyclerAdapter<Event, EventAdapter.EventHolder> {
     private final String LOG_TAG = EventAdapter.class.getSimpleName();
     private EventAdapterOnClickHandler mClickHandler;
+    private View mEmptyView;
 
-    public EventAdapter(Query ref, EventAdapterOnClickHandler clickHandler) {
+    public EventAdapter(Query ref, View emptyView, EventAdapterOnClickHandler clickHandler) {
         super(Event.class, R.layout.event_list_item, EventHolder.class, ref);
         mClickHandler = clickHandler;
-
+        mEmptyView = emptyView;
     }
 
     @Override
@@ -39,6 +40,20 @@ public class EventAdapter extends FirebaseRecyclerAdapter<Event, EventAdapter.Ev
         eventHolder.mGuestsCount.setText(guestsCount);
         eventHolder.setClickHandler(this);
     }
+
+
+    @Override
+    public int getItemCount() {
+        int count = super.getItemCount();
+        mEmptyView.setVisibility(count == 0 ? View.VISIBLE : View.GONE);
+        return count;
+    }
+
+//    @Override
+//    public void onBindViewHolder(EventAdapter.EventHolder viewHolder, int position) {
+//        mEmptyView.setVisibility(getItemCount() == 0 ? View.VISIBLE : View.GONE);
+//        onBindViewHolder(viewHolder, position);
+//    }
 
     public void onClick(int position) {
         String key = getRef(position).getKey();

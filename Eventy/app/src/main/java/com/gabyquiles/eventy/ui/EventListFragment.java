@@ -75,7 +75,7 @@ public class EventListFragment extends Fragment {
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         if(mUser != null) {
-            mAdapter = new EventAdapter(mFirebase, new EventAdapter.EventAdapterOnClickHandler() {
+            mAdapter = new EventAdapter(mFirebase, mEmptyView, new EventAdapter.EventAdapterOnClickHandler() {
                 @Override
                 public void onClick(String key) {
                     Uri eventUri = Uri.parse(mFirebase.toString()).buildUpon().appendPath(key).build();

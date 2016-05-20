@@ -50,7 +50,6 @@ public class SignInFragment extends Fragment implements GoogleApiClient.OnConnec
 // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
-//                .requestIdToken("488982002535-k465tjehj8d98hsasf08oqhg57fiv5du.apps.googleusercontent.com")
                 .requestEmail()
                 .build();
 

@@ -8,9 +8,11 @@ import com.gabyquiles.eventy.R;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class EventDetailsActivity extends BaseActivity {
     @BindView(R.id.toolbar) Toolbar mToolbar;
+    EventDetailsFragment mFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,9 +25,9 @@ public class EventDetailsActivity extends BaseActivity {
             Bundle arguments = new Bundle();
             arguments.putParcelable(EventDetailsFragment.EVENT_URI, getIntent().getData());
 
-            EventDetailsFragment fragment = new EventDetailsFragment();
-            fragment.setArguments(arguments);
-            getSupportFragmentManager().beginTransaction().add(R.id.details_container, fragment)
+            mFragment = new EventDetailsFragment();
+            mFragment.setArguments(arguments);
+            getSupportFragmentManager().beginTransaction().add(R.id.details_container, mFragment)
                     .commit();
         }
 
@@ -37,4 +39,8 @@ public class EventDetailsActivity extends BaseActivity {
         }
     }
 
+    @OnClick(R.id.save_button)
+    public void save() {
+        mFragment.save();
+    }
 }

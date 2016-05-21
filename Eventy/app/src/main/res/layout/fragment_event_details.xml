@@ -79,12 +79,5 @@
             android:minHeight="200dp"
             app:layout_gravity="fill_vertical"
             app:layout_columnSpan="2"/>
-
-        <Button
-            android:id="@+id/save_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_columnSpan="2"
-            android:text="Save"/>
     </android.support.v7.widget.GridLayout>
 </ScrollView>

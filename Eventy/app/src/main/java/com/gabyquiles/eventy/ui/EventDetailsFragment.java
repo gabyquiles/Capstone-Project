@@ -135,7 +135,6 @@ public class EventDetailsFragment extends Fragment implements ValueEventListener
         }
     }
 
-    @OnClick(R.id.save_button)
     public void save() {
         mEvent.setTitle(mTitle.getText().toString());
         mEvent.setPlace(mPlace.getText().toString());

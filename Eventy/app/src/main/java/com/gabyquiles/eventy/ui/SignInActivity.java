@@ -3,11 +3,8 @@ package com.gabyquiles.eventy.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.gabyquiles.eventy.R;
@@ -28,16 +25,8 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link SignInFragment.LoginInterface} interface
- * to handle interaction events.
- * Use the {@link SignInFragment} factory method to
- * create an instance of this fragment.
- */
-public class SignInFragment extends Fragment implements GoogleApiClient.OnConnectionFailedListener, FirebaseAuth.AuthStateListener {
-    private final String LOG_TAG = SignInFragment.class.getSimpleName();
+public class SignInActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, FirebaseAuth.AuthStateListener {
+    private final String LOG_TAG = SignInActivity.class.getSimpleName();
     private final int RC_SIGN_IN = 1;
 
     private GoogleApiClient mGoogleApiClient;
@@ -46,6 +35,8 @@ public class SignInFragment extends Fragment implements GoogleApiClient.OnConnec
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_sign_in);
+        ButterKnife.bind(this);
 // Configure sign-in to request the user's ID, email address, and basic
 // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -55,21 +46,13 @@ public class SignInFragment extends Fragment implements GoogleApiClient.OnConnec
 
         // Build a GoogleApiClient with access to the Google Sign-In API and the
 // options specified by gso.
-        mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
-                .enableAutoManage(getActivity() /* FragmentActivity */, this /* OnConnectionFailedListener */)
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
 
         mAuth = FirebaseAuth.getInstance();
-    }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_sign_in, container, false);
-        ButterKnife.bind(this, rootView);
-        return rootView;
     }
 
     @Override
@@ -81,15 +64,13 @@ public class SignInFragment extends Fragment implements GoogleApiClient.OnConnec
     @Override
     public void onStop() {
         super.onStop();
-//        if (mAuthListener != null) {
-            mAuth.removeAuthStateListener(this);
-//        }
+        mAuth.removeAuthStateListener(this);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mGoogleApiClient.stopAutoManage(getActivity());
+        mGoogleApiClient.stopAutoManage(this);
         mGoogleApiClient.disconnect();
     }
 
@@ -144,7 +125,7 @@ public class SignInFragment extends Fragment implements GoogleApiClient.OnConnec
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
         mAuth.signInWithCredential(credential)
-                .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         Log.d(LOG_TAG, "signInWithCredential:onComplete:" + task.isSuccessful());
@@ -154,19 +135,14 @@ public class SignInFragment extends Fragment implements GoogleApiClient.OnConnec
                         // signed in user can be handled in the listener.
                         if (!task.isSuccessful()) {
                             Log.w(LOG_TAG, "signInWithCredential", task.getException());
-                            Toast.makeText(getActivity(), "Authentication failed.",
+                            Toast.makeText(getApplicationContext(), "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
                         } else {
-                            ((LoginInterface) getActivity()).signedIn();
+                            Intent listingIntent = new Intent(getApplicationContext(), MainActivity.class);
+                            startActivity(listingIntent);
                         }
                         // ...
                     }
                 });
     }
-
-
-    public interface LoginInterface {
-        public void signedIn();
-    }
-
 }

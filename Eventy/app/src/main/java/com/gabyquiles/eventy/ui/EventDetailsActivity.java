@@ -2,7 +2,6 @@ package com.gabyquiles.eventy.ui;
 
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
 import com.gabyquiles.eventy.R;
@@ -10,7 +9,7 @@ import com.gabyquiles.eventy.R;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class EventDetailsActivity extends AppCompatActivity {
+public class EventDetailsActivity extends BaseActivity {
     @BindView(R.id.toolbar) Toolbar mToolbar;
 
     @Override
@@ -18,7 +17,6 @@ public class EventDetailsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_details);
         ButterKnife.bind(this);
-
 
         // If this activity is newly created
         if(savedInstanceState == null) {
@@ -30,7 +28,6 @@ public class EventDetailsActivity extends AppCompatActivity {
             getSupportFragmentManager().beginTransaction().add(R.id.details_container, fragment)
                     .commit();
         }
-
 
         setSupportActionBar(mToolbar);
         ActionBar actionBar = getSupportActionBar();

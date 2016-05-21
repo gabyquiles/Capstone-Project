@@ -220,15 +220,14 @@ public class EventDetailsFragment extends Fragment implements ValueEventListener
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         // Check which request we're responding to
         if (requestCode == PICK_CONTACT_REQUEST) {
-            int i =1;
             // Make sure the request was successful
             if (resultCode == Activity.RESULT_OK) {
-                String fullNameIdx = ContactsContract.CommonDataKinds.StructuredName.DISPLAY_NAME;
+                String fullNameIdx = ContactsContract.Contacts.DISPLAY_NAME;
                 String emailIdx = ContactsContract.CommonDataKinds.Email.ADDRESS;
 
                 // The user picked a contact.
                 Uri contactUri = data.getData();
-                String[] fields = { emailIdx, fullNameIdx };
+                String[] fields = { emailIdx, fullNameIdx};
 
                 Cursor cursor = getContext().getContentResolver().query(contactUri, fields, null, null, null);
                 if(cursor != null) {

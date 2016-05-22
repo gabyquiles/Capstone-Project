@@ -1,5 +1,6 @@
 package com.gabyquiles.eventy.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
@@ -41,6 +42,9 @@ public class EventDetailsActivity extends BaseActivity {
 
     @OnClick(R.id.save_button)
     public void save() {
+        Intent mainIntent = new Intent(this, MainActivity.class);
+        startActivity(mainIntent);
         mFragment.save();
+        finish();
     }
 }

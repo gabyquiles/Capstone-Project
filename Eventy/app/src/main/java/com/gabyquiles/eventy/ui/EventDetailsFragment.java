@@ -130,8 +130,10 @@ public class EventDetailsFragment extends Fragment implements ValueEventListener
     }
 
     public void save() {
-        mEvent.setTitle(mTitle.getText().toString());
+        String eventTitle = mTitle.getText().toString().isEmpty()?getString(R.string.no_title):mTitle.getText().toString();
+        mEvent.setTitle(eventTitle);
         mEvent.setPlace(mPlace.getText().toString());
+
         DatabaseReference.CompletionListener savingListener = new DatabaseReference.CompletionListener(){
 
             @Override

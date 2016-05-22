@@ -15,6 +15,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+
+import java.util.Calendar;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -65,7 +68,10 @@ public class EventListFragment extends Fragment {
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         if(mUser != null) {
-            mAdapter = new EventAdapter(mFirebase, mEmptyView, new EventAdapter.EventAdapterOnClickHandler() {
+            // Filter out event and sort by date
+            long today = Calendar.getInstance().getTimeInMillis();
+            Query filteredEvents = mFirebase.orderByChild("date").startAt(today);
+            mAdapter = new EventAdapter(filteredEvents, mEmptyView, new EventAdapter.EventAdapterOnClickHandler() {
                 @Override
                 public void onClick(String key) {
                     Uri eventUri = Uri.parse(mFirebase.toString()).buildUpon().appendPath(key).build();

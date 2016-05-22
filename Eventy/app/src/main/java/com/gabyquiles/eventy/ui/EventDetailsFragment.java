@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import com.gabyquiles.eventy.BuildConfig;
 import com.gabyquiles.eventy.R;
@@ -131,16 +132,31 @@ public class EventDetailsFragment extends Fragment implements ValueEventListener
     public void save() {
         mEvent.setTitle(mTitle.getText().toString());
         mEvent.setPlace(mPlace.getText().toString());
+        DatabaseReference.CompletionListener savingListener = new DatabaseReference.CompletionListener(){
+
+            @Override
+            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                String message = "";
+                if (databaseError != null) {
+                    message = getString(R.string.event_saved_error);
+//                    TODO: Record with analytics
+                } else {
+                    message = getString(R.string.event_saved);
+                }
+                Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+            }
+        };
+
 
         String key = mEvent.getKey();
         if(key == null) {
             mFirebase.removeEventListener(this);
             mFirebase = mFirebase.push();
-            mFirebase.setValue(mEvent);
+            mFirebase.setValue(mEvent, savingListener);
             mEvent.setKey(mFirebase.getKey());
             mFirebase.addValueEventListener(this);
         } else {
-            mFirebase.setValue(mEvent);
+            mFirebase.setValue(mEvent, savingListener);
         }
     }
 

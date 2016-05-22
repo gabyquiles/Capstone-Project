@@ -101,13 +101,6 @@ public class EventDetailsFragment extends Fragment implements ValueEventListener
         mThingsList.setLayoutManager(new LinearLayoutManager(getActivity()));
         mThingsAdapter = new ThingsAdapter(getActivity(), mEvent.getThingList(), null);
         mThingsList.setAdapter(mThingsAdapter);
-//        frag.getView().setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Intent mapIntent = new Intent(getActivity(), MapsActivity.class);
-//                ActivityCompat.startActivity(getActivity(), mapIntent, null);
-//            }
-//        });
         return rootView;
     }
 

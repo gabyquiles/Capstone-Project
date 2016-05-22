@@ -47,13 +47,4 @@ public class Utility {
 
         return calendar.getTimeInMillis();
     }
-
-//    public static String getFirebaseBaseUrl(Context context, AuthData authData) {
-//        String baseUrl = context.getString(R.string.firebase_base_url)
-//                + context.getString(R.string.firebase_users_path);
-//        if(authData != null) {
-//            baseUrl += authData.getUid();
-//        }
-//        return baseUrl;
-//    }
 }

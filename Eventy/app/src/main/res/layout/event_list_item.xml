@@ -9,11 +9,16 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:layout_margin="5dp">
-        <TextView
-            android:id="@+id/event_title_textview"
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/card_toolbar"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:textAppearance="@style/TextAppearance.AppCompat.Title"/>
+            android:layout_height="?attr/actionBarSize" >
+            <TextView
+                android:id="@+id/event_title_textview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textAppearance="@style/TextAppearance.AppCompat.Title"/>
+        </android.support.v7.widget.Toolbar>
         <TextView
             android:id="@+id/event_datetime_textview"
             android:layout_width="match_parent"

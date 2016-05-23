@@ -77,6 +77,12 @@ public class EventListFragment extends Fragment {
                     Uri eventUri = Uri.parse(mFirebase.toString()).buildUpon().appendPath(key).build();
                     ((Callback) getActivity()).showEventDetails(eventUri);
                 }
+
+                @Override
+                public void deleteEvent(String key) {
+                    Uri eventUri = Uri.parse(mFirebase.toString()).buildUpon().appendPath(key).build();
+                    FirebaseDatabase.getInstance().getReferenceFromUrl(eventUri.toString()).removeValue();
+                }
             });
             mRecyclerView.setAdapter(mAdapter);
         }

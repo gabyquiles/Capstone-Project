@@ -5,6 +5,11 @@ android {
     compileSdkVersion 23
     buildToolsVersion "23.0.2"
 
+    dexOptions {
+        maxProcessCount 3
+        javaMaxHeapSize "3g"
+    }
+
     defaultConfig {
         applicationId "com.gabyquiles.eventy"
         minSdkVersion 18
@@ -41,12 +46,9 @@ dependencies {
     apt 'com.jakewharton:butterknife-compiler:8.0.1'
 
     compile "com.android.support:appcompat-v7:${supportLibVersion}"
-    compile "com.android.support:support-v4:${supportLibVersion}"
     compile "com.android.support:recyclerview-v7:${supportLibVersion}"
     compile "com.android.support:design:${supportLibVersion}"
     compile "com.android.support:cardview-v7:${supportLibVersion}"
-    compile "com.android.support:support-v4:${supportLibVersion}"
-    compile "com.android.support:gridlayout-v7:${supportLibVersion}"
 
 
     androidTestCompile "com.android.support:support-annotations:${supportLibVersion}"
@@ -62,18 +64,15 @@ dependencies {
 
     compile "com.google.firebase:firebase-database:${firebaseVersion}"
     compile "com.google.firebase:firebase-auth:${firebaseVersion}"
-    compile "com.google.android.gms:play-services:${firebaseVersion}"
-//    compile "com.google.android.gms:play-services-places:${firebaseVersion}"
+//    compile "com.google.android.gms:play-services:${firebaseVersion}"
+    compile "com.google.android.gms:play-services-maps:${firebaseVersion}"
+    compile "com.google.android.gms:play-services-auth:${firebaseVersion}"
+    compile "com.google.android.gms:play-services-location:${firebaseVersion}"
 
 //    # FirebaseUI Database only
     compile "com.firebaseui:firebase-ui-database:${firebaseUIVersion}"
 
-//    # FirebaseUI Auth only
-    compile "com.firebaseui:firebase-ui-auth:${firebaseUIVersion}"
-
     compile 'com.jakewharton:butterknife:8.0.1'
-    compile 'com.android.support:appcompat-v7:23.4.0'
-    compile 'com.android.support:support-v4:23.4.0'
 }
 
 

@@ -94,7 +94,7 @@ public class Event implements Parcelable{
         this.mLat = lat;
     }
 
-    public double getLatitude() {
+    public Double getLatitude() {
         return mLat;
     }
 
@@ -102,7 +102,7 @@ public class Event implements Parcelable{
         this.mLon = lon;
     }
 
-    public double getLongitude() {
+    public Double getLongitude() {
         return mLon;
     }
 

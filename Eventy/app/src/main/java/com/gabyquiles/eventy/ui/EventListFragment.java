@@ -30,8 +30,6 @@ import butterknife.OnClick;
  */
 public class EventListFragment extends Fragment {
 
-    static final String FIREBASE_URI = "URI";
-
     //Views
     @BindView(R.id.empty_textview) TextView mEmptyView;
     @BindView(R.id.event_list) RecyclerView mRecyclerView;

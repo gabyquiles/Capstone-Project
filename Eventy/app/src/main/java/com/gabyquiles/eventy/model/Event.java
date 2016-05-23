@@ -69,7 +69,6 @@ public class Event implements Parcelable{
     }
 
     public void setPlace(Place place) {
-        this.mPlaceName = place.getName().toString();
         setCoords(place.getLatLng());
     }
 

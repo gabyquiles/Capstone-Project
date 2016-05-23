@@ -248,14 +248,6 @@ public class EventDetailsFragment extends Fragment implements ValueEventListener
         }
     }
 
-    @OnTextChanged(R.id.event_address)
-    public void resetAddress() {
-        if(!mAddress.getText().toString().equals(mEvent.getPlaceName())) {
-            mEvent.setCoords(null);
-            updateMap();
-        }
-    }
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         // Check which request we're responding to
@@ -287,7 +279,6 @@ public class EventDetailsFragment extends Fragment implements ValueEventListener
             if (resultCode == Activity.RESULT_OK) {
                 Place place = PlacePicker.getPlace(getActivity(), data);
                 mEvent.setPlace(place);
-                mAddress.setText(mEvent.getPlaceName());
                 updateMap();
             }
         }

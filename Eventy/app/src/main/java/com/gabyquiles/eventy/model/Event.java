@@ -30,8 +30,8 @@ public class Event implements Parcelable{
     private String mKey;
 
     public Event() {
-//        TODO: Validate before saving
         Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DATE, 1);
         mDate = cal.getTimeInMillis();
         mGuestList = new ArrayList<>();
         mThingList = new ArrayList<>();
@@ -82,6 +82,7 @@ public class Event implements Parcelable{
         }
     }
 
+    @Exclude
     public LatLng getCoordinates() {
         if (mLat != null && mLon != null) {
             return new LatLng(mLat, mLon);
@@ -105,6 +106,7 @@ public class Event implements Parcelable{
         return mLon;
     }
 
+    @Exclude
     public String getKey() {
         return mKey;
     }

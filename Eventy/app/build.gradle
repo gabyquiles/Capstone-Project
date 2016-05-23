@@ -1,6 +1,5 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.neenbedankt.android-apt'
-apply plugin: 'com.google.gms.google-services'
 
 android {
     compileSdkVersion 23
@@ -63,8 +62,8 @@ dependencies {
 
     compile "com.google.firebase:firebase-database:${firebaseVersion}"
     compile "com.google.firebase:firebase-auth:${firebaseVersion}"
-    compile "com.google.android.gms:play-services-auth:${firebaseVersion}"
-    compile "com.google.android.gms:play-services-maps:${firebaseVersion}"
+    compile "com.google.android.gms:play-services:${firebaseVersion}"
+//    compile "com.google.android.gms:play-services-places:${firebaseVersion}"
 
 //    # FirebaseUI Database only
     compile "com.firebaseui:firebase-ui-database:${firebaseUIVersion}"
@@ -76,3 +75,6 @@ dependencies {
     compile 'com.android.support:appcompat-v7:23.4.0'
     compile 'com.android.support:support-v4:23.4.0'
 }
+
+
+apply plugin: 'com.google.gms.google-services'

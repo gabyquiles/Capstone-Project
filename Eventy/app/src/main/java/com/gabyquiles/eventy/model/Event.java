@@ -3,6 +3,8 @@ package com.gabyquiles.eventy.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.Exclude;
 
 import java.util.ArrayList;
@@ -18,7 +20,9 @@ import java.util.List;
 public class Event implements Parcelable{
     private String mTitle;
     private long mDate;
-    private String mPlace;
+    private String mPlaceName;
+    private Double mLat;
+    private Double mLon;
     private List<Guest> mGuestList;
     private List<String> mThingList;
 
@@ -36,7 +40,7 @@ public class Event implements Parcelable{
     public Event(Parcel in) {
         mKey = in.readString();
         mTitle = in.readString();
-        mPlace = in.readString();
+        mPlaceName = in.readString();
         mDate = in.readLong();
     }
 
@@ -56,12 +60,50 @@ public class Event implements Parcelable{
         this.mDate = date;
     }
 
-    public String getPlace() {
-        return mPlace;
+    public void setPlaceName(String placeName) {
+        this.mPlaceName = placeName;
     }
 
-    public void setPlace(String place) {
-        this.mPlace = place;
+    public String getPlaceName() {
+        return mPlaceName;
+    }
+
+    public void setPlace(Place place) {
+        this.mPlaceName = place.getName().toString();
+        setCoords(place.getLatLng());
+    }
+
+    public void setCoords(LatLng coords) {
+        if (coords != null) {
+            this.mLat = coords.latitude;
+            this.mLon = coords.longitude;
+        } else {
+            mLat = null;
+            mLon = null;
+        }
+    }
+
+    public LatLng getCoordinates() {
+        if (mLat != null && mLon != null) {
+            return new LatLng(mLat, mLon);
+        }
+        return null;
+    }
+
+    public void setLatitude(double lat) {
+        this.mLat = lat;
+    }
+
+    public double getLatitude() {
+        return mLat;
+    }
+
+    public void setLongitude(double lon) {
+        this.mLon = lon;
+    }
+
+    public double getLongitude() {
+        return mLon;
     }
 
     public String getKey() {
@@ -90,7 +132,7 @@ public class Event implements Parcelable{
         if(mDate != e.mDate) {
             return false;
         }
-        if(!mPlace.equals(e.mPlace)) {
+        if(!mPlaceName.equals(e.mPlaceName)) {
             return false;
         }
         if((mKey != null && e.mKey != null) && !mKey.equals(e.mKey)) {
@@ -104,7 +146,7 @@ public class Event implements Parcelable{
     public int hashCode() {
         int result = mTitle.hashCode();
         result = 31 * result + (new Long(mDate)).hashCode();
-        result = 31 * result + mPlace.hashCode();
+        result = 31 * result + mPlaceName.hashCode();
         return result;
     }
 
@@ -117,7 +159,7 @@ public class Event implements Parcelable{
     public void writeToParcel(Parcel parcel, int flags) {
         parcel.writeString(mKey);
         parcel.writeString(mTitle);
-        parcel.writeString(mPlace);
+        parcel.writeString(mPlaceName);
         parcel.writeLong(mDate);
     }
 

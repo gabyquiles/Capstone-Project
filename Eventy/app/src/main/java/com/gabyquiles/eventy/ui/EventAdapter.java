@@ -34,7 +34,7 @@ public class EventAdapter extends FirebaseRecyclerAdapter<Event, EventAdapter.Ev
     @Override
     protected void populateViewHolder(EventHolder eventHolder, Event event, int i) {
         eventHolder.mTitle.setText(event.getTitle());
-        eventHolder.mPlace.setText(event.getPlace());
+        eventHolder.mPlace.setText(event.getPlaceName());
         eventHolder.mDateTime.setText(Utility.formatFullDate(event.getDate()));
         String guestsCount = event.getGuestsCountByStatus(Guest.GOING) + " / " + event.getGuestsCount();
         eventHolder.mGuestsCount.setText(guestsCount);

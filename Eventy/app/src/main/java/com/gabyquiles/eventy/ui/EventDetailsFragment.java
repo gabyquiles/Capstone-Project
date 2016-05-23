@@ -25,6 +25,8 @@ import com.gabyquiles.eventy.R;
 import com.gabyquiles.eventy.Utility;
 import com.gabyquiles.eventy.model.Event;
 import com.gabyquiles.eventy.model.Guest;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -43,6 +45,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnFocusChange;
+import butterknife.OnTextChanged;
 
 /**
  * Fragment that shows the details of an event
@@ -55,18 +58,20 @@ public class EventDetailsFragment extends Fragment implements ValueEventListener
 
     static final String EVENT_URI = "event_uri";
     static final int PICK_CONTACT_REQUEST = 1;  // The request code
+    static final int PICK_ADDRESS_REQUEST = 2;
 
 //    Views
     @BindView(R.id.event_title) EditText mTitle;
     @BindView(R.id.event_date) EditText mDate;
     @BindView(R.id.event_time) EditText mTime;
-    @BindView(R.id.event_address) EditText mPlace;
+    @BindView(R.id.event_address) EditText mAddress;
     @BindView(R.id.new_thing) EditText mNewThing;
     @BindView(R.id.guest_list) RecyclerView mGuestList;
     @BindView(R.id.things_list) RecyclerView mThingsList;
 
+    SupportMapFragment mMapFragment;
+
     private DatabaseReference mFirebase;
-    private Uri mFirebaseUri;
     private Event mEvent;
     private GoogleMap mMap;
     private GuestsAdapter mGuestAdapter;
@@ -79,9 +84,9 @@ public class EventDetailsFragment extends Fragment implements ValueEventListener
         mEvent = new Event();
         Bundle arguments = getArguments();
         if(arguments != null && arguments.getParcelable(EVENT_URI) != null) {
-            mFirebaseUri= arguments.getParcelable(EVENT_URI);
-            if(mFirebaseUri != null) {
-                mFirebase = FirebaseDatabase.getInstance().getReferenceFromUrl(mFirebaseUri.toString());
+            Uri firebaseUri= arguments.getParcelable(EVENT_URI);
+            if(firebaseUri != null) {
+                mFirebase = FirebaseDatabase.getInstance().getReferenceFromUrl(firebaseUri.toString());
                 mFirebase.addValueEventListener(this);
             }
         }
@@ -92,8 +97,14 @@ public class EventDetailsFragment extends Fragment implements ValueEventListener
         mDate.setText(Utility.formatShortDate(mEvent.getDate()));
         mTime.setText(Utility.formatTime(mEvent.getDate()));
 
-        SupportMapFragment frag = ((SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map));//.getMapAsync(this);
-        frag.getMapAsync(this);
+        mMapFragment = ((SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map));
+        if (mMapFragment != null) {
+            View view = mMapFragment.getView();
+            if (view != null) {
+                view.setVisibility(View.GONE);
+            }
+            mMapFragment.getMapAsync(this);
+        }
 
         mGuestList.setLayoutManager(new LinearLayoutManager(getActivity()));
         mGuestAdapter = new GuestsAdapter(getActivity(), mEvent.getGuestList(), null);
@@ -102,6 +113,7 @@ public class EventDetailsFragment extends Fragment implements ValueEventListener
         mThingsList.setLayoutManager(new LinearLayoutManager(getActivity()));
         mThingsAdapter = new ThingsAdapter(getActivity(), mEvent.getThingList(), null);
         mThingsList.setAdapter(mThingsAdapter);
+
         return rootView;
     }
 
@@ -114,7 +126,8 @@ public class EventDetailsFragment extends Fragment implements ValueEventListener
             mTitle.setText(mEvent.getTitle());
             mDate.setText(Utility.formatShortDate(mEvent.getDate()));
             mTime.setText(Utility.formatTime(mEvent.getDate()));
-            mPlace.setText(mEvent.getPlace());
+            mAddress.setText(mEvent.getPlaceName());
+            updateMap();
             updateThingsList(null);
             updateGuestList(null);
         } else {
@@ -132,13 +145,13 @@ public class EventDetailsFragment extends Fragment implements ValueEventListener
     public void save() {
         String eventTitle = mTitle.getText().toString().isEmpty()?getString(R.string.no_title):mTitle.getText().toString();
         mEvent.setTitle(eventTitle);
-        mEvent.setPlace(mPlace.getText().toString());
+        mEvent.setPlaceName(mAddress.getText().toString());
 
         DatabaseReference.CompletionListener savingListener = new DatabaseReference.CompletionListener(){
 
             @Override
             public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                String message = "";
+                String message;
                 if (databaseError != null) {
                     message = getString(R.string.event_saved_error);
 //                    TODO: Record with analytics
@@ -162,14 +175,23 @@ public class EventDetailsFragment extends Fragment implements ValueEventListener
         }
     }
 
+    @OnClick(R.id.search_address_btn)
+    public void pickAddress() {
+        PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+
+        try {
+            startActivityForResult(builder.build(getActivity()), PICK_ADDRESS_REQUEST);
+        } catch (Exception e) {
+//            TODO: Catch correct exceptions
+        }
+    }
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-
-        // Add a marker in Sydney, Australia, and move the camera.
-        LatLng sydney = new LatLng(18, -66);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sydney, 15));
+        if (mMap != null) {
+            updateMap();
+        }
     }
 
     @OnClick(R.id.add_guests_button)
@@ -226,6 +248,14 @@ public class EventDetailsFragment extends Fragment implements ValueEventListener
         }
     }
 
+    @OnTextChanged(R.id.event_address)
+    public void resetAddress() {
+        if(!mAddress.getText().toString().equals(mEvent.getPlaceName())) {
+            mEvent.setCoords(null);
+            updateMap();
+        }
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         // Check which request we're responding to
@@ -253,6 +283,13 @@ public class EventDetailsFragment extends Fragment implements ValueEventListener
                     cursor.close();
                 }
             }
+        } else if (requestCode == PICK_ADDRESS_REQUEST) {
+            if (resultCode == Activity.RESULT_OK) {
+                Place place = PlacePicker.getPlace(getActivity(), data);
+                mEvent.setPlace(place);
+                mAddress.setText(mEvent.getPlaceName());
+                updateMap();
+            }
         }
     }
 
@@ -268,5 +305,28 @@ public class EventDetailsFragment extends Fragment implements ValueEventListener
             mEvent.addThing(thing);
         }
         mThingsAdapter.updateList(mEvent.getThingList());
+    }
+
+    private void updateMap() {
+        LatLng location = mEvent.getCoordinates();
+        if (location != null) {
+            if (mMap != null) {
+                mMap.addMarker(new MarkerOptions().position(location));
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 15));
+                if (mMapFragment != null) {
+                    View view = mMapFragment.getView();
+                    if (view != null) {
+                        view.setVisibility(View.VISIBLE);
+                    }
+                }
+            }
+        } else {
+            if (mMapFragment != null) {
+                View view = mMapFragment.getView();
+                if (view != null) {
+                    view.setVisibility(View.GONE);
+                }
+            }
+        }
     }
 }

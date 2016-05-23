@@ -40,7 +40,7 @@ public class EventTestCase {
     private Event getEvent() {
         Event event = new Event();
         event.setTitle(TITLE);
-        event.setPlace(PLACE);
+        event.setPlaceName(PLACE);
 
         return event;
     }

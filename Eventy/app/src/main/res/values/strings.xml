@@ -2,7 +2,7 @@
     <string name="app_name">Eventy</string>
 
     <string name="empty">No events available</string>
-    <string name="title_activity_event_details">EventDetailsActivity</string>
+    <string name="title_activity_event_details">Event Details</string>
     <string name="action_settings">Settings</string>
     <string name="title_placeholder">Title</string>
     <string name="place_placeholder">Place</string>
@@ -10,6 +10,7 @@
     <string name="logout">Logout</string>
     <string name="title_activity_maps">Map</string>
     <string name="no_title">(No Title)</string>
+    <string name="add_map">Add Map</string>
 
     <string name="login_error">There was an error in the login process.</string>
     <string name="event_saved">Event saved</string>

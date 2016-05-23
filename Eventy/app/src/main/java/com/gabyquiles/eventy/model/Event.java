@@ -203,6 +203,7 @@ public class Event implements Parcelable{
         mThingList.add(thing);
     }
 
+    @Exclude
     public int getGuestsCount() {
         return mGuestList.size();
     }

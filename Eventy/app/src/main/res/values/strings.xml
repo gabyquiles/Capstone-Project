@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:xliff="http://schemas.android.com/apk/res-auto">
     <string name="app_name">Eventy</string>
 
     <string name="empty">No events available</string>
@@ -30,6 +30,11 @@
     <string name="invalid_password">password must be longer than 5 characters</string>
     <string name="cannot_create_account">Cannot create account now. Try again later.</string>
     <string name="authentication_error">email and password don\'t match our records</string>
+    <string name="add_event">Add Event</string>
+
+    <string name="guests_count_description">
+        <xliff:g id="confirmed">%1$s</xliff:g> guest have confirmed out of <xliff:g id="total">%2$s</xliff:g> invited
+    </string>
 
     <string name="login_error">There was an error in the login process.</string>
     <string name="event_saved">Event saved</string>

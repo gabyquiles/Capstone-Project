@@ -54,6 +54,7 @@
             android:layout_alignParentEnd="true"
             android:src="@drawable/ic_add_white_24dp"
             android:layout_marginEnd="@dimen/fab_margins"
-            android:layout_marginBottom="@dimen/fab_margins" />
+            android:layout_marginBottom="@dimen/fab_margins"
+            android:contentDescription="@string/add_event"/>
     </android.support.design.widget.CoordinatorLayout>
 </FrameLayout>

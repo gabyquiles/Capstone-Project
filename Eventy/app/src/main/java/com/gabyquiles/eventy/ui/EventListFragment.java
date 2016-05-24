@@ -69,7 +69,7 @@ public class EventListFragment extends Fragment {
             // Filter out event and sort by date
             long today = Calendar.getInstance().getTimeInMillis();
             Query filteredEvents = mFirebase.orderByChild("date").startAt(today);
-            mAdapter = new EventAdapter(filteredEvents, mEmptyView, new EventAdapter.EventAdapterOnClickHandler() {
+            mAdapter = new EventAdapter(getActivity(), filteredEvents, mEmptyView, new EventAdapter.EventAdapterOnClickHandler() {
                 @Override
                 public void onClick(String key) {
                     Uri eventUri = Uri.parse(mFirebase.toString()).buildUpon().appendPath(key).build();

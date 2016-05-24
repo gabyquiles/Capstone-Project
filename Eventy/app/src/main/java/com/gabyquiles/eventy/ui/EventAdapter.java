@@ -1,5 +1,6 @@
 package com.gabyquiles.eventy.ui;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
@@ -24,13 +25,15 @@ import butterknife.ButterKnife;
  */
 public class EventAdapter extends FirebaseRecyclerAdapter<Event, EventAdapter.EventHolder> {
     private final String LOG_TAG = EventAdapter.class.getSimpleName();
+    private Context mContext;
     private EventAdapterOnClickHandler mClickHandler;
     private View mEmptyView;
 
-    public EventAdapter(Query ref, View emptyView, EventAdapterOnClickHandler clickHandler) {
+    public EventAdapter(Context context, Query ref, View emptyView, EventAdapterOnClickHandler clickHandler) {
         super(Event.class, R.layout.event_list_item, EventHolder.class, ref);
         mClickHandler = clickHandler;
         mEmptyView = emptyView;
+        mContext = context;
     }
 
     @Override
@@ -38,8 +41,11 @@ public class EventAdapter extends FirebaseRecyclerAdapter<Event, EventAdapter.Ev
         eventHolder.mTitle.setText(event.getTitle());
         eventHolder.mPlace.setText(event.getPlaceName());
         eventHolder.mDateTime.setText(Utility.formatFullDate(event.getDate()));
-        String guestsCount = event.getGuestsCountByStatus(Guest.GOING) + " / " + event.getGuestsCount();
+        int confirmed_guests = event.getGuestsCountByStatus(Guest.GOING);
+        int total_guests = event.getGuestsCount();
+        String guestsCount = confirmed_guests + " / " + total_guests;
         eventHolder.mGuestsCount.setText(guestsCount);
+        eventHolder.mGuestsCount.setContentDescription(mContext.getString(R.string.guests_count_description, confirmed_guests, total_guests));
         eventHolder.setClickHandler(this);
     }
 

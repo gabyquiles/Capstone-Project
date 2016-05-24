@@ -43,9 +43,10 @@ public class EventAdapter extends FirebaseRecyclerAdapter<Event, EventAdapter.Ev
         eventHolder.mDateTime.setText(Utility.formatFullDate(event.getDate()));
         int confirmed_guests = event.getGuestsCountByStatus(Guest.GOING);
         int total_guests = event.getGuestsCount();
-        String guestsCount = confirmed_guests + " / " + total_guests;
-        eventHolder.mGuestsCount.setText(guestsCount);
-        eventHolder.mGuestsCount.setContentDescription(mContext.getString(R.string.guests_count_description, confirmed_guests, total_guests));
+        eventHolder.mConfirmedGuestsCount.setText(Integer.valueOf(confirmed_guests).toString());
+        eventHolder.mConfirmedGuestsCount.setContentDescription(mContext.getString(R.string.confirmed_guests_count_description, confirmed_guests));
+        eventHolder.mTotalGuestsCount.setText(Integer.valueOf(total_guests).toString());
+        eventHolder.mTotalGuestsCount.setContentDescription(mContext.getString(R.string.total_guests_count_description, total_guests));
         eventHolder.setClickHandler(this);
     }
 
@@ -72,7 +73,9 @@ public class EventAdapter extends FirebaseRecyclerAdapter<Event, EventAdapter.Ev
         @BindView(R.id.event_title_textview) TextView mTitle;
         @BindView(R.id.event_datetime_textview) TextView mDateTime;
         @BindView(R.id.event_place_textview) TextView mPlace;
-        @BindView(R.id.guests_count_textview) TextView mGuestsCount;
+        @BindView(R.id.confirmed_guests_count_textview) TextView mConfirmedGuestsCount;
+        @BindView(R.id.total_guests_count_textview) TextView mTotalGuestsCount;
+        @BindView(R.id.guests_divider) TextView mGuestsDivider;
         private EventAdapter mHandler;
 
         public EventHolder(View view) {

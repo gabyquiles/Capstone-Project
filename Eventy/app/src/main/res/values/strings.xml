@@ -32,9 +32,14 @@
     <string name="authentication_error">email and password don\'t match our records</string>
     <string name="add_event">Add Event</string>
 
-    <string name="guests_count_description">
-        <xliff:g id="confirmed">%1$s</xliff:g> guest have confirmed out of <xliff:g id="total">%2$s</xliff:g> invited
+    <string name="confirmed_guests_count_description">
+        <xliff:g id="confirmed">%1$s</xliff:g> guests have confirmed
     </string>
+    <string name="guests_divider">out of</string>
+    <string name="total_guests_count_description">
+        <xliff:g id="confirmed">%1$s</xliff:g> guests invited
+    </string>
+    <string name="counter_divider">/</string>
 
     <string name="login_error">There was an error in the login process.</string>
     <string name="event_saved">Event saved</string>

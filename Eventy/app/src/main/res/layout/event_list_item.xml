@@ -14,14 +14,16 @@
             android:layout_height="?attr/actionBarSize" >
             <TextView
                 android:id="@+id/event_title_textview"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+                android:gravity="start"
                 android:textAppearance="@style/TextAppearance.AppCompat.Title"/>
         </android.support.v7.widget.Toolbar>
         <TextView
             android:id="@+id/event_datetime_textview"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="start" />
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -29,7 +31,8 @@
             <TextView
                 android:id="@+id/event_place_textview"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:gravity="start" />
             <Space
                 android:layout_width="0dp"
                 android:layout_weight="1"
@@ -39,7 +42,17 @@
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_friends"/>
             <TextView
-                android:id="@+id/guests_count_textview"
+                android:id="@+id/confirmed_guests_count_textview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+            <TextView
+                android:id="@+id/guests_divider"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/counter_divider"
+                android:contentDescription="@string/guests_divider"/>
+            <TextView
+                android:id="@+id/total_guests_count_textview"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
         </LinearLayout>

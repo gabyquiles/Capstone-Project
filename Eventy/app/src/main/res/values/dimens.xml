@@ -7,7 +7,8 @@
     <dimen name="btn_padding">3dp</dimen>
     <dimen name="textlayout_margins">8dp</dimen>
     <dimen name="details_list_minheight">200dp</dimen>
-    <dimen name="card_margin">15dp</dimen>
+    <dimen name="card_margin">10dp</dimen>
+    <dimen name="card_padding">5dp</dimen>
     <dimen name="fab_margins">24dp</dimen>
 
     <dimen name="login_textsize">16sp</dimen>

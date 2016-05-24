@@ -44,7 +44,7 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <activity android:name=".ui.SignInActivity">
+        <activity android:name=".ui.SignInActivity"  android:theme="@style/AppTheme.Dark">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -52,6 +52,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".ui.SignUpActivity"  android:theme="@style/AppTheme.Dark" />
     </application>
 
 </manifest>

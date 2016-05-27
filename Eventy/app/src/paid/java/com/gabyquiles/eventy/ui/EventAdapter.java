@@ -7,12 +7,18 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.gabyquiles.eventy.R;
 import com.gabyquiles.eventy.Utility;
 import com.gabyquiles.eventy.model.Event;
 import com.gabyquiles.eventy.model.Guest;
+
+import java.util.Calendar;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -26,10 +32,10 @@ import butterknife.ButterKnife;
 public class EventAdapter extends FirebaseRecyclerAdapter<Event, EventAdapter.EventHolder> {
     private final String LOG_TAG = EventAdapter.class.getSimpleName();
     private Context mContext;
-    private EventAdapterOnClickHandler mClickHandler;
+    private RecyclerViewAdapterFactory.AdapterOnClickHandler mClickHandler;
     private View mEmptyView;
 
-    public EventAdapter(Context context, Query ref, View emptyView, EventAdapterOnClickHandler clickHandler) {
+    public EventAdapter(Context context, Query ref, View emptyView, RecyclerViewAdapterFactory.AdapterOnClickHandler clickHandler) {
         super(Event.class, R.layout.event_list_item, EventHolder.class, ref);
         mClickHandler = clickHandler;
         mEmptyView = emptyView;
@@ -65,7 +71,7 @@ public class EventAdapter extends FirebaseRecyclerAdapter<Event, EventAdapter.Ev
 
     public void onDeleteMenu(int position) {
         String key = getRef(position).getKey();
-        mClickHandler.deleteEvent(key);
+        mClickHandler.delete(key);
     }
 
     public static class EventHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -108,10 +114,5 @@ public class EventAdapter extends FirebaseRecyclerAdapter<Event, EventAdapter.Ev
             mHandler.onClick(getAdapterPosition());
 
         }
-    }
-
-    public interface EventAdapterOnClickHandler {
-        void onClick(String key);
-        void deleteEvent(String key);
     }
 }

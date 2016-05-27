@@ -1,9 +1,3 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".ui.EventDetailsActivity">
-    <item
-        android:id="@+id/action_logout"
-        android:orderInCategory="100"
-        android:showAsAction="never"
-        android:title="@string/logout" />
+    xmlns:tools="http://schemas.android.com/tools">
 </menu>

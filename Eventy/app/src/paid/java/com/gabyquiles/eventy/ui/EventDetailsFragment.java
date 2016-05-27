@@ -84,7 +84,7 @@ public class EventDetailsFragment extends Fragment implements ValueEventListener
         mEvent = new Event();
         Bundle arguments = getArguments();
         if(arguments != null && arguments.getParcelable(EVENT_URI) != null) {
-            Uri firebaseUri= arguments.getParcelable(EVENT_URI);
+            Uri firebaseUri = arguments.getParcelable(EVENT_URI);
             if(firebaseUri != null) {
                 mFirebase = FirebaseDatabase.getInstance().getReferenceFromUrl(firebaseUri.toString());
                 mFirebase.addValueEventListener(this);

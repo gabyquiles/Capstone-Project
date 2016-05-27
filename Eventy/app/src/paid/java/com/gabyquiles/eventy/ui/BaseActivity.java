@@ -1,23 +1,29 @@
 package com.gabyquiles.eventy.ui;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.gabyquiles.eventy.R;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 /**
  * Sets up commonalities between app activities
  *
  * @author gabrielquiles-perez
  */
-public class BaseActivity extends AppCompatActivity {
+public class BaseActivity extends AppCompatActivity implements EventListFragment.Callback {
     private final String LOG_TAG = BaseActivity.class.getSimpleName();
 
     protected FirebaseAuth mAuth;
+    protected FirebaseUser mUser;
 
 
     @Override
@@ -25,6 +31,7 @@ public class BaseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         mAuth = FirebaseAuth.getInstance();
+        mUser = mAuth.getCurrentUser();
     }
 
     @Override
@@ -67,5 +74,20 @@ public class BaseActivity extends AppCompatActivity {
 
     public boolean isSignedIn() {
         return (mAuth.getCurrentUser() != null);
+    }
+
+    @Override
+    public void showEventDetails(Uri uri) {
+        //TODO: Set for tablets
+        //TODO: Manage errors, no Net (events may be out of sync), firebase permissions
+        Intent eventIntent = new Intent(this, EventDetailsActivity.class);
+        if(uri == null) {
+            DatabaseReference firebase = FirebaseDatabase.getInstance().getReference().child(getString(R.string.firebase_users_path));
+            firebase = firebase.child(mUser.getUid());
+            firebase = firebase.child("events");
+            uri = Uri.parse(firebase.toString());
+        }
+        eventIntent.setData(uri);
+        ActivityCompat.startActivity(this, eventIntent, null);
     }
 }

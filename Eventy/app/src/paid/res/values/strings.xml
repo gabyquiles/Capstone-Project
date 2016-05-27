@@ -1,4 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Eventy</string>
+    <string name="email_placeholder">Email</string>
+    <string name="password_placeholder">Password</string>
+    <string name="confirm_password_placeholder">Repeat Password</string>
+    <string name="no_account">No account yet? Create one</string>
+    <string name="already_member">Already a member? Login</string>
+    <string name="create_account">Create Account</string>
+    <string name="invalid_email_error">enter a valid email</string>
+    <string name="empty_password">password cannot be empty</string>
+    <string name="password_mismatch_error">passwords must match</string>
+    <string name="invalid_password">password must be longer than 5 characters</string>
+    <string name="cannot_create_account">Cannot create account now. Try again later.</string>
+    <string name="authentication_error">email and password don\'t match our records</string>
+    <string name="login_error">There was an error in the login process.</string>
+    <string name="login">Login</string>
+    <string name="logout">Logout</string>
 </resources>

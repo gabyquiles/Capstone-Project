@@ -11,13 +11,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.gabyquiles.eventy.R;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
-
-import java.util.Calendar;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -35,8 +28,6 @@ public class EventListFragment extends Fragment {
     @BindView(R.id.event_list) RecyclerView mRecyclerView;
 
     private EventAdapter mAdapter;
-    private DatabaseReference mFirebase;
-    private FirebaseUser mUser;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -46,7 +37,8 @@ public class EventListFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mAdapter.cleanup();
+//        TODO:
+//        mAdapter.cleanup();
     }
 
     @Override
@@ -57,41 +49,16 @@ public class EventListFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_event_list, container, false);
         ButterKnife.bind(this, rootView);
 
-        FirebaseAuth auth = FirebaseAuth.getInstance();
-        mUser = auth.getCurrentUser();
-
-        mFirebase = FirebaseDatabase.getInstance().getReference().child(getString(R.string.firebase_users_path));
-        mFirebase = mFirebase.child(mUser.getUid());
-        mFirebase = mFirebase.child("events");
-
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        if(mUser != null) {
-            // Filter out event and sort by date
-            long today = Calendar.getInstance().getTimeInMillis();
-            Query filteredEvents = mFirebase.orderByChild("date").startAt(today);
-            mAdapter = new EventAdapter(getActivity(), filteredEvents, mEmptyView, new EventAdapter.EventAdapterOnClickHandler() {
-                @Override
-                public void onClick(String key) {
-                    Uri eventUri = Uri.parse(mFirebase.toString()).buildUpon().appendPath(key).build();
-                    ((Callback) getActivity()).showEventDetails(eventUri);
-                }
-
-                @Override
-                public void deleteEvent(String key) {
-                    Uri eventUri = Uri.parse(mFirebase.toString()).buildUpon().appendPath(key).build();
-                    FirebaseDatabase.getInstance().getReferenceFromUrl(eventUri.toString()).removeValue();
-                }
-            });
-            mRecyclerView.setAdapter(mAdapter);
-        }
+        mAdapter = (new EventListAdapterFactory()).getAdapter(getActivity(), mEmptyView);
+        mRecyclerView.setAdapter(mAdapter);
 
         return rootView;
     }
 
     @OnClick(R.id.add_event_fab)
     public void addEvent() {
-        Uri newEventUri = Uri.parse(mFirebase.toString());
-        ((Callback) getActivity()).showEventDetails(newEventUri);
+        ((Callback) getActivity()).showEventDetails(null);
     }
 
     /**

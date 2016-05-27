@@ -7,7 +7,7 @@
             android:name="com.gabyquiles.eventy.data.EventProvider"
             android:exported="false" />
 
-        <activity android:name=".ui.MainActivity">
+        <activity android:name="com.gabyquiles.eventy.ui.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

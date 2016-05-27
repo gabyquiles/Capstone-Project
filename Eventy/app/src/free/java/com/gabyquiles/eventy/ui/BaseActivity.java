@@ -1,0 +1,16 @@
+package com.gabyquiles.eventy.ui;
+
+import android.net.Uri;
+import android.support.v7.app.AppCompatActivity;
+
+/**
+ * Sets up commonalities between app activities
+ *
+ * @author gabrielquiles-perez
+ */
+public class BaseActivity extends AppCompatActivity {
+    private final String LOG_TAG = BaseActivity.class.getSimpleName();
+
+
+    protected void showLoginForm() {}
+}

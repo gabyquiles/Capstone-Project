@@ -29,17 +29,11 @@ import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.Calendar;
 
@@ -47,20 +41,17 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnFocusChange;
-import butterknife.OnTextChanged;
 
 /**
  * Fragment that shows the details of an event
  *
  * @author gabrielquiles-perez
  */
-public class EventDetailsFragment extends Fragment implements ValueEventListener,
-        OnMapReadyCallback {
+public class EventDetailsFragment extends Fragment {
     private final String LOG_TAG = EventDetailsFragment.class.getSimpleName();
 
     static final String EVENT_URI = "event_uri";
     static final int PICK_CONTACT_REQUEST = 1;  // The request code
-    static final int PICK_ADDRESS_REQUEST = 2;
 
 //    Views
     @BindView(R.id.event_title) EditText mTitle;
@@ -71,11 +62,7 @@ public class EventDetailsFragment extends Fragment implements ValueEventListener
     @BindView(R.id.guest_list) RecyclerView mGuestList;
     @BindView(R.id.things_list) RecyclerView mThingsList;
 
-    SupportMapFragment mMapFragment;
-
-    private DatabaseReference mFirebase;
     private Event mEvent;
-    private GoogleMap mMap;
     private GuestsAdapter mGuestAdapter;
     private ThingsAdapter mThingsAdapter;
 
@@ -87,32 +74,14 @@ public class EventDetailsFragment extends Fragment implements ValueEventListener
         Bundle arguments = getArguments();
         if(arguments != null && arguments.getParcelable(EVENT_URI) != null) {
             Uri firebaseUri = arguments.getParcelable(EVENT_URI);
-            if(firebaseUri != null) {
-                mFirebase = FirebaseDatabase.getInstance().getReferenceFromUrl(firebaseUri.toString());
-
-            }
-        } else {
-            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-            mFirebase = FirebaseDatabase.getInstance().getReference().child(getString(R.string.firebase_users_path));
-            mFirebase = mFirebase.child(user.getUid());
-            mFirebase = mFirebase.child("events");
+//            TODO: Get Event from Provider
         }
-        mFirebase.addValueEventListener(this);
 
         View rootView = inflater.inflate(R.layout.fragment_event_details, container, false);
         ButterKnife.bind(this, rootView);
 
         mDate.setText(Utility.formatShortDate(mEvent.getDate()));
         mTime.setText(Utility.formatTime(mEvent.getDate()));
-
-        mMapFragment = ((SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map));
-        if (mMapFragment != null) {
-            View view = mMapFragment.getView();
-            if (view != null) {
-                view.setVisibility(View.GONE);
-            }
-            mMapFragment.getMapAsync(this);
-        }
 
         mGuestList.setLayoutManager(new LinearLayoutManager(getActivity()));
         mGuestAdapter = new GuestsAdapter(getActivity(), mEvent.getGuestList(), null);
@@ -123,31 +92,6 @@ public class EventDetailsFragment extends Fragment implements ValueEventListener
         mThingsList.setAdapter(mThingsAdapter);
 
         return rootView;
-    }
-
-    @Override
-    public void onDataChange(DataSnapshot dataSnapshot) {
-        mEvent = dataSnapshot.getValue(Event.class);
-        if(!dataSnapshot.getKey().equals("events") && mEvent != null) {
-            mEvent.setKey(dataSnapshot.getKey());
-
-            mTitle.setText(mEvent.getTitle());
-            mDate.setText(Utility.formatShortDate(mEvent.getDate()));
-            mTime.setText(Utility.formatTime(mEvent.getDate()));
-            mAddress.setText(mEvent.getPlaceName());
-            updateMap();
-            updateThingsList(null);
-            updateGuestList(null);
-        } else {
-            mEvent = new Event();
-        }
-    }
-
-    @Override
-    public void onCancelled(DatabaseError firebaseError) {
-        if(BuildConfig.DEBUG) {
-            Log.v(LOG_TAG, "Update canceled: " + firebaseError.getMessage());
-        }
     }
 
     public void save() {
@@ -172,34 +116,7 @@ public class EventDetailsFragment extends Fragment implements ValueEventListener
 
 
         String key = mEvent.getKey();
-        if(key == null) {
-            mFirebase.removeEventListener(this);
-            mFirebase = mFirebase.push();
-            mFirebase.setValue(mEvent, savingListener);
-            mEvent.setKey(mFirebase.getKey());
-            mFirebase.addValueEventListener(this);
-        } else {
-            mFirebase.setValue(mEvent, savingListener);
-        }
-    }
-
-    @OnClick(R.id.search_address_btn)
-    public void pickAddress() {
-        PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
-
-        try {
-            startActivityForResult(builder.build(getActivity()), PICK_ADDRESS_REQUEST);
-        } catch (Exception e) {
-//            TODO: Catch correct exceptions
-        }
-    }
-
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
-        if (mMap != null) {
-            updateMap();
-        }
+//        TODO: save event to DB
     }
 
     @OnClick(R.id.add_guests_button)
@@ -283,12 +200,6 @@ public class EventDetailsFragment extends Fragment implements ValueEventListener
                     cursor.close();
                 }
             }
-        } else if (requestCode == PICK_ADDRESS_REQUEST) {
-            if (resultCode == Activity.RESULT_OK) {
-                Place place = PlacePicker.getPlace(getActivity(), data);
-                mEvent.setPlace(place);
-                updateMap();
-            }
         }
     }
 
@@ -304,28 +215,5 @@ public class EventDetailsFragment extends Fragment implements ValueEventListener
             mEvent.addThing(thing);
         }
         mThingsAdapter.updateList(mEvent.getThingList());
-    }
-
-    private void updateMap() {
-        LatLng location = mEvent.getCoordinates();
-        if (location != null) {
-            if (mMap != null) {
-                mMap.addMarker(new MarkerOptions().position(location));
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 15));
-                if (mMapFragment != null) {
-                    View view = mMapFragment.getView();
-                    if (view != null) {
-                        view.setVisibility(View.VISIBLE);
-                    }
-                }
-            }
-        } else {
-            if (mMapFragment != null) {
-                View view = mMapFragment.getView();
-                if (view != null) {
-                    view.setVisibility(View.GONE);
-                }
-            }
-        }
     }
 }

@@ -8,13 +8,11 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 
 import com.gabyquiles.eventy.R;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MainActivity extends BaseActivity {
+public class MainActivity extends BaseActivity implements EventListFragment.Callback {
     private final String LOG_TAG = MainActivity.class.getSimpleName();
 
     @BindView(R.id.toolbar) Toolbar mToolbar;
@@ -35,5 +33,15 @@ public class MainActivity extends BaseActivity {
             actionBar.setDisplayHomeAsUpEnabled(false);
             actionBar.setHomeButtonEnabled(true);
         }
+    }
+
+    @Override
+    public void showEventDetails(Uri uri) {
+        //TODO: Set for tablets
+        //TODO: Manage errors, no Net (events may be out of sync), firebase permissions
+        Intent eventIntent = new Intent(this, EventDetailsActivity.class);
+
+        eventIntent.setData(uri);
+        ActivityCompat.startActivity(this, eventIntent, null);
     }
 }

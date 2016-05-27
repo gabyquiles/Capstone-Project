@@ -2,6 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <application>
+        <provider
+            android:authorities="@string/content_authority"
+            android:name="com.gabyquiles.eventy.data.EventProvider"
+            android:exported="false" />
+
         <activity android:name=".ui.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

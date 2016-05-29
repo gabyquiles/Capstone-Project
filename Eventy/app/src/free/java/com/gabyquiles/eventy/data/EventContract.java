@@ -55,6 +55,14 @@ public class EventContract {
             return CONTENT_URI.buildUpon()
                     .appendQueryParameter(COLUMN_DATE, Long.toString(normalizedDate)).build();
         }
+
+        public static long getStartDateFromUri(Uri uri) {
+            String dateString = uri.getQueryParameter(COLUMN_DATE);
+            if (null != dateString && dateString.length() > 0)
+                return Long.parseLong(dateString);
+            else
+                return 0;
+        }
     }
 
     public static final class GuestEntry implements BaseColumns {

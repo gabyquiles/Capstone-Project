@@ -1,6 +1,5 @@
 package com.gabyquiles.eventy.ui;
 
-import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 
 /**

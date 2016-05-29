@@ -276,10 +276,10 @@ public class EventProvider extends ContentProvider {
         String[] selectionArgs = new String[]{};
         String selection = "";
 
-        if (startDate != 0) {
-            selectionArgs = new String[]{Long.toString(startDate)};
-            selection = sDateSettingSelection;
-        }
+//        if (startDate != 0) {
+//            selectionArgs = new String[]{Long.toString(startDate)};
+//            selection = sDateSettingSelection;
+//        }
 
 //        return sEventWithGuestsAndThingsQueryBuilder.query(mOpenHelper.getReadableDatabase(),
 //                projection,

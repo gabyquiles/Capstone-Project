@@ -2,6 +2,7 @@ package com.gabyquiles.eventy.ui;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -20,20 +21,11 @@ import android.widget.EditText;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import com.gabyquiles.eventy.BuildConfig;
 import com.gabyquiles.eventy.R;
 import com.gabyquiles.eventy.Utility;
+import com.gabyquiles.eventy.data.EventContract;
 import com.gabyquiles.eventy.model.Event;
 import com.gabyquiles.eventy.model.Guest;
-import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.ui.PlacePicker;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 
 import java.util.Calendar;
 
@@ -99,24 +91,15 @@ public class EventDetailsFragment extends Fragment {
         mEvent.setTitle(eventTitle);
         mEvent.setPlaceName(mAddress.getText().toString());
 
-        DatabaseReference.CompletionListener savingListener = new DatabaseReference.CompletionListener(){
+        ContentValues eventValues = new ContentValues();
+        eventValues.put(EventContract.EventEntry.COLUMN_TITLE, mEvent.getTitle());
+        eventValues.put(EventContract.EventEntry.COLUMN_PLACE_NAME, mEvent.getPlaceName());
+        eventValues.put(EventContract.EventEntry.COLUMN_DATE, mEvent.getDate());
 
-            @Override
-            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                String message;
-                if (databaseError != null) {
-                    message = getString(R.string.event_saved_error);
-//                    TODO: Record with analytics
-                } else {
-                    message = getString(R.string.event_saved);
-                }
-                Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
-            }
-        };
-
-
-        String key = mEvent.getKey();
-//        TODO: save event to DB
+        Uri insertedUri = getContext().getContentResolver().insert(EventContract.EventEntry.CONTENT_URI, eventValues);
+        Long id = Long.parseLong(insertedUri.getLastPathSegment());
+        mEvent.setKey(id.toString());
+        Log.v(LOG_TAG, "Event id: " + id.toString());
     }
 
     @OnClick(R.id.add_guests_button)

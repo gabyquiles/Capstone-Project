@@ -150,7 +150,6 @@ public class EventProvider extends ContentProvider {
 
         switch (match) {
             case EVENT: {
-                normalizeDate(values);
                 long _id = db.insert(EventContract.EventEntry.TABLE_NAME, null, values);
                 if ( _id > 0 )
                     returnUri = EventContract.EventEntry.buildEventUri(_id);
@@ -226,7 +225,6 @@ public class EventProvider extends ContentProvider {
                 int guestCount = 0;
                 try {
                     for (ContentValues value : values) {
-                        normalizeDate(value);
                         long _id = db.insert(EventContract.GuestEntry.TABLE_NAME, null, value);
                         if (_id != -1) {
                             guestCount++;
@@ -243,7 +241,6 @@ public class EventProvider extends ContentProvider {
                 int thingCount = 0;
                 try {
                     for (ContentValues value : values) {
-                        normalizeDate(value);
                         long _id = db.insert(EventContract.ThingEntry.TABLE_NAME, null, value);
                         if (_id != -1) {
                             thingCount++;
@@ -312,13 +309,5 @@ public class EventProvider extends ContentProvider {
         matcher.addURI(EventContract.CONTENT_AUTHORITY, EventContract.PATH_THINGS+"/#", THING);
 
         return matcher;
-    }
-
-    private void normalizeDate(ContentValues values) {
-        // normalize the date value
-        if (values.containsKey(EventContract.EventEntry.COLUMN_DATE)) {
-            long dateValue = values.getAsLong(EventContract.EventEntry.COLUMN_DATE);
-            values.put(EventContract.EventEntry.COLUMN_DATE, EventContract.normalizeDate(dateValue));
-        }
     }
 }

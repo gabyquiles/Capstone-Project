@@ -8,7 +8,6 @@ import android.test.suitebuilder.annotation.SmallTest;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static com.gabyquiles.eventy.data.EventContract.normalizeDate;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
@@ -50,7 +49,7 @@ public class EventContractTestCase {
         assertThat("Error: Event Date is not a parameter of the Uri",
                 eventUri.getQueryParameterNames(), containsInAnyOrder(EventContract.EventEntry.COLUMN_DATE));
         assertThat("Error: Event Date is not set correctly as a parameter of the Uri",
-                eventUri.getQueryParameter(EventContract.EventEntry.COLUMN_DATE), is(Long.valueOf(normalizeDate(TEST_EVENT_DATE)).toString()));
+                eventUri.getQueryParameter(EventContract.EventEntry.COLUMN_DATE), is(Long.valueOf(TEST_EVENT_DATE).toString()));
     }
 
     @Test

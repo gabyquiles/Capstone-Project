@@ -21,14 +21,6 @@ public class EventContract {
     public static final String PATH_GUESTS = "guests";
     public static final String PATH_THINGS = "things";
 
-    public static long normalizeDate(long startDate) {
-        // normalize the start date to the beginning of the (UTC) day
-        Time time = new Time();
-        time.set(startDate);
-        int julianDay = Time.getJulianDay(startDate, time.gmtoff);
-        return time.setJulianDay(julianDay);
-    }
-
     public static final class EventEntry implements BaseColumns {
         public static final String TABLE_NAME = "events";
 
@@ -51,9 +43,8 @@ public class EventContract {
 
         //content://com.gabyquiles.eventy.free/events?date=123
         public static Uri buildEventWithDateUri(long date) {
-            long normalizedDate = normalizeDate(date);
             return CONTENT_URI.buildUpon()
-                    .appendQueryParameter(COLUMN_DATE, Long.toString(normalizedDate)).build();
+                    .appendQueryParameter(COLUMN_DATE, Long.toString(date)).build();
         }
 
         public static long getStartDateFromUri(Uri uri) {

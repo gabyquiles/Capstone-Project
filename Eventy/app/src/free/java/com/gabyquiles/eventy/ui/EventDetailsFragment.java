@@ -10,12 +10,17 @@ import android.provider.ContactsContract;
 import android.support.v4.app.Fragment;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TimePicker;
@@ -39,11 +44,33 @@ import butterknife.OnFocusChange;
  *
  * @author gabrielquiles-perez
  */
-public class EventDetailsFragment extends Fragment {
+public class EventDetailsFragment extends Fragment  implements LoaderManager.LoaderCallbacks<Cursor>{
     private final String LOG_TAG = EventDetailsFragment.class.getSimpleName();
 
     static final String EVENT_URI = "event_uri";
     static final int PICK_CONTACT_REQUEST = 1;  // The request code
+
+    private static final int DETAIL_LOADER = 0;
+
+    private static final String[] EVENT_COLUMNS = {
+            // In this case the id needs to be fully qualified with a table name, since
+            // the content provider joins the location & weather tables in the background
+            // (both have an _id column)
+            // On the one hand, that's annoying.  On the other, you can search the weather table
+            // using the location set by the user, which is only in the Location table.
+            // So the convenience is worth it.
+            EventContract.EventEntry.TABLE_NAME + "." + EventContract.EventEntry._ID,
+            EventContract.EventEntry.COLUMN_TITLE,
+            EventContract.EventEntry.COLUMN_DATE,
+            EventContract.EventEntry.COLUMN_PLACE_NAME
+    };
+
+    // These indices are tied to FORECAST_COLUMNS.  If FORECAST_COLUMNS changes, these
+    // must change.
+    static final int COL_EVENT_ID = 0;
+    static final int COL_EVENT_TITLE = 1;
+    static final int COL_EVENT_DATE = 2;
+    static final int COL_EVENT_PLACE = 3;
 
 //    Views
     @BindView(R.id.event_title) EditText mTitle;
@@ -53,6 +80,8 @@ public class EventDetailsFragment extends Fragment {
     @BindView(R.id.new_thing) EditText mNewThing;
     @BindView(R.id.guest_list) RecyclerView mGuestList;
     @BindView(R.id.things_list) RecyclerView mThingsList;
+
+    private Uri mUri;
 
     private Event mEvent;
     private GuestsAdapter mGuestAdapter;
@@ -65,8 +94,7 @@ public class EventDetailsFragment extends Fragment {
         mEvent = new Event();
         Bundle arguments = getArguments();
         if(arguments != null && arguments.getParcelable(EVENT_URI) != null) {
-            Uri firebaseUri = arguments.getParcelable(EVENT_URI);
-//            TODO: Get Event from Provider
+            mUri = arguments.getParcelable(EVENT_URI);
         }
 
         View rootView = inflater.inflate(R.layout.fragment_event_details, container, false);
@@ -86,6 +114,16 @@ public class EventDetailsFragment extends Fragment {
         return rootView;
     }
 
+    @Override
+    public void onActivityCreated(Bundle savedInstance) {
+        /*
+         * Initializes the CursorLoader. The URL_LOADER value is eventually passed
+         * to onCreateLoader().
+         */
+        getLoaderManager().initLoader(DETAIL_LOADER, null, this);
+        super.onActivityCreated(savedInstance);
+    }
+
     public void save() {
         String eventTitle = mTitle.getText().toString().isEmpty()?getString(R.string.no_title):mTitle.getText().toString();
         mEvent.setTitle(eventTitle);
@@ -96,8 +134,14 @@ public class EventDetailsFragment extends Fragment {
         eventValues.put(EventContract.EventEntry.COLUMN_PLACE_NAME, mEvent.getPlaceName());
         eventValues.put(EventContract.EventEntry.COLUMN_DATE, mEvent.getDate());
 
-        Uri insertedUri = getContext().getContentResolver().insert(EventContract.EventEntry.CONTENT_URI, eventValues);
-        Long id = Long.parseLong(insertedUri.getLastPathSegment());
+        Long id = EventContract.getIdFromUri(mUri);
+        if(id == 0) {
+            Uri insertedUri = getContext().getContentResolver().insert(EventContract.EventEntry.CONTENT_URI, eventValues);
+            id = Long.parseLong(insertedUri.getLastPathSegment());
+        } else {
+            getContext().getContentResolver().update(mUri, eventValues, null, null);
+        }
+
         mEvent.setKey(id.toString());
         Log.v(LOG_TAG, "Event id: " + id.toString());
     }
@@ -198,5 +242,41 @@ public class EventDetailsFragment extends Fragment {
             mEvent.addThing(thing);
         }
         mThingsAdapter.updateList(mEvent.getThingList());
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        if (null != mUri) {
+            // Now create and return a CursorLoader that will take care of
+            // creating a Cursor for the data being displayed.
+
+            return new CursorLoader(getActivity(),
+                    mUri,
+                    EVENT_COLUMNS,
+                    null,
+                    null,
+                    null);
+        }
+
+        ViewParent vp = getView().getParent();
+        if ( vp instanceof CardView) {
+            ((View)vp).setVisibility(View.INVISIBLE);
+        }
+        return null;
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        if (!data.moveToFirst()) { return; }
+        mTitle.setText(data.getString(COL_EVENT_TITLE));
+        long date = data.getLong(COL_EVENT_DATE);
+        mDate.setText(Utility.formatShortDate(date));
+        mTime.setText(Utility.formatTime(date));
+        mAddress.setText(data.getString(COL_EVENT_PLACE));
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+
     }
 }

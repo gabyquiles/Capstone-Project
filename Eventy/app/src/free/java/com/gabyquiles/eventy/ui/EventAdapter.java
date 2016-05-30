@@ -121,7 +121,8 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventHolder>
         return mCursor;
     }
 
-    public class EventHolder extends RecyclerView.ViewHolder {
+    public class EventHolder extends RecyclerView.ViewHolder
+            implements View.OnClickListener, Toolbar.OnMenuItemClickListener {
         @BindView(R.id.card_toolbar) Toolbar mToolbar;
         @BindView(R.id.event_title_textview) TextView mTitle;
         @BindView(R.id.event_datetime_textview) TextView mDateTime;
@@ -135,25 +136,30 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventHolder>
             super(view);
             ButterKnife.bind(this, view);
             mToolbar.inflateMenu(R.menu.card_menu);
-            mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener(){
-                @Override
-                public boolean onMenuItemClick(MenuItem item) {
-                    int id = item.getItemId();
+            mToolbar.setOnMenuItemClickListener(this);
+            view.setOnClickListener(this);
+        }
 
-                    //Logout from the app
-                    if (id == R.id.action_delete_event) {
-                        int adapterPosition = getAdapterPosition();
-                        mCursor.moveToPosition(adapterPosition);
+        @Override
+        public void onClick(View view) {
+            int adapterPosition = getAdapterPosition();
+            mCursor.moveToPosition(adapterPosition);
+            mClickHandler.onClick(mCursor.getString(COL_EVENT_ID));
+            mICM.onClick(this);
+        }
 
-                        mClickHandler.delete(mCursor.getString(COL_EVENT_ID));
-                        return true;
-                    }
-                    return false;
-                }
-            });
-//            TODO:
-//            view.setOnClickListener(this);
+        @Override
+        public boolean onMenuItemClick(MenuItem item) {
+            int id = item.getItemId();
 
+            //Logout from the app
+            if (id == R.id.action_delete_event) {
+                int adapterPosition = getAdapterPosition();
+                mCursor.moveToPosition(adapterPosition);
+                mClickHandler.delete(mCursor.getString(COL_EVENT_ID));
+                return true;
+            }
+            return false;
         }
     }
 

@@ -50,6 +50,11 @@ public class EventProvider extends ContentProvider {
             EventContract.EventEntry.TABLE_NAME+
                     "." + EventContract.EventEntry.COLUMN_DATE + " = ? ";
 
+    //event.id = ?
+    private static final String sEventIdSelection =
+            EventContract.EventEntry.TABLE_NAME+
+                    "." + EventContract.EventEntry._ID + " = ? ";
+
     @Override
     public boolean onCreate() {
         mOpenHelper = new EventDBHelper(getContext());
@@ -62,30 +67,6 @@ public class EventProvider extends ContentProvider {
                         String sortOrder) {
         Cursor retCursor;
         switch (sUriMatcher.match(uri)) {
-//            // "weather/*/*"
-//            case WEATHER_WITH_LOCATION_AND_DATE:
-//            {
-//                retCursor = getWeatherByLocationSettingAndDate(uri, projection, sortOrder);
-//                break;
-//            }
-//            // "weather/*"
-//            case WEATHER_WITH_LOCATION: {
-//                retCursor = getWeatherByLocationSetting(uri, projection, sortOrder);
-//                break;
-//            }
-//            // "weather"
-//            case WEATHER: {
-//                retCursor = mOpenHelper.getReadableDatabase().query(
-//                        WeatherContract.WeatherEntry.TABLE_NAME,
-//                        projection,
-//                        selection,
-//                        selectionArgs,
-//                        null,
-//                        null,
-//                        sortOrder
-//                );
-//                break;
-//            }
             case EVENT: {
 //                Extract this into function and add for case including date
                 retCursor = getEvent(uri, projection, sortOrder);
@@ -184,7 +165,6 @@ public class EventProvider extends ContentProvider {
 
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
-        // Student: Start by getting a writable database
         final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
 
         final int match = sUriMatcher.match(uri);
@@ -216,9 +196,18 @@ public class EventProvider extends ContentProvider {
         final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         final int match = sUriMatcher.match(uri);
 
+        Long id = -1L;
+
         int updatedRows = 0;
         switch (match) {
             case EVENT: {
+                if (selection == null) {
+                    id = EventContract.getIdFromUri(uri);
+                    if(id != 0) {
+                        selection = sEventIdSelection;
+                        selectionArgs = new String[] {id.toString()};
+                    }
+                }
                 updatedRows = db.update(EventContract.EventEntry.TABLE_NAME, values, selection, selectionArgs);
                 break;
             }
@@ -234,8 +223,6 @@ public class EventProvider extends ContentProvider {
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
         getContext().getContentResolver().notifyChange(uri, null);
-        // Student: This is a lot like the delete function.  We return the number of rows impacted
-        // by the update.
         return updatedRows;
     }
 
@@ -302,14 +289,11 @@ public class EventProvider extends ContentProvider {
 //            selection = sDateSettingSelection;
 //        }
 
-//        return sEventWithGuestsAndThingsQueryBuilder.query(mOpenHelper.getReadableDatabase(),
-//                projection,
-//                selection,
-//                selectionArgs,
-//                null,
-//                null,
-//                sortOrder
-//        );
+        long id = EventContract.getIdFromUri(uri);
+        if(id != 0) {
+            selection = sEventIdSelection;
+            selectionArgs = new String[] {Long.valueOf(id).toString()};
+        }
 
         return mOpenHelper.getReadableDatabase().query(
                 EventContract.EventEntry.TABLE_NAME,

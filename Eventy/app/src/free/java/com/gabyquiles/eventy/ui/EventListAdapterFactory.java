@@ -32,7 +32,8 @@ public class EventListAdapterFactory extends RecyclerViewAdapterFactory
 
     @Override
     public void onClick(String key) {
-
+        ((EventListFragment.Callback) mContext)
+                .showEventDetails(EventContract.EventEntry.buildEventUri(Long.valueOf(key)));
     }
 
     @Override

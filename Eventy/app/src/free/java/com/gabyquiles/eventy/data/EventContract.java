@@ -21,6 +21,16 @@ public class EventContract {
     public static final String PATH_GUESTS = "guests";
     public static final String PATH_THINGS = "things";
 
+
+    public static long getIdFromUri(Uri uri) {
+        try {
+            long id = Long.valueOf(uri.getLastPathSegment());
+            return id;
+        } catch (NumberFormatException e) {
+            return 0;
+        }
+    }
+
     public static final class EventEntry implements BaseColumns {
         public static final String TABLE_NAME = "events";
 

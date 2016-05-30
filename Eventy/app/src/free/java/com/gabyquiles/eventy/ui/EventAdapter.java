@@ -58,11 +58,16 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventHolder>
     private Context mContext;
     private Cursor mCursor;
     private View mEmptyView;
-//    final private ItemChoiceManager mICM;
+    private  RecyclerViewAdapterFactory.AdapterOnClickHandler mClickHandler;
+    final private ItemChoiceManager mICM;
 
-    public EventAdapter(Context context, View emptyView) {
+    public EventAdapter(Context context, View emptyView,
+                        RecyclerViewAdapterFactory.AdapterOnClickHandler handler, int choiceMode) {
         mContext = context;
         mEmptyView = emptyView;
+        mClickHandler = handler;
+        mICM = new ItemChoiceManager(this);
+        mICM.setChoiceMode(choiceMode);
     }
 
     @Override
@@ -84,6 +89,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventHolder>
             String dateStr = Utility.formatFullDate(dateInMillis);
             eventHolder.mDateTime.setText(dateStr);
             eventHolder.mPlace.setText(mCursor.getString(COL_EVENT_PLACE));
+            mICM.onBindViewHolder(eventHolder, position);
         }
 
 
@@ -123,7 +129,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventHolder>
         @BindView(R.id.confirmed_guests_count_textview) TextView mConfirmedGuestsCount;
         @BindView(R.id.total_guests_count_textview) TextView mTotalGuestsCount;
         @BindView(R.id.guests_divider) TextView mGuestsDivider;
-        private EventAdapter mHandler;
+
 
         public EventHolder(View view) {
             super(view);
@@ -136,8 +142,10 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventHolder>
 
                     //Logout from the app
                     if (id == R.id.action_delete_event) {
-//                        TODO:
-//                        mHandler.onDeleteMenu(getAdapterPosition());
+                        int adapterPosition = getAdapterPosition();
+                        mCursor.moveToPosition(adapterPosition);
+
+                        mClickHandler.delete(mCursor.getString(COL_EVENT_ID));
                         return true;
                     }
                     return false;
@@ -217,6 +225,18 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventHolder>
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         swapCursor(null);
+    }
+
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        mICM.onRestoreInstanceState(savedInstanceState);
+    }
+
+    public void onSaveInstanceState(Bundle outState) {
+        mICM.onSaveInstanceState(outState);
+    }
+
+    public int getSelectedItemPosition() {
+        return mICM.getSelectedItemPosition();
     }
 
 }

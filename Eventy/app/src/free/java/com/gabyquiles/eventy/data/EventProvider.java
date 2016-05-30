@@ -183,8 +183,32 @@ public class EventProvider extends ContentProvider {
     }
 
     @Override
-    public int delete(Uri uri, String s, String[] strings) {
-        return 0;
+    public int delete(Uri uri, String selection, String[] selectionArgs) {
+        // Student: Start by getting a writable database
+        final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+
+        final int match = sUriMatcher.match(uri);
+
+        int deletedRows = 0;
+        switch (match) {
+            case EVENT: {
+                deletedRows = db.delete(EventContract.EventEntry.TABLE_NAME, selection, selectionArgs);
+                break;
+            }
+            case GUEST: {
+                deletedRows = db.delete(EventContract.GuestEntry.TABLE_NAME, selection, selectionArgs);
+                break;
+            }
+            case THING: {
+                deletedRows = db.delete(EventContract.ThingEntry.TABLE_NAME, selection, selectionArgs);
+                break;
+            }
+            default:
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
+        }
+        getContext().getContentResolver().notifyChange(uri, null);
+
+        return deletedRows;
     }
 
     @Override

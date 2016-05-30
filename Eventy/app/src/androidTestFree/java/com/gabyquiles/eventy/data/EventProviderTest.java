@@ -44,6 +44,47 @@ public class EventProviderTest {
         db.close();
     }
 
+    public void deleteAllRecordsFromProvider() {
+        mContext.getContentResolver().delete(
+                EventContract.GuestEntry.CONTENT_URI,
+                null,
+                null
+        );
+        mContext.getContentResolver().delete(
+                EventContract.ThingEntry.CONTENT_URI,
+                null,
+                null
+        );
+        mContext.getContentResolver().delete(
+                EventContract.EventEntry.CONTENT_URI,
+                null,
+                null
+        );
+
+        Cursor cursor = mContext.getContentResolver().query(
+                EventContract.GuestEntry.CONTENT_URI,
+                null,
+                null,
+                null,
+                null
+        );
+
+        assertThat("Error: Records not deleted from Guests table during delete", cursor.getCount(), is(0));
+        cursor.close();
+
+        cursor = mContext.getContentResolver().query(
+                EventContract.EventEntry.CONTENT_URI,
+                null,
+                null,
+                null,
+                null
+        );
+
+        assertThat("Error: Records not deleted from Events table during delete", cursor.getCount(), is(0));
+        cursor.close();
+    }
+
+
     @Before
     public void clearDatabase() {
         mContext = InstrumentationRegistry.getTargetContext();
@@ -378,5 +419,35 @@ public class EventProviderTest {
 //    public void thingByEventQuery() {
 //        assertThat(false, is(true));
 //    }
+
+    @Test
+    public void deleteRecords() {
+        insertReadEvent();
+
+        // Register a content observer for our event delete.
+        TestUtilities.TestContentObserver eventObserver = TestUtilities.getTestContentObserver();
+        mContext.getContentResolver().registerContentObserver(EventContract.EventEntry.CONTENT_URI, true, eventObserver);
+
+        // Register a content observer for our guests delete.
+        TestUtilities.TestContentObserver guestObserver = TestUtilities.getTestContentObserver();
+        mContext.getContentResolver().registerContentObserver(EventContract.GuestEntry.CONTENT_URI, true, guestObserver);
+
+        // Register a content observer for our things delete.
+        TestUtilities.TestContentObserver thingObserver = TestUtilities.getTestContentObserver();
+        mContext.getContentResolver().registerContentObserver(EventContract.ThingEntry.CONTENT_URI, true, thingObserver);
+
+        deleteAllRecordsFromProvider();
+
+        // Students: If either of these fail, you most-likely are not calling the
+        // getContext().getContentResolver().notifyChange(uri, null); in the ContentProvider
+        // delete.  (only if the insertReadProvider is succeeding)
+        eventObserver.waitForNotificationOrFail();
+        guestObserver.waitForNotificationOrFail();
+        thingObserver.waitForNotificationOrFail();
+
+        mContext.getContentResolver().unregisterContentObserver(eventObserver);
+        mContext.getContentResolver().unregisterContentObserver(guestObserver);
+        mContext.getContentResolver().unregisterContentObserver(thingObserver);
+    }
 
 }

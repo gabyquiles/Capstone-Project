@@ -13,13 +13,11 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.TextView;
 
 import com.gabyquiles.eventy.R;
 import com.gabyquiles.eventy.Utility;
 import com.gabyquiles.eventy.data.EventContract;
-import com.gabyquiles.eventy.model.Event;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -48,7 +46,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventHolder>
             EventContract.EventEntry.COLUMN_PLACE_NAME
     };
 
-    // These indices are tied to FORECAST_COLUMNS.  If FORECAST_COLUMNS changes, these
+    // These indices are tied to EVENT_COLUMNS.  If EVENT_COLUMNS changes, these
     // must change.
     static final int COL_EVENT_ID = 0;
     static final int COL_EVENT_TITLE = 1;
@@ -91,18 +89,6 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventHolder>
             eventHolder.mPlace.setText(mCursor.getString(COL_EVENT_PLACE));
             mICM.onBindViewHolder(eventHolder, position);
         }
-
-
-//        eventHolder.mTitle.setText(event.getTitle());
-//        eventHolder.mPlace.setText(event.getPlaceName());
-//        eventHolder.mDateTime.setText(Utility.formatFullDate(event.getDate()));
-//        int confirmed_guests = event.getGuestsCountByStatus(Guest.GOING);
-//        int total_guests = event.getGuestsCount();
-//        eventHolder.mConfirmedGuestsCount.setText(Integer.valueOf(confirmed_guests).toString());
-//        eventHolder.mConfirmedGuestsCount.setContentDescription(mContext.getString(R.string.confirmed_guests_count_description, confirmed_guests));
-//        eventHolder.mTotalGuestsCount.setText(Integer.valueOf(total_guests).toString());
-//        eventHolder.mTotalGuestsCount.setContentDescription(mContext.getString(R.string.total_guests_count_description, total_guests));
-//        eventHolder.setClickHandler(this);
     }
 
     @Override
@@ -183,49 +169,6 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventHolder>
 // Swap the new cursor in.  (The framework will take care of closing the
         // old cursor once we return.)
         swapCursor(data);
-
-//        updateEmptyView();
-        if ( data.getCount() == 0 ) {
-//            mContext.supportStartPostponedEnterTransition();
-        } else {
-//            mRecyclerView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
-//                @Override
-//                public boolean onPreDraw() {
-//                    // Since we know we're going to get items, we keep the listener around until
-//                    // we see Children.
-//                    if (mRecyclerView.getChildCount() > 0) {
-//                        mRecyclerView.getViewTreeObserver().removeOnPreDrawListener(this);
-//                        int position = mAdapter.getSelectedItemPosition();
-//                        if (position == RecyclerView.NO_POSITION &&
-//                                -1 != mInitialSelectedDate) {
-//                            Cursor data = mAdapter.getCursor();
-//                            int count = data.getCount();
-//                            int dateColumn = data.getColumnIndex(WeatherContract.WeatherEntry.COLUMN_DATE);
-//                            for ( int i = 0; i < count; i++ ) {
-//                                data.moveToPosition(i);
-//                                if ( data.getLong(dateColumn) == mInitialSelectedDate ) {
-//                                    position = i;
-//                                    break;
-//                                }
-//                            }
-//                        }
-//                        if (position == RecyclerView.NO_POSITION) position = 0;
-//                        // If we don't need to restart the loader, and there's a desired position to restore
-//                        // to, do so now.
-////                        mRecyclerView.smoothScrollToPosition(position);
-////                        RecyclerView.ViewHolder vh = mRecyclerView.findViewHolderForAdapterPosition(position);
-////                        if (null != vh && mAutoSelectView) {
-////                            selectView(vh);
-////                        }
-////                        if(mHoldForTransition) {
-////                            getActivity().supportStartPostponedEnterTransition();
-////                        }
-//                        return true;
-//                    }
-//                    return false;
-//                }
-//            });
-        }
     }
 
     @Override

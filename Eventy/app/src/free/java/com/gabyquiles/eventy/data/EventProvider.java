@@ -10,7 +10,6 @@ import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.support.annotation.Nullable;
 
-import com.gabyquiles.eventy.model.Event;
 
 /**
  * Manages access to Event Data

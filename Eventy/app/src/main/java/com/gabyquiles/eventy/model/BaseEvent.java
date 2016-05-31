@@ -3,10 +3,6 @@ package com.gabyquiles.eventy.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.google.android.gms.location.places.Place;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.firebase.database.Exclude;
-
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -17,19 +13,16 @@ import java.util.List;
  * @author gabrielquiles-perez
  */
 
-public class Event implements Parcelable{
-    private String mTitle;
-    private long mDate;
-    private String mPlaceName;
-    private Double mLat;
-    private Double mLon;
-    private List<Guest> mGuestList;
-    private List<String> mThingList;
+public class BaseEvent implements Parcelable{
+    protected String mTitle;
+    protected long mDate;
+    protected String mPlaceName;
+    protected List<Guest> mGuestList;
+    protected List<String> mThingList;
 
-    @Exclude
-    private String mKey;
+    protected String mKey;
 
-    public Event() {
+    public BaseEvent() {
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DATE, 1);
         mDate = cal.getTimeInMillis();
@@ -39,7 +32,7 @@ public class Event implements Parcelable{
         mPlaceName = "";
     }
 
-    public Event(Parcel in) {
+    public BaseEvent(Parcel in) {
         mKey = in.readString();
         mTitle = in.readString();
         mPlaceName = in.readString();
@@ -70,45 +63,6 @@ public class Event implements Parcelable{
         return mPlaceName;
     }
 
-    public void setPlace(Place place) {
-        setCoords(place.getLatLng());
-    }
-
-    public void setCoords(LatLng coords) {
-        if (coords != null) {
-            this.mLat = coords.latitude;
-            this.mLon = coords.longitude;
-        } else {
-            mLat = null;
-            mLon = null;
-        }
-    }
-
-    @Exclude
-    public LatLng getCoordinates() {
-        if (mLat != null && mLon != null) {
-            return new LatLng(mLat, mLon);
-        }
-        return null;
-    }
-
-    public void setLatitude(double lat) {
-        this.mLat = lat;
-    }
-
-    public Double getLatitude() {
-        return mLat;
-    }
-
-    public void setLongitude(double lon) {
-        this.mLon = lon;
-    }
-
-    public Double getLongitude() {
-        return mLon;
-    }
-
-    @Exclude
     public String getKey() {
         return mKey;
     }
@@ -123,11 +77,11 @@ public class Event implements Parcelable{
             return true;
         }
 
-        if(!(o instanceof Event)) {
+        if(!(o instanceof BaseEvent)) {
             return false;
         }
 
-        Event e = (Event) o;
+        BaseEvent e = (BaseEvent) o;
 //        TODO: Check that all properties are being checked
         if(!mTitle.equals(e.mTitle)) {
             return false;
@@ -148,7 +102,7 @@ public class Event implements Parcelable{
     @Override
     public int hashCode() {
         int result = mTitle.hashCode();
-        result = 31 * result + (new Long(mDate)).hashCode();
+        result = 31 * result + Long.valueOf(mDate).hashCode();
         result = 31 * result + mPlaceName.hashCode();
         return result;
     }
@@ -166,15 +120,15 @@ public class Event implements Parcelable{
         parcel.writeLong(mDate);
     }
 
-    public final static Parcelable.Creator<Event> CREATOR = new Parcelable.Creator<Event>() {
+    public final static Parcelable.Creator<BaseEvent> CREATOR = new Parcelable.Creator<BaseEvent>() {
         @Override
-        public Event createFromParcel(Parcel parcel) {
-            return new Event(parcel);
+        public BaseEvent createFromParcel(Parcel parcel) {
+            return new BaseEvent(parcel);
         }
 
         @Override
-        public Event[] newArray(int i) {
-            return new Event[0];
+        public BaseEvent[] newArray(int i) {
+            return new BaseEvent[0];
         }
     };
 
@@ -205,7 +159,6 @@ public class Event implements Parcelable{
         mThingList.add(thing);
     }
 
-    @Exclude
     public int getGuestsCount() {
         return mGuestList.size();
     }
@@ -220,23 +173,4 @@ public class Event implements Parcelable{
         return counter;
     }
 
-    public String[] getGuestsEmail() {
-        String[] emailArray = new String[mGuestList.size()];
-        for(int i = 0; i < mGuestList.size(); i++) {
-            emailArray[i] = mGuestList.get(i).getEmail();
-        }
-        return emailArray;
-    }
-
-    public String getThingsString() {
-        StringBuilder strBuilder = new StringBuilder();
-        int i = 0;
-        for(String thing: mThingList) {
-            strBuilder.append(thing);
-            if(++i < mThingList.size()) {
-                strBuilder.append(", ");
-            }
-        }
-        return strBuilder.toString();
-    }
 }

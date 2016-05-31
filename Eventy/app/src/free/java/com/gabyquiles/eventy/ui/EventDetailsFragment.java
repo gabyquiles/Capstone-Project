@@ -29,6 +29,7 @@ import android.widget.Toast;
 import com.gabyquiles.eventy.R;
 import com.gabyquiles.eventy.Utility;
 import com.gabyquiles.eventy.data.EventContract;
+import com.gabyquiles.eventy.data.EventManager;
 import com.gabyquiles.eventy.model.Event;
 import com.gabyquiles.eventy.model.Guest;
 
@@ -87,9 +88,13 @@ public class EventDetailsFragment extends Fragment  implements LoaderManager.Loa
     private GuestsAdapter mGuestAdapter;
     private ThingsAdapter mThingsAdapter;
 
+    private EventManager mManager;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        mManager = new EventManager(getContext());
 
         mEvent = new Event();
         Bundle arguments = getArguments();
@@ -99,9 +104,6 @@ public class EventDetailsFragment extends Fragment  implements LoaderManager.Loa
 
         View rootView = inflater.inflate(R.layout.fragment_event_details, container, false);
         ButterKnife.bind(this, rootView);
-
-        mDate.setText(Utility.formatShortDate(mEvent.getDate()));
-        mTime.setText(Utility.formatTime(mEvent.getDate()));
 
         mGuestList.setLayoutManager(new LinearLayoutManager(getActivity()));
         mGuestAdapter = new GuestsAdapter(getActivity(), mEvent.getGuestList(), null);
@@ -129,21 +131,7 @@ public class EventDetailsFragment extends Fragment  implements LoaderManager.Loa
         mEvent.setTitle(eventTitle);
         mEvent.setPlaceName(mAddress.getText().toString());
 
-        ContentValues eventValues = new ContentValues();
-        eventValues.put(EventContract.EventEntry.COLUMN_TITLE, mEvent.getTitle());
-        eventValues.put(EventContract.EventEntry.COLUMN_PLACE_NAME, mEvent.getPlaceName());
-        eventValues.put(EventContract.EventEntry.COLUMN_DATE, mEvent.getDate());
-
-        Long id = EventContract.getIdFromUri(mUri);
-        if(id == 0) {
-            Uri insertedUri = getContext().getContentResolver().insert(EventContract.EventEntry.CONTENT_URI, eventValues);
-            id = Long.parseLong(insertedUri.getLastPathSegment());
-        } else {
-            getContext().getContentResolver().update(mUri, eventValues, null, null);
-        }
-
-        mEvent.setKey(id.toString());
-        Log.v(LOG_TAG, "Event id: " + id.toString());
+        mEvent = mManager.saveEvent(mUri, mEvent);
     }
 
     @OnClick(R.id.add_guests_button)
@@ -268,15 +256,65 @@ public class EventDetailsFragment extends Fragment  implements LoaderManager.Loa
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         if (!data.moveToFirst()) { return; }
-        mTitle.setText(data.getString(COL_EVENT_TITLE));
-        long date = data.getLong(COL_EVENT_DATE);
-        mDate.setText(Utility.formatShortDate(date));
-        mTime.setText(Utility.formatTime(date));
+        mEvent.setKey(data.getString(COL_EVENT_ID));
+        mEvent.setTitle(data.getString(COL_EVENT_TITLE));
+        mEvent.setDate(data.getLong(COL_EVENT_DATE));
         mAddress.setText(data.getString(COL_EVENT_PLACE));
+
+        getGuests();
+        getThings();
+
+        updateView();
+    }
+
+    private void getGuests() {
+        String[] guestFields = {
+                EventContract.GuestEntry.COLUMN_NAME,
+                EventContract.GuestEntry.COLUMN_EMAIL
+        };
+
+        final int COL_NAME = 0;
+        final int COL_EMAIL = 1;
+
+        Cursor cursor = getContext().getContentResolver().query(
+                EventContract.GuestEntry.buildEventGuestsUri(Long.valueOf(mEvent.getKey())), guestFields, null, null, null);
+
+        if(cursor !=null && cursor.moveToFirst()) {
+            do{
+                Guest guest = new Guest(cursor.getString(COL_NAME), cursor.getString(COL_EMAIL));
+                mEvent.addGuest(guest);
+            } while (cursor.moveToNext());
+        }
+    }
+
+    private void getThings() {
+        String[] thingFields = {
+                EventContract.ThingEntry.COLUMN_THING
+        };
+
+        final int COL_THING = 0;
+
+        Cursor cursor = getContext().getContentResolver().query(
+                EventContract.ThingEntry.buildEventThingsUri(Long.valueOf(mEvent.getKey())), thingFields, null, null, null);
+
+        if(cursor !=null && cursor.moveToFirst()) {
+            do{
+                mEvent.addThing(cursor.getString(COL_THING));
+            } while (cursor.moveToNext());
+        }
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
 
+    }
+
+    private void updateView() {
+        mTitle.setText(mEvent.getTitle());
+        mDate.setText(Utility.formatShortDate(mEvent.getDate()));
+        mTime.setText(Utility.formatTime(mEvent.getDate()));
+        mAddress.setText(mEvent.getPlaceName());
+        mGuestAdapter.updateList(mEvent.getGuestList());
+        mThingsAdapter.updateList(mEvent.getThingList());
     }
 }

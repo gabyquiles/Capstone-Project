@@ -35,6 +35,8 @@ public class Event implements Parcelable{
         mDate = cal.getTimeInMillis();
         mGuestList = new ArrayList<>();
         mThingList = new ArrayList<>();
+        mTitle = "";
+        mPlaceName = "";
     }
 
     public Event(Parcel in) {
@@ -216,5 +218,25 @@ public class Event implements Parcelable{
             }
         }
         return counter;
+    }
+
+    public String[] getGuestsEmail() {
+        String[] emailArray = new String[mGuestList.size()];
+        for(int i = 0; i < mGuestList.size(); i++) {
+            emailArray[i] = mGuestList.get(i).getEmail();
+        }
+        return emailArray;
+    }
+
+    public String getThingsString() {
+        StringBuilder strBuilder = new StringBuilder();
+        int i = 0;
+        for(String thing: mThingList) {
+            strBuilder.append(thing);
+            if(++i < mThingList.size()) {
+                strBuilder.append(", ");
+            }
+        }
+        return strBuilder.toString();
     }
 }

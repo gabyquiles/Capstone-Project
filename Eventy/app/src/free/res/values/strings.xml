@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:xliff="http://schemas.android.com/tools">
     <string name="app_name">Eventy Free</string>
     <string name="content_authority">com.gabyquiles.eventy.free</string>
+    <string name="invite_text">
+        You are invited to <xliff:g id="title">%1$s</xliff:g> to be taken place on
+        <xliff:g id="date">%2$s</xliff:g> at <xliff:g id="place">%3$s</xliff:g>.
+    </string>
+    <string name="things_text">
+        You can bring any of the following: <xliff:g id="things">%1$s</xliff:g>.
+    </string>
+    <string name="attribution">This event was organized using Eventy.</string>
 </resources>

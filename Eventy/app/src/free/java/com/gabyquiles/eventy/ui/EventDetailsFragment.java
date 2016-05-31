@@ -6,6 +6,7 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.provider.ContactsContract;
 import android.support.v4.app.Fragment;
 import android.app.TimePickerDialog;
@@ -13,6 +14,7 @@ import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v7.widget.AppCompatImageButton;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -21,6 +23,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TimePicker;
@@ -81,6 +84,7 @@ public class EventDetailsFragment extends Fragment  implements LoaderManager.Loa
     @BindView(R.id.new_thing) EditText mNewThing;
     @BindView(R.id.guest_list) RecyclerView mGuestList;
     @BindView(R.id.things_list) RecyclerView mThingsList;
+    @BindView(R.id.send_invites_button) AppCompatImageButton mInvitesBtn;
 
     private Uri mUri;
 
@@ -127,10 +131,6 @@ public class EventDetailsFragment extends Fragment  implements LoaderManager.Loa
     }
 
     public void save() {
-        String eventTitle = mTitle.getText().toString().isEmpty()?getString(R.string.no_title):mTitle.getText().toString();
-        mEvent.setTitle(eventTitle);
-        mEvent.setPlaceName(mAddress.getText().toString());
-
         mEvent = mManager.saveEvent(mUri, mEvent);
     }
 
@@ -145,6 +145,48 @@ public class EventDetailsFragment extends Fragment  implements LoaderManager.Loa
     public void addThings() {
         String thing = mNewThing.getText().toString();
         updateThingsList(thing);
+    }
+
+    @OnClick(R.id.send_invites_button)
+    public void sendInvites() {
+        Intent sendIntent = createShareIntent();
+        startActivity(Intent.createChooser(sendIntent, "Select how to send email invites"));
+    }
+
+    private Intent createShareIntent() {
+        mInvitesBtn.requestFocus();
+        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            shareIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT);
+        }
+        shareIntent.setType("text/plain");
+        shareIntent.putExtra(Intent.EXTRA_EMAIL, mEvent.getGuestsEmail());
+
+        String date = Utility.formatFullDate(mEvent.getDate());
+        String inviteText = getString(R.string.invite_text, mEvent.getTitle(), date, mEvent.getPlaceName());
+        String requestText = getString(R.string.attribution);
+        if(!mEvent.getThingList().isEmpty()) {
+            requestText = getString(R.string.things_text, mEvent.getThingsString()) + requestText;
+        }
+
+        shareIntent.putExtra(Intent.EXTRA_TEXT, inviteText + requestText);
+        return shareIntent;
+    }
+
+
+    @OnFocusChange(R.id.event_title)
+    public void setEventTitle(boolean focused) {
+        if (!focused) {
+            String eventTitle = mTitle.getText().toString().isEmpty()?getString(R.string.no_title):mTitle.getText().toString();
+            mEvent.setTitle(eventTitle);
+        }
+    }
+
+
+    @OnFocusChange(R.id.event_address)
+    public void setEventAddress(boolean focused) {
+        mEvent.setPlaceName(mAddress.getText().toString());
     }
 
     @OnFocusChange(R.id.event_date)
@@ -259,7 +301,7 @@ public class EventDetailsFragment extends Fragment  implements LoaderManager.Loa
         mEvent.setKey(data.getString(COL_EVENT_ID));
         mEvent.setTitle(data.getString(COL_EVENT_TITLE));
         mEvent.setDate(data.getLong(COL_EVENT_DATE));
-        mAddress.setText(data.getString(COL_EVENT_PLACE));
+        mEvent.setPlaceName(data.getString(COL_EVENT_PLACE));
 
         getGuests();
         getThings();

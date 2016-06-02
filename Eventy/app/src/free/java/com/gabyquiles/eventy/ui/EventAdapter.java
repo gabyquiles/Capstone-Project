@@ -113,9 +113,6 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventHolder>
         @BindView(R.id.event_title_textview) TextView mTitle;
         @BindView(R.id.event_datetime_textview) TextView mDateTime;
         @BindView(R.id.event_place_textview) TextView mPlace;
-        @BindView(R.id.confirmed_guests_count_textview) TextView mConfirmedGuestsCount;
-        @BindView(R.id.total_guests_count_textview) TextView mTotalGuestsCount;
-        @BindView(R.id.guests_divider) TextView mGuestsDivider;
 
 
         public EventHolder(View view) {

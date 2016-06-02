@@ -34,6 +34,7 @@ import com.gabyquiles.eventy.model.Guest;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.util.Calendar;
 
@@ -55,6 +56,7 @@ public class EventDetailsFragment extends Fragment  implements LoaderManager.Loa
 
     private static final int DETAIL_LOADER = 0;
     private InterstitialAd mInterstitialAd;
+    private FirebaseAnalytics mFirebaseAnalytics;
 
 
     private static final String[] EVENT_COLUMNS = {
@@ -130,6 +132,11 @@ public class EventDetailsFragment extends Fragment  implements LoaderManager.Loa
 
         requestNewInterstitial();
 
+
+        // Obtain the FirebaseAnalytics instance.
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(getActivity());
+        logEvent("Event Details");
+
         return rootView;
     }
 
@@ -145,6 +152,7 @@ public class EventDetailsFragment extends Fragment  implements LoaderManager.Loa
 
     public void save() {
         mEvent = mManager.saveEvent(mUri, mEvent);
+        logEvent("Event saved");
         if (mInterstitialAd.isLoaded()) {
             mInterstitialAd.show();
         }
@@ -167,6 +175,14 @@ public class EventDetailsFragment extends Fragment  implements LoaderManager.Loa
     public void sendInvites() {
         Intent sendIntent = createShareIntent();
         startActivity(Intent.createChooser(sendIntent, "Select how to send email invites"));
+
+
+        Bundle bundle = new Bundle();
+        bundle.putString(FirebaseAnalytics.Param.ITEM_ID, getActivity().getClass().getSimpleName());
+        bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "Sending invites");
+        bundle.putLong(FirebaseAnalytics.Param.NUMBER_OF_PASSENGERS, mEvent.getGuestsCount());
+
+        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
     }
 
     private Intent createShareIntent() {
@@ -382,5 +398,14 @@ public class EventDetailsFragment extends Fragment  implements LoaderManager.Loa
                 .build();
 
         mInterstitialAd.loadAd(adRequest);
+    }
+
+    private void logEvent(String event) {
+
+        Bundle bundle = new Bundle();
+        bundle.putString(FirebaseAnalytics.Param.ITEM_ID, getActivity().getClass().getSimpleName());
+        bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, event);
+
+        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
     }
 }

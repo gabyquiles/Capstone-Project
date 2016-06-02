@@ -31,6 +31,9 @@ import com.gabyquiles.eventy.data.EventContract;
 import com.gabyquiles.eventy.data.EventManager;
 import com.gabyquiles.eventy.model.Event;
 import com.gabyquiles.eventy.model.Guest;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
 
 import java.util.Calendar;
 
@@ -51,6 +54,8 @@ public class EventDetailsFragment extends Fragment  implements LoaderManager.Loa
     static final int PICK_CONTACT_REQUEST = 1;  // The request code
 
     private static final int DETAIL_LOADER = 0;
+    private InterstitialAd mInterstitialAd;
+
 
     private static final String[] EVENT_COLUMNS = {
             // In this case the id needs to be fully qualified with a table name, since
@@ -113,6 +118,18 @@ public class EventDetailsFragment extends Fragment  implements LoaderManager.Loa
         mThingsAdapter = new ThingsAdapter(getActivity(), mEvent.getThingList(), null);
         mThingsList.setAdapter(mThingsAdapter);
 
+        mInterstitialAd = new InterstitialAd(getActivity());
+        mInterstitialAd.setAdUnitId(getString(R.string.admob_unit_id));
+
+        mInterstitialAd.setAdListener(new AdListener() {
+            @Override
+            public void onAdClosed() {
+                requestNewInterstitial();
+            }
+        });
+
+        requestNewInterstitial();
+
         return rootView;
     }
 
@@ -128,6 +145,9 @@ public class EventDetailsFragment extends Fragment  implements LoaderManager.Loa
 
     public void save() {
         mEvent = mManager.saveEvent(mUri, mEvent);
+        if (mInterstitialAd.isLoaded()) {
+            mInterstitialAd.show();
+        }
     }
 
     @OnClick(R.id.add_guests_button)
@@ -354,5 +374,13 @@ public class EventDetailsFragment extends Fragment  implements LoaderManager.Loa
         mAddress.setText(mEvent.getPlaceName());
         mGuestAdapter.updateList(mEvent.getGuestList());
         mThingsAdapter.updateList(mEvent.getThingList());
+    }
+
+    private void requestNewInterstitial() {
+        AdRequest adRequest = new AdRequest.Builder()
+                .addTestDevice("0")
+                .build();
+
+        mInterstitialAd.loadAd(adRequest);
     }
 }

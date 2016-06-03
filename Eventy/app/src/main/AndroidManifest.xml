@@ -25,6 +25,15 @@
                 android:value=".ui.MainActivity" />
         </activity>
 
+        <receiver android:name="com.gabyquiles.eventy.widget.NextEventWidgetProvider" >
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data android:name="android.appwidget.provider"
+                android:resource="@xml/widget_next_event" />
+        </receiver>
+        <service android:name="com.gabyquiles.eventy.widget.NextEventWidgetIntentService" />
+
     </application>
 
 </manifest>

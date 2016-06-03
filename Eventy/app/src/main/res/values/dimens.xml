@@ -12,4 +12,9 @@
     <dimen name="fab_margins">24dp</dimen>
 
     <dimen name="login_textsize">16sp</dimen>
+
+    <dimen name="widget_next_event_default_width">220dp</dimen>
+    <dimen name="widget_next_event_default_height">40dp</dimen>
+    <dimen name="widget_next_event_min_resize_width">@dimen/widget_next_event_default_width</dimen>
+    <dimen name="widget_next_event_min_resize_height">@dimen/widget_next_event_default_height</dimen>
 </resources>

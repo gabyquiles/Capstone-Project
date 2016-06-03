@@ -32,5 +32,4 @@
 
         <item name="colorButtonNormal">@color/dark_primary</item>
     </style>
-
 </resources>

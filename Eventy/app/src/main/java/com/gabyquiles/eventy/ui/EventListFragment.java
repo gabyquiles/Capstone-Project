@@ -1,13 +1,17 @@
 package com.gabyquiles.eventy.ui;
 
+import android.content.Context;
+import android.content.res.TypedArray;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.TextView;
 
 import com.gabyquiles.eventy.R;
@@ -23,6 +27,10 @@ import butterknife.OnClick;
  */
 public class EventListFragment extends Fragment {
 
+    private boolean mAutoSelectView;
+    private int mChoiceMode;
+    private boolean mHoldForTransition;
+
     //Views
     @BindView(R.id.empty_textview) TextView mEmptyView;
     @BindView(R.id.event_list) RecyclerView mRecyclerView;
@@ -34,11 +42,34 @@ public class EventListFragment extends Fragment {
         super.onCreate(savedInstanceState);
     }
 
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        // We hold for transition here just in-case the activity
+        // needs to be re-created. In a standard return transition,
+        // this doesn't actually make a difference.
+        if (mHoldForTransition) {
+            getActivity().supportPostponeEnterTransition();
+        }
+        super.onActivityCreated(savedInstanceState);
+    }
+
     @Override
     public void onDestroy() {
         super.onDestroy();
 //        TODO:
 //        mAdapter.cleanup();
+    }
+
+
+    @Override
+    public void onInflate(Context context, AttributeSet attrs, Bundle savedInstanceState) {
+        super.onInflate(context, attrs, savedInstanceState);
+        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.EventListFragment, 0, 0);
+        mChoiceMode = a.getInt(R.styleable.EventListFragment_android_choiceMode, AbsListView.CHOICE_MODE_NONE);
+        mAutoSelectView = a.getBoolean(R.styleable.EventListFragment_autoSelectView, false);
+        mHoldForTransition = a.getBoolean(R.styleable.EventListFragment_sharedElementTransition, false);
+        a.recycle();
     }
 
     @Override

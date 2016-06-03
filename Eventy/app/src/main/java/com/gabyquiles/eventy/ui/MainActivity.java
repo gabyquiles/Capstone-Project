@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.support.v4.app.ActivityCompat;
 import android.os.Bundle;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 
@@ -49,6 +50,7 @@ public class MainActivity extends BaseActivity implements EventListFragment.Call
         Intent eventIntent = new Intent(this, EventDetailsActivity.class);
 
         eventIntent.setData(uri);
-        ActivityCompat.startActivity(this, eventIntent, null);
+        ActivityOptionsCompat activityOptions = ActivityOptionsCompat.makeSceneTransitionAnimation(this);
+        ActivityCompat.startActivity(this, eventIntent, activityOptions.toBundle());
     }
 }

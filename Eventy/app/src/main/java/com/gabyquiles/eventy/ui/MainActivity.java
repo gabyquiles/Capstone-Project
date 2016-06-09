@@ -8,6 +8,7 @@ import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 
+import com.gabyquiles.eventy.EventyApplication;
 import com.gabyquiles.eventy.R;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
@@ -35,7 +36,7 @@ public class MainActivity extends BaseActivity implements EventListFragment.Call
             actionBar.setDisplayHomeAsUpEnabled(false);
             actionBar.setHomeButtonEnabled(true);
         }
-        FirebaseAnalytics firebaseAnalytics = FirebaseAnalytics.getInstance(this);
+        FirebaseAnalytics firebaseAnalytics = ((EventyApplication) getApplication()).getAnalytics();
         Bundle bundle = new Bundle();
         bundle.putString(FirebaseAnalytics.Param.ITEM_ID, LOG_TAG);
         bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "Event List");

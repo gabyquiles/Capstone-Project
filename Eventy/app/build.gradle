@@ -56,11 +56,17 @@ ext {
     junitVersion = "4.12"
     firebaseVersion = '9.0.0'
     firebaseUIVersion = '0.4.0'
+    daggerVersion = '2.2'
 }
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     apt 'com.jakewharton:butterknife-compiler:8.0.1'
+
+
+//     Dagger dependencies
+    compile "com.google.dagger:dagger:${daggerVersion}"
+    apt "com.google.dagger:dagger-compiler:${daggerVersion}"
 
 //    Testing dependencies
     testCompile 'org.testng:testng:6.9.6'

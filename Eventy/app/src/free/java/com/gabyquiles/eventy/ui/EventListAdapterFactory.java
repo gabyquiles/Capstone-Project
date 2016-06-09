@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.AbsListView;
 
 import com.gabyquiles.eventy.data.EventContract;
+import com.gabyquiles.eventy.events.EventsAdapter;
 
 /**
  * Description
@@ -22,10 +23,10 @@ public class EventListAdapterFactory extends RecyclerViewAdapterFactory
     private Context mContext;
 
     @Override
-    EventAdapter getAdapter(Context context, View emptyView) {
+    public EventsAdapter getAdapter(Context context, View emptyView) {
         mContext = context;
         int choiceMode = AbsListView.CHOICE_MODE_NONE;
-        EventAdapter adapter = new EventAdapter(context, emptyView, this, choiceMode);
+        EventsAdapter adapter = new EventsAdapter(context, emptyView, this, choiceMode);
         ((AppCompatActivity) context).getLoaderManager().initLoader(EVENT_LOADER, null, adapter);
         return  adapter;
     }

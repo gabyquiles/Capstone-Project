@@ -25,6 +25,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TimePicker;
 
+import com.gabyquiles.eventy.EventyApplication;
 import com.gabyquiles.eventy.R;
 import com.gabyquiles.eventy.Utility;
 import com.gabyquiles.eventy.data.EventContract;
@@ -49,6 +50,8 @@ import butterknife.OnFocusChange;
  * @author gabrielquiles-perez
  */
 public class EventDetailsFragment extends Fragment  implements LoaderManager.LoaderCallbacks<Cursor>{
+//    TODO: Use MVP
+//    TODO: Use thread/loader/asyncqueryhandler to solve the problem for content provider calls
     private final String LOG_TAG = EventDetailsFragment.class.getSimpleName();
 
     static final String EVENT_URI = "event_uri";
@@ -132,9 +135,8 @@ public class EventDetailsFragment extends Fragment  implements LoaderManager.Loa
 
         requestNewInterstitial();
 
-
         // Obtain the FirebaseAnalytics instance.
-        mFirebaseAnalytics = FirebaseAnalytics.getInstance(getActivity());
+        mFirebaseAnalytics = ((EventyApplication) getActivity().getApplication()).getAnalytics();
         logEvent("Event Details");
 
         return rootView;

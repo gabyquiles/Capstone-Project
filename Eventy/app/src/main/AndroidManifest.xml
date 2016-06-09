@@ -12,17 +12,17 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".ui.MainActivity"
+            android:name=".events.EventsActivity"
             android:theme="@style/AppTheme.Main">
         </activity>
         <activity
             android:name=".ui.EventDetailsActivity"
             android:label="@string/title_activity_event_details"
-            android:parentActivityName=".ui.MainActivity"
+            android:parentActivityName=".events.EventsActivity"
             android:theme="@style/AppTheme.Details">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.MainActivity" />
+                android:value=".events.EventsActivity" />
         </activity>
 
         <receiver android:name="com.gabyquiles.eventy.widget.NextEventWidgetProvider" >

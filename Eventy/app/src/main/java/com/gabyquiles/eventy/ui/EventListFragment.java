@@ -15,6 +15,7 @@ import android.widget.AbsListView;
 import android.widget.TextView;
 
 import com.gabyquiles.eventy.R;
+import com.gabyquiles.eventy.events.EventsAdapter;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -35,7 +36,7 @@ public class EventListFragment extends Fragment {
     @BindView(R.id.empty_textview) TextView mEmptyView;
     @BindView(R.id.event_list) RecyclerView mRecyclerView;
 
-    private EventAdapter mAdapter;
+    private EventsAdapter mAdapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

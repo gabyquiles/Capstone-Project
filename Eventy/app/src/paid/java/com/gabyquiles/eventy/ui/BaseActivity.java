@@ -21,7 +21,7 @@ public class BaseActivity extends AppCompatActivity {
     protected FirebaseAuth mAuth;
     protected FirebaseUser mUser;
 
-
+    //        TODO: Provide widget for next week events with a send invite button
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

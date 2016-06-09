@@ -1,0 +1,31 @@
+package com.gabyquiles.eventy.util;
+
+import android.support.v4.app.Fragment;
+import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+
+import static dagger.internal.Preconditions.checkNotNull;
+
+/**
+ * This provides methods to help Activities load their UI.
+ */
+public class ActivityUtils {
+    private final String LOG_TAG = ActivityUtils.class.getSimpleName();
+
+    /**
+     * The {@code fragment} is added to the container view with id {@code frameId}. The operation is
+     * performed by the {@code fragmentManager}.
+     *
+     */
+    public static void addFragmentToActivity (@NonNull FragmentManager fragmentManager,
+                                              @NonNull Fragment fragment, int frameId) {
+        checkNotNull(fragmentManager);
+        checkNotNull(fragment);
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.add(frameId, fragment);
+        transaction.commit();
+    }
+
+}
+

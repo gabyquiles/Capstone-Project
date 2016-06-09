@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 public class BaseActivity extends AppCompatActivity {
     private final String LOG_TAG = BaseActivity.class.getSimpleName();
 
+//TODO: Delete old events
 
     protected void showLoginForm() {}
 }

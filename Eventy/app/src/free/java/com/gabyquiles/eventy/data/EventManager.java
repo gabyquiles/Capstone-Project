@@ -5,7 +5,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.net.Uri;
 
-import com.gabyquiles.eventy.model.Event;
+import com.gabyquiles.eventy.model.FreeEvent;
 import com.gabyquiles.eventy.model.Guest;
 
 import java.util.List;
@@ -24,7 +24,7 @@ public class EventManager {
         mResolver = context.getContentResolver();
     }
 
-    public Event saveEvent(Uri uri, Event event) {
+    public FreeEvent saveEvent(Uri uri, FreeEvent event) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(EventContract.EventEntry.COLUMN_TITLE, event.getTitle());
         contentValues.put(EventContract.EventEntry.COLUMN_PLACE_NAME, event.getPlaceName());

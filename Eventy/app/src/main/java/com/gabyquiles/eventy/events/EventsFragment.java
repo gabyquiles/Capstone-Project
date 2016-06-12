@@ -2,6 +2,7 @@ package com.gabyquiles.eventy.events;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -13,14 +14,14 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.TextView;
 
 import com.gabyquiles.eventy.R;
+import com.gabyquiles.eventy.addeditevent.AddEditEventActivity;
+import com.gabyquiles.eventy.addeditevent.AddEditEventFragment;
 import com.gabyquiles.eventy.model.Event;
-import com.gabyquiles.eventy.ui.EventDetailsActivity;
 import com.gabyquiles.eventy.ui.EventListAdapterFactory;
-
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -29,7 +30,7 @@ import butterknife.OnClick;
 import static dagger.internal.Preconditions.checkNotNull;
 
 /**
- * Description
+ * Fragment that shows the list of next events
  *
  * @author gabrielquiles-perez
  */
@@ -37,6 +38,20 @@ public class EventsFragment extends Fragment implements EventsContract.View{
     private final String LOG_TAG = EventsFragment.class.getSimpleName();
 
     private EventsContract.Presenter mPresenter;
+
+    /**
+     * Listener for clicks on tasks in the ListView.
+     */
+    EventsContract.EventItemListener mItemListener = new EventsContract.EventItemListener() {
+        @Override
+        public void onEventClick(Event clickedEvent) {
+            mPresenter.openEventDetails(clickedEvent);
+        }
+
+        @Override
+        public void onDeleteEvent(Event deleteEvent) {
+        }
+    };
 
     //Views
     @BindView(R.id.empty_textview)
@@ -53,7 +68,7 @@ public class EventsFragment extends Fragment implements EventsContract.View{
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-        mAdapter = (new EventListAdapterFactory()).getAdapter(getActivity(), mEmptyView);
+        mAdapter = new EventsAdapter(getActivity(), mItemListener, AbsListView.CHOICE_MODE_NONE);
     }
 
     @Override
@@ -77,7 +92,6 @@ public class EventsFragment extends Fragment implements EventsContract.View{
         ButterKnife.bind(this, rootView);
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-//        mAdapter = (new EventListAdapterFactory()).getAdapter(getActivity(), mEmptyView);
         mRecyclerView.setAdapter(mAdapter);
 
         return rootView;
@@ -91,32 +105,50 @@ public class EventsFragment extends Fragment implements EventsContract.View{
     @Override
     public void showEvents(Cursor events) {
         mAdapter.swapCursor(events);
-//        TODO: Hide no events message
-//        TODO: Show recycler view
+        mRecyclerView.setVisibility(View.VISIBLE);
+        mEmptyView.setVisibility(View.GONE);
     }
 
+    @OnClick(R.id.add_event_fab)
     @Override
     public void showAddEvent() {
 
-        Intent eventIntent = new Intent(getContext(), EventDetailsActivity.class);
-
-        eventIntent.setData(null);
-        ActivityOptionsCompat activityOptions = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity());
-        ActivityCompat.startActivity(getActivity(), eventIntent, activityOptions.toBundle());
+        openDetailsScreen(null);
     }
 
     @Override
     public void showEventDetails(String eventId) {
-
+        Intent intent = new Intent(getContext(), AddEditEventActivity.class);
+        intent.putExtra(AddEditEventFragment.ARGUMENT_EDIT_EVENT_ID, eventId);
+        startActivity(intent);
     }
 
     @Override
     public void showNoEvents() {
-
+        showNoEventsView(getString(R.string.no_events));
     }
 
     @Override
     public void showSuccessfullySavedMessage() {
 
+    }
+
+    @Override
+    public EventsContract.EventItemListener getItemListener() {
+        return mItemListener;
+    }
+
+    private void showNoEventsView(String message) {
+        mRecyclerView.setVisibility(View.GONE);
+        mEmptyView.setVisibility(View.VISIBLE);
+
+        mEmptyView.setText(message);
+    }
+
+    private void openDetailsScreen(Uri uri) {
+        Intent eventIntent = new Intent(getContext(), AddEditEventActivity.class);
+        eventIntent.setData(uri);
+        ActivityOptionsCompat activityOptions = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity());
+        ActivityCompat.startActivity(getActivity(), eventIntent, activityOptions.toBundle());
     }
 }

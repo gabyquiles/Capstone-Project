@@ -1,7 +1,8 @@
 package com.gabyquiles.eventy.model;
 
-import android.os.Parcel;
-import android.os.Parcelable;
+import android.database.Cursor;
+
+import com.gabyquiles.eventy.data.EventContract;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -13,16 +14,16 @@ import java.util.List;
  * @author gabrielquiles-perez
  */
 
-public class BaseEvent implements Parcelable{
+public class Event {
+    protected String mKey;
+
     protected String mTitle;
     protected long mDate;
     protected String mPlaceName;
     protected List<Guest> mGuestList;
     protected List<String> mThingList;
 
-    protected String mKey;
-
-    public BaseEvent() {
+    public Event() {
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DATE, 1);
         mDate = cal.getTimeInMillis();
@@ -32,11 +33,14 @@ public class BaseEvent implements Parcelable{
         mPlaceName = "";
     }
 
-    public BaseEvent(Parcel in) {
-        mKey = in.readString();
-        mTitle = in.readString();
-        mPlaceName = in.readString();
-        mDate = in.readLong();
+    public Event(String key, String title, long date, String placeName, List<Guest> guestList, List<String> thingList) {
+        mKey = key;
+        mTitle = title;
+        mDate = date;
+        mPlaceName = placeName;
+        mGuestList = guestList;
+        mThingList = thingList;
+
     }
 
     public String getTitle() {
@@ -77,11 +81,11 @@ public class BaseEvent implements Parcelable{
             return true;
         }
 
-        if(!(o instanceof BaseEvent)) {
+        if(!(o instanceof Event)) {
             return false;
         }
 
-        BaseEvent e = (BaseEvent) o;
+        Event e = (Event) o;
 //        TODO: Check that all properties are being checked
         if(!mTitle.equals(e.mTitle)) {
             return false;
@@ -106,31 +110,6 @@ public class BaseEvent implements Parcelable{
         result = 31 * result + mPlaceName.hashCode();
         return result;
     }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel parcel, int flags) {
-        parcel.writeString(mKey);
-        parcel.writeString(mTitle);
-        parcel.writeString(mPlaceName);
-        parcel.writeLong(mDate);
-    }
-
-    public final static Parcelable.Creator<BaseEvent> CREATOR = new Parcelable.Creator<BaseEvent>() {
-        @Override
-        public BaseEvent createFromParcel(Parcel parcel) {
-            return new BaseEvent(parcel);
-        }
-
-        @Override
-        public BaseEvent[] newArray(int i) {
-            return new BaseEvent[0];
-        }
-    };
 
     public List<Guest> getGuestList() {
         return mGuestList;

@@ -26,9 +26,9 @@ public class EventListAdapterFactory extends RecyclerViewAdapterFactory
     public EventsAdapter getAdapter(Context context, View emptyView) {
         mContext = context;
         int choiceMode = AbsListView.CHOICE_MODE_NONE;
-        EventsAdapter adapter = new EventsAdapter(context, emptyView, this, choiceMode);
-        ((AppCompatActivity) context).getLoaderManager().initLoader(EVENT_LOADER, null, adapter);
-        return  adapter;
+//        EventsAdapter adapter = new EventsAdapter(context, this, choiceMode);
+//        ((AppCompatActivity) context).getLoaderManager().initLoader(EVENT_LOADER, null, adapter);
+        return  null;
     }
 
     @Override

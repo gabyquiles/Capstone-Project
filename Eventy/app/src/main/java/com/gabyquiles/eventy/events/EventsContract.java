@@ -7,8 +7,6 @@ import com.gabyquiles.eventy.BasePresenter;
 import com.gabyquiles.eventy.BaseView;
 import com.gabyquiles.eventy.model.Event;
 
-import java.util.List;
-
 /**
  * Description
  *
@@ -25,6 +23,8 @@ public interface EventsContract {
         void showNoEvents();
 
         void showSuccessfullySavedMessage();
+
+        EventItemListener getItemListener();
     }
 
     interface Presenter extends BasePresenter{
@@ -32,5 +32,10 @@ public interface EventsContract {
 
         void openEventDetails(@NonNull Event event);
 
+    }
+
+    public interface EventItemListener {
+        void onEventClick(Event clickedEvent);
+        void onDeleteEvent(Event deleteEvent);
     }
 }

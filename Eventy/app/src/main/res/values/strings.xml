@@ -1,7 +1,7 @@
 <resources xmlns:xliff="http://schemas.android.com/apk/res-auto">
     <string name="app_name">Eventy</string>
 
-    <string name="empty">No events available</string>
+    <string name="no_events">No events available</string>
     <string name="title_activity_event_details">Event Details</string>
     <string name="action_settings">Settings</string>
     <string name="title_placeholder">Title</string>

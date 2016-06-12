@@ -35,7 +35,7 @@
 
         <TextView
             android:id="@+id/empty_textview"
-            android:text="@string/empty"
+            android:text="@string/no_events"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"

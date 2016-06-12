@@ -28,7 +28,7 @@ public class EventDetailsActivity extends BaseActivity {
 
             mFragment = new EventDetailsFragment();
             mFragment.setArguments(arguments);
-            getSupportFragmentManager().beginTransaction().add(R.id.details_container, mFragment)
+            getSupportFragmentManager().beginTransaction().add(R.id.contentFrame, mFragment)
                     .commit();
         }
 

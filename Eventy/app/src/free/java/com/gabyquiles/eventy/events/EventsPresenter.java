@@ -12,6 +12,8 @@ import com.gabyquiles.eventy.model.Event;
 
 import javax.inject.Inject;
 
+import static dagger.internal.Preconditions.checkNotNull;
+
 /**
  * Listens to user actions from the UI ({@link EventsFragment}), retrieves the data and updates the
  * UI as required. It is implemented as a non UI {@link Fragment} to make use of the
@@ -61,12 +63,13 @@ public class EventsPresenter implements EventsContract.Presenter, LoaderManager.
 
     @Override
     public void addNewEvent() {
-
+        mEventsView.showAddEvent();
     }
 
     @Override
     public void openEventDetails(@NonNull Event event) {
-
+        checkNotNull(event, "event cannot be null!");
+        mEventsView.showEventDetails(event.getKey());
     }
 
     @Override

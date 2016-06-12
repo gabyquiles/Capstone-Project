@@ -30,7 +30,7 @@ import com.gabyquiles.eventy.R;
 import com.gabyquiles.eventy.Utility;
 import com.gabyquiles.eventy.data.EventContract;
 import com.gabyquiles.eventy.data.EventManager;
-import com.gabyquiles.eventy.model.Event;
+import com.gabyquiles.eventy.model.FreeEvent;
 import com.gabyquiles.eventy.model.Guest;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
@@ -94,7 +94,7 @@ public class EventDetailsFragment extends Fragment  implements LoaderManager.Loa
 
     private Uri mUri;
 
-    private Event mEvent;
+    private FreeEvent mEvent;
     private GuestsAdapter mGuestAdapter;
     private ThingsAdapter mThingsAdapter;
 
@@ -106,7 +106,7 @@ public class EventDetailsFragment extends Fragment  implements LoaderManager.Loa
 
         mManager = new EventManager(getContext());
 
-        mEvent = new Event();
+        mEvent = new FreeEvent();
         Bundle arguments = getArguments();
         if(arguments != null && arguments.getParcelable(EVENT_URI) != null) {
             mUri = arguments.getParcelable(EVENT_URI);

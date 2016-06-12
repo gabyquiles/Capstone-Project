@@ -20,7 +20,7 @@ public class EventTestCase {
     protected static final String TITLE = "This is the tile of the event";
     protected static final String PLACE = "Venue to hold the event";
 
-    private Event eventUnderTest;
+    private FreeEvent eventUnderTest;
 
     @Before
     public void setUp() {
@@ -32,13 +32,13 @@ public class EventTestCase {
         Parcel dest = Parcel.obtain();
         eventUnderTest.writeToParcel(dest, 0);
         dest.setDataPosition(0);
-        Event unparcelled = Event.CREATOR.createFromParcel(dest);
+        FreeEvent unparcelled = FreeEvent.CREATOR.createFromParcel(dest);
 
         assertThat(eventUnderTest, is(unparcelled));
     }
 
-    private Event getEvent() {
-        Event event = new Event();
+    private FreeEvent getEvent() {
+        FreeEvent event = new FreeEvent();
         event.setTitle(TITLE);
         event.setPlaceName(PLACE);
 

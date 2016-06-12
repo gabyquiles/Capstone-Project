@@ -1,5 +1,8 @@
 package com.gabyquiles.eventy.events;
 
+import android.content.Context;
+import android.widget.AbsListView;
+
 import dagger.Module;
 import dagger.Provides;
 

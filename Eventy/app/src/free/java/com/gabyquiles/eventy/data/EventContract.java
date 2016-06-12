@@ -37,6 +37,12 @@ public class EventContract {
         public static final String COLUMN_DATE = "date";
         public static final String COLUMN_PLACE_NAME = "place_name";
 
+        public static String[] EVENT_COLUMNS = new String[] {
+                COLUMN_TITLE,
+                COLUMN_DATE,
+                COLUMN_PLACE_NAME
+        };
+
         public static final Uri CONTENT_URI =
                 BASE_CONTENT_URI.buildUpon().appendPath(PATH_EVENT).build();
 
@@ -75,6 +81,14 @@ public class EventContract {
         public static final String COLUMN_STATUS = "status";
         public static final String COLUMN_THING = "thing";
 
+        public static String[] GUESTS_COLUMS = new String[] {
+                COLUMN_EVENT_KEY,
+                COLUMN_NAME,
+                COLUMN_EMAIL,
+                COLUMN_STATUS,
+                COLUMN_THING
+        };
+
         public static final Uri CONTENT_URI =
                 BASE_CONTENT_URI.buildUpon().appendPath(PATH_GUESTS).build();
 
@@ -100,6 +114,11 @@ public class EventContract {
 
         public static final String COLUMN_EVENT_KEY = "event_id";
         public static final String COLUMN_THING = "thing";
+
+        public static String[] THINGS_COLUMNS = new String[] {
+                COLUMN_EVENT_KEY,
+                COLUMN_THING
+        };
 
         public static final Uri CONTENT_URI =
                 BASE_CONTENT_URI.buildUpon().appendPath(PATH_THINGS).build();

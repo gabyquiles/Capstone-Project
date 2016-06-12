@@ -8,6 +8,7 @@ import android.support.v7.widget.Toolbar;
 import com.gabyquiles.eventy.EventyApplication;
 import com.gabyquiles.eventy.R;
 import com.gabyquiles.eventy.data.DataModule;
+import com.gabyquiles.eventy.model.Event;
 import com.gabyquiles.eventy.util.ActivityUtils;
 import com.google.firebase.analytics.FirebaseAnalytics;
 

@@ -58,7 +58,12 @@ public class LoaderProvider {
                 sortOrder);
     }
 
-//    public Loader<Cursor> createEventLoader(String eventId) {
-//        return new CursorLoader(mContext, )
-//    }
+    public Loader<Cursor> createEventLoader(String eventId) {
+
+        return new CursorLoader(mContext,EventContract.EventEntry.buildEventUri(Long.getLong(eventId)),
+                null,
+                null,
+                new String[]{String.valueOf(eventId)},
+                null);
+    }
 }

@@ -1,5 +1,8 @@
 package com.gabyquiles.eventy;
 
+import com.gabyquiles.eventy.data.source.DaggerEventsRepositoryComponent;
+import com.gabyquiles.eventy.data.source.EventsRepositoryComponent;
+import com.gabyquiles.eventy.data.source.EventsRepositoryModule;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
 /**
@@ -8,6 +11,7 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 public class EventyApplication extends android.app.Application {
 
     private FirebaseAnalytics mFirebaseAnalytics;
+    private EventsRepositoryComponent mRepositoryComponent;
 
     @Override
     public void onCreate() {
@@ -23,8 +27,15 @@ public class EventyApplication extends android.app.Application {
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(getApplicationContext());
         // Set persistence of DB
 //        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+//
+        mRepositoryComponent = DaggerEventsRepositoryComponent.builder()
+                .applicationModule(new ApplicationModule((getApplicationContext())))
+                .eventsRepositoryModule(new EventsRepositoryModule()).build();
 
+    }
 
+    public EventsRepositoryComponent getEventsRepositoryComponent() {
+        return mRepositoryComponent;
     }
 
     public FirebaseAnalytics getAnalytics() {

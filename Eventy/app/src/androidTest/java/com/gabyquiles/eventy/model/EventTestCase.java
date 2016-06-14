@@ -27,15 +27,15 @@ public class EventTestCase {
         eventUnderTest = getEvent();
     }
 
-    @Test
-    public void writeToParcel() {
-        Parcel dest = Parcel.obtain();
-        eventUnderTest.writeToParcel(dest, 0);
-        dest.setDataPosition(0);
-        FreeEvent unparcelled = FreeEvent.CREATOR.createFromParcel(dest);
-
-        assertThat(eventUnderTest, is(unparcelled));
-    }
+//    @Test
+//    public void writeToParcel() {
+//        Parcel dest = Parcel.obtain();
+//        eventUnderTest.writeToParcel(dest, 0);
+//        dest.setDataPosition(0);
+//        FreeEvent unparcelled = FreeEvent.CREATOR.createFromParcel(dest);
+//
+//        assertThat(eventUnderTest, is(unparcelled));
+//    }
 
     private FreeEvent getEvent() {
         FreeEvent event = new FreeEvent();

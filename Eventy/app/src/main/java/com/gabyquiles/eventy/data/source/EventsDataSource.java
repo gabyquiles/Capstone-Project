@@ -2,7 +2,7 @@ package com.gabyquiles.eventy.data.source;
 
 import android.support.annotation.NonNull;
 
-import com.gabyquiles.eventy.model.FreeEvent;
+import com.gabyquiles.eventy.model.Event;
 
 import java.util.List;
 
@@ -11,13 +11,22 @@ import java.util.List;
  */
 public interface EventsDataSource {
 
-
     interface GetEventsCallback {
 
-        void onEventsLoaded(List<FreeEvent> tasks);
+        void onEventsLoaded(List<Event> events);
+
+        void onDataNotAvailable();
+    }
+
+    interface GetEventCallback {
+        void onEventLoaded(Event event);
 
         void onDataNotAvailable();
     }
 
     void getEvents(@NonNull GetEventsCallback callback);
+
+    void getEvent(@NonNull String taskId, @NonNull GetEventCallback callback);
+
+    void saveEvent(@NonNull Event event);
 }

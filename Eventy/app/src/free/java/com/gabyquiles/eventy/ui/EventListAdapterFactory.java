@@ -1,11 +1,10 @@
 package com.gabyquiles.eventy.ui;
 
 import android.content.Context;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AbsListView;
 
-import com.gabyquiles.eventy.data.EventContract;
+import com.gabyquiles.eventy.data.source.local.EventContract;
 import com.gabyquiles.eventy.events.EventsAdapter;
 
 /**

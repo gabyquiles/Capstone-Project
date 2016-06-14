@@ -1,9 +1,5 @@
 package com.gabyquiles.eventy.model;
 
-import android.database.Cursor;
-
-import com.gabyquiles.eventy.data.EventContract;
-
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -33,6 +29,15 @@ public class Event {
         mPlaceName = "";
     }
 
+    public Event(String title, long date, String placeName, List<Guest> guestList, List<String> thingList) {
+        mTitle = title;
+        mDate = date;
+        mPlaceName = placeName;
+        mGuestList = guestList;
+        mThingList = thingList;
+
+    }
+
     public Event(String key, String title, long date, String placeName, List<Guest> guestList, List<String> thingList) {
         mKey = key;
         mTitle = title;
@@ -41,6 +46,14 @@ public class Event {
         mGuestList = guestList;
         mThingList = thingList;
 
+    }
+
+//    TODO: Validate
+    public boolean isValid() {
+//        if(Calendar.getInstance().getTimeInMillis() > mDate) {
+//            return ""
+//        }
+        return true;
     }
 
     public String getTitle() {

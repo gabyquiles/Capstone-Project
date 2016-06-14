@@ -8,6 +8,7 @@ import android.support.v7.widget.Toolbar;
 import com.gabyquiles.eventy.EventyApplication;
 import com.gabyquiles.eventy.R;
 import com.gabyquiles.eventy.data.DataModule;
+import com.gabyquiles.eventy.data.source.EventsRepositoryModule;
 import com.gabyquiles.eventy.model.Event;
 import com.gabyquiles.eventy.util.ActivityUtils;
 import com.google.firebase.analytics.FirebaseAnalytics;
@@ -58,9 +59,9 @@ public class EventsActivity extends AppCompatActivity {
         // Create the presenter
         DaggerEventsComponent.builder()
                 .dataModule(new DataModule(this, getSupportLoaderManager()))
-                .eventsPresenterModule(new EventsPresenterModule(eventsFragment)).build()
-                .inject(this);
-//        mPresenter.setLoaderManager(getSupportLoaderManager());
+                .eventsRepositoryComponent(((EventyApplication) getApplication()).getEventsRepositoryComponent())
+                .eventsPresenterModule(new EventsPresenterModule(eventsFragment))
+                .build().inject(this);
 
 //        TODO: This should be here????
         FirebaseAnalytics firebaseAnalytics = ((EventyApplication) getApplication()).getAnalytics();

@@ -1,4 +1,4 @@
-package com.gabyquiles.eventy.data;
+package com.gabyquiles.eventy.data.source.local;
 
 import android.content.ContentResolver;
 import android.content.ContentUris;
@@ -38,6 +38,7 @@ public class EventContract {
         public static final String COLUMN_PLACE_NAME = "place_name";
 
         public static String[] EVENT_COLUMNS = new String[] {
+                _ID,
                 COLUMN_TITLE,
                 COLUMN_DATE,
                 COLUMN_PLACE_NAME

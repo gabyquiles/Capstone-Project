@@ -1,4 +1,4 @@
-package com.gabyquiles.eventy.data;
+package com.gabyquiles.eventy.data.source.local;
 
 import android.annotation.TargetApi;
 import android.content.ContentProvider;

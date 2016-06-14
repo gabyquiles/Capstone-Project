@@ -28,7 +28,7 @@ import android.widget.TimePicker;
 import com.gabyquiles.eventy.EventyApplication;
 import com.gabyquiles.eventy.R;
 import com.gabyquiles.eventy.Utility;
-import com.gabyquiles.eventy.data.EventContract;
+import com.gabyquiles.eventy.data.source.local.EventContract;
 import com.gabyquiles.eventy.data.EventManager;
 import com.gabyquiles.eventy.model.FreeEvent;
 import com.gabyquiles.eventy.model.Guest;

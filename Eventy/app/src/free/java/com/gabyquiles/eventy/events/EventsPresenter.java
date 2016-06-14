@@ -7,8 +7,12 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 
-import com.gabyquiles.eventy.data.LoaderProvider;
+import com.gabyquiles.eventy.data.source.LoaderProvider;
+import com.gabyquiles.eventy.data.source.EventsDataSource;
+import com.gabyquiles.eventy.data.source.EventsRepository;
 import com.gabyquiles.eventy.model.Event;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -19,7 +23,7 @@ import static dagger.internal.Preconditions.checkNotNull;
  * UI as required. It is implemented as a non UI {@link Fragment} to make use of the
  * {@link LoaderManager} mechanism for managing loading and updating data asynchronously.
  */
-public class EventsPresenter implements EventsContract.Presenter, LoaderManager.LoaderCallbacks<Cursor> {
+public class EventsPresenter implements EventsContract.Presenter, LoaderManager.LoaderCallbacks<Cursor>, EventsDataSource.GetEventsCallback {
     private final String LOG_TAG = EventsPresenter.class.getSimpleName();
 
     public final static int EVENTS_LOADER = 1;
@@ -30,11 +34,14 @@ public class EventsPresenter implements EventsContract.Presenter, LoaderManager.
 
     private LoaderManager mLoaderManager;
 
+    private EventsRepository mRepository;
+
     @Inject
-    public EventsPresenter(@NonNull LoaderProvider provider, @NonNull LoaderManager manager, @NonNull EventsContract.View eventsView) {
-        mLoaderProvider = provider;
-        mLoaderManager = manager;
-        mEventsView = eventsView;
+    public EventsPresenter(@NonNull LoaderProvider provider, @NonNull LoaderManager manager, @NonNull EventsRepository eventsRepository, @NonNull EventsContract.View eventsView) {
+        mLoaderProvider = checkNotNull(provider, "loaderProvider can not be null");
+        mLoaderManager = checkNotNull(manager, "loaderManager can not be null");
+        mEventsView = checkNotNull(eventsView, "eventsView can not be null");
+        mRepository = checkNotNull(eventsRepository, "eventsRepository can not be null");
         mEventsView.setPresenter(this);
     }
 
@@ -49,10 +56,13 @@ public class EventsPresenter implements EventsContract.Presenter, LoaderManager.
 
     @Override
     public void start() {
-        loadEvents();
+        loadEvents(true);
     }
 
-    public void loadEvents() {
+    public void loadEvents(boolean forceUpdate) {
+        if (forceUpdate) {
+            mRepository.getEvents(this);
+        }
 
         if(mLoaderManager.getLoader(EVENTS_LOADER) == null) {
             mLoaderManager.initLoader(EVENTS_LOADER, null, this);
@@ -91,8 +101,14 @@ public class EventsPresenter implements EventsContract.Presenter, LoaderManager.
 
     }
 
-    private void onDataNotAvailable() {
+    @Override
+    public void onEventsLoaded(List<Event> tasks) {
 
+    }
+
+    @Override
+    public void onDataNotAvailable() {
+//        TODO: Show error
     }
 
     private void onDataEmpty() {

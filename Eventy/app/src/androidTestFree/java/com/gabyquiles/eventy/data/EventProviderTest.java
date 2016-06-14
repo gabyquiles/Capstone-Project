@@ -13,7 +13,10 @@ import android.os.Build;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 import android.test.suitebuilder.annotation.SmallTest;
-import android.util.Log;
+
+import com.gabyquiles.eventy.data.source.local.EventContract;
+import com.gabyquiles.eventy.data.source.local.EventDBHelper;
+import com.gabyquiles.eventy.data.source.local.EventProvider;
 
 import org.junit.Before;
 import org.junit.Test;

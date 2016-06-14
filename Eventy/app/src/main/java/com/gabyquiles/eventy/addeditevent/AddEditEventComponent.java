@@ -1,10 +1,9 @@
 package com.gabyquiles.eventy.addeditevent;
 
+import com.gabyquiles.eventy.ApplicationModule;
 import com.gabyquiles.eventy.data.DataModule;
-import com.gabyquiles.eventy.events.EventsActivity;
-import com.gabyquiles.eventy.events.EventsPresenterModule;
-
-import javax.inject.Singleton;
+import com.gabyquiles.eventy.data.source.EventsRepositoryComponent;
+import com.gabyquiles.eventy.util.FragmentScoped;
 
 import dagger.Component;
 
@@ -14,8 +13,9 @@ import dagger.Component;
  * @author gabrielquiles-perez
  */
 
-@Singleton
-@Component(modules = {DataModule.class, AddEditEventPresenterModule.class})
+@FragmentScoped
+@Component(dependencies = EventsRepositoryComponent.class,
+        modules = {AddEditEventPresenterModule.class, ApplicationModule.class, DataModule.class})
 public interface AddEditEventComponent {
 
     void inject(AddEditEventActivity activity);

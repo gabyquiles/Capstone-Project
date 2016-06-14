@@ -5,6 +5,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.net.Uri;
 
+import com.gabyquiles.eventy.data.source.local.EventContract;
 import com.gabyquiles.eventy.model.FreeEvent;
 import com.gabyquiles.eventy.model.Guest;
 

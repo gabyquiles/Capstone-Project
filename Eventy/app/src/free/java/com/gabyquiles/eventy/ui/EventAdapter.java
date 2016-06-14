@@ -17,7 +17,7 @@ import android.widget.TextView;
 
 import com.gabyquiles.eventy.R;
 import com.gabyquiles.eventy.Utility;
-import com.gabyquiles.eventy.data.EventContract;
+import com.gabyquiles.eventy.data.source.local.EventContract;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

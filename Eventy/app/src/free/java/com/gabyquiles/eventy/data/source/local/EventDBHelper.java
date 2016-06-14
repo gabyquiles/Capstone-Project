@@ -1,12 +1,12 @@
-package com.gabyquiles.eventy.data;
+package com.gabyquiles.eventy.data.source.local;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.gabyquiles.eventy.data.EventContract.EventEntry;
-import com.gabyquiles.eventy.data.EventContract.GuestEntry;
-import com.gabyquiles.eventy.data.EventContract.ThingEntry;
+import com.gabyquiles.eventy.data.source.local.EventContract.EventEntry;
+import com.gabyquiles.eventy.data.source.local.EventContract.GuestEntry;
+import com.gabyquiles.eventy.data.source.local.EventContract.ThingEntry;
 
 /**
  * Manages local database

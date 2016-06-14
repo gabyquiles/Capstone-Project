@@ -8,6 +8,9 @@ import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 import android.test.suitebuilder.annotation.SmallTest;
 
+import com.gabyquiles.eventy.data.source.local.EventContract;
+import com.gabyquiles.eventy.data.source.local.EventDBHelper;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

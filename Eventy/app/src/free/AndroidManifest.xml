@@ -12,7 +12,7 @@
 
         <provider
             android:authorities="@string/content_authority"
-            android:name="com.gabyquiles.eventy.data.EventProvider"
+            android:name="com.gabyquiles.eventy.data.source.local.EventProvider"
             android:exported="false" />
 
         <activity android:name="com.gabyquiles.eventy.events.EventsActivity">

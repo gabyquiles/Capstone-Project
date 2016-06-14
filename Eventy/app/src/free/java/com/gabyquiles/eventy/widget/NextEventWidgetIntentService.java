@@ -16,7 +16,7 @@ import android.widget.RemoteViews;
 
 import com.gabyquiles.eventy.R;
 import com.gabyquiles.eventy.Utility;
-import com.gabyquiles.eventy.data.EventContract;
+import com.gabyquiles.eventy.data.source.local.EventContract;
 import com.gabyquiles.eventy.ui.MainActivity;
 
 /**

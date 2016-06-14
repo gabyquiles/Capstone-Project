@@ -1,12 +1,7 @@
 package com.gabyquiles.eventy.events;
 
-import android.app.LoaderManager;
 import android.content.Context;
-import android.content.CursorLoader;
-import android.content.Loader;
 import android.database.Cursor;
-import android.net.Uri;
-import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -17,11 +12,9 @@ import android.widget.TextView;
 
 import com.gabyquiles.eventy.R;
 import com.gabyquiles.eventy.Utility;
-import com.gabyquiles.eventy.data.EventContract;
 import com.gabyquiles.eventy.model.Event;
 import com.gabyquiles.eventy.model.FreeEvent;
 import com.gabyquiles.eventy.ui.ItemChoiceManager;
-import com.gabyquiles.eventy.ui.RecyclerViewAdapterFactory;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -91,10 +84,6 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventHolde
         mCursor.moveToPosition(position);
         Event event = FreeEvent.from(mCursor);
         mListener.onEventClick(event);
-    }
-
-    public Cursor getCursor() {
-        return mCursor;
     }
 
     public class EventHolder extends RecyclerView.ViewHolder {

@@ -9,6 +9,8 @@ import android.net.Uri;
 import android.os.Handler;
 import android.os.HandlerThread;
 
+import com.gabyquiles.eventy.data.source.local.EventContract;
+import com.gabyquiles.eventy.data.source.local.EventDBHelper;
 import com.gabyquiles.eventy.utils.PollingCheck;
 
 import java.util.Map;

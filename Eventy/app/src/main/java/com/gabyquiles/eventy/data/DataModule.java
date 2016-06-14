@@ -3,6 +3,8 @@ package com.gabyquiles.eventy.data;
 import android.content.Context;
 import android.support.v4.app.LoaderManager;
 
+import com.gabyquiles.eventy.data.source.LoaderProvider;
+
 import dagger.Module;
 import dagger.Provides;
 

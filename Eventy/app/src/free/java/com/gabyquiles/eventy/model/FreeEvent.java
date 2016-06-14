@@ -1,10 +1,8 @@
 package com.gabyquiles.eventy.model;
 
 import android.database.Cursor;
-import android.os.Parcel;
-import android.os.Parcelable;
 
-import com.gabyquiles.eventy.data.EventContract;
+import com.gabyquiles.eventy.data.source.local.EventContract;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +17,10 @@ public class FreeEvent extends Event {
 
     public FreeEvent() {
         super();
+    }
+
+    public FreeEvent(String title, long date, String placeName, List<Guest> guests, List<String> things) {
+        super(title, date, placeName, guests, things);
     }
 
     public FreeEvent(String key, String title, long date, String placeName, List<Guest> guests, List<String> things) {

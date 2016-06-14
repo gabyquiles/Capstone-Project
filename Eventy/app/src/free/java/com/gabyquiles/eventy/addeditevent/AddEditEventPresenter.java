@@ -1,14 +1,27 @@
 package com.gabyquiles.eventy.addeditevent;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
+import android.util.Log;
 
-import com.gabyquiles.eventy.data.LoaderProvider;
+import com.gabyquiles.eventy.data.source.EventsDataSource;
+import com.gabyquiles.eventy.data.source.EventsRepository;
+import com.gabyquiles.eventy.data.source.LoaderProvider;
+import com.gabyquiles.eventy.model.Event;
 import com.gabyquiles.eventy.model.FreeEvent;
+import com.gabyquiles.eventy.model.Guest;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -20,30 +33,42 @@ import static dagger.internal.Preconditions.checkNotNull;
  * @author gabrielquiles-perez
  */
 public class AddEditEventPresenter implements AddEditEventContract.Presenter,
-        LoaderManager.LoaderCallbacks<Cursor>{
+        LoaderManager.LoaderCallbacks<Cursor>, EventsDataSource.GetEventCallback {
     private final String LOG_TAG = AddEditEventPresenter.class.getSimpleName();
 
+    public final static int EVENT_DETAIL_LOADER = 2;
+
     @NonNull
-    private final AddEditEventContract.View mEventsView;
+    private final Context mContext;
+
+    @NonNull
+    private final AddEditEventContract.View mEventView;
+
+    @NonNull
+    private EventsRepository mRepository;
 
     @NonNull
     private final LoaderProvider mLoaderProvider;
 
     @NonNull
-    private LoaderManager mLoaderManager;
+    private final LoaderManager mLoaderManager;
 
     @Nullable
     private String mEventId;
 
+    private Event mEvent;
+
     @Inject
-    public AddEditEventPresenter(@Nullable String eventId, @NonNull LoaderProvider provider,
-                                 @NonNull LoaderManager manager,
-                                 @NonNull AddEditEventContract.View eventsView) {
+    AddEditEventPresenter(@NonNull Context context, @NonNull LoaderProvider loaderProvider, @NonNull LoaderManager manager, @Nullable String eventId, @NonNull EventsRepository eventsRepository,
+                          @NonNull AddEditEventContract.View eventsView) {
         mEventId = eventId;
-        mLoaderProvider = checkNotNull(provider);
+        mContext = checkNotNull(context);
+        mRepository = checkNotNull(eventsRepository);
+        mEventView = checkNotNull(eventsView);
+        mLoaderProvider = checkNotNull(loaderProvider);
         mLoaderManager = checkNotNull(manager);
-        mEventsView = checkNotNull(eventsView);
-        mEventsView.setPresenter(this);
+        mEventView.setPresenter(this);
+        mEvent = new Event();
     }
 
     @Override
@@ -54,12 +79,34 @@ public class AddEditEventPresenter implements AddEditEventContract.Presenter,
     }
 
     @Override
-    public void saveEvent(){//String title, String description) {
-//        TODO: Fix
+    public void saveEvent(String title, long date, String place, List<Guest> guests, List<String> things) {
         if (isNewEvent()) {
-//            createEvent(title, description);
+            createEvent(title, date, place, guests, things);
         } else {
-//            updateEvent(title, description);
+            updateEvent(title, date, place, guests, things);
+        }
+    }
+
+    @Override
+    public void sendInvites() {
+
+    }
+
+    @Override
+    public void addGuest(Guest guest) {
+        mEventView.addGuest(guest);
+    }
+
+    @Override
+    public void result(int requestCode, int resultCode, Intent data) {
+        // Check which request we're responding to
+        if (requestCode == AddEditEventFragment.PICK_CONTACT_REQUEST) {
+            // Make sure the request was successful
+            if (resultCode == Activity.RESULT_OK) {
+                Uri contactUri = data.getData();
+                GetContactAsyncTask task = new GetContactAsyncTask(mContext, this);
+                task.execute(contactUri);
+            }
         }
     }
 
@@ -68,8 +115,12 @@ public class AddEditEventPresenter implements AddEditEventContract.Presenter,
         if (isNewEvent()) {
             throw new RuntimeException("populateTask() was called but task is new.");
         }
-//        TODO: Get Event
-//        mTasksRepository.getTask(mTaskId, this);
+        mRepository.getEvent(mEventId, this);
+        if(mLoaderManager.getLoader(EVENT_DETAIL_LOADER) == null) {
+            mLoaderManager.initLoader(EVENT_DETAIL_LOADER, null, this);
+        } else {
+            mLoaderManager.restartLoader(EVENT_DETAIL_LOADER, null, this);
+        }
     }
 
     @Override
@@ -80,9 +131,8 @@ public class AddEditEventPresenter implements AddEditEventContract.Presenter,
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         if (data != null && data.moveToLast()) {
-            FreeEvent event = (FreeEvent) FreeEvent.from(data);
-//            mEventsView.setDescription(task.getDescription());
-            mEventsView.setTitle(event.getTitle());
+            FreeEvent event = FreeEvent.from(data);
+            onEventLoaded(event);
         } else {
             // NO-OP, add mode.
         }
@@ -93,11 +143,20 @@ public class AddEditEventPresenter implements AddEditEventContract.Presenter,
 
     }
 
+    @Override
+    public void errorSelectingGuest() {
+
+    }
+
     private boolean isNewEvent() {
         return mEventId == null;
     }
 
-    private void createTask(String title, String description) {
+    private void createEvent(String title, long date, String place, List<Guest> guests, List<String> things) {
+        FreeEvent event = new FreeEvent(title, date, place, guests, things);
+        if(event.isValid()) {
+            mRepository.saveEvent(event);
+        }
 //        TODO
 //        Task newTask = new Task(title, description);
 //        if (newTask.isEmpty()) {
@@ -108,23 +167,31 @@ public class AddEditEventPresenter implements AddEditEventContract.Presenter,
 //        }
     }
 
-    private void updateTask(String title, String description) {
+    private void updateEvent(String title, long date, String place, List<Guest> guests, List<String> things) {
         if (isNewEvent()) {
             throw new RuntimeException("updateTask() was called but task is new.");
         }
-//        TODO: Save event
-//        mTasksRepository.saveTask(new Task(title, description, mTaskId));
-        mEventsView.showEventsList(); // After an edit, go back to the list.
+
+        FreeEvent event = new FreeEvent(mEventId, title, date, place, guests, things);
+        if(event.isValid()) {
+            mRepository.saveEvent(event);
+        }
+        mEventView.showEventsList(); // After an edit, go back to the list.
     }
 
-//    @Override
-//    public void onEventLoaded(Event event) {
-//
-//    }
-//
-//    @Override
-//    public void onDataNotAvailable() {
-//
-//    }
+    @Override
+    public void onEventLoaded(Event event) {
+        mEventView.setTitle(event.getTitle());
+        mEventView.setDate(event.getDate());
+        mEventView.setTime(event.getDate());
+        mEventView.setPlaceName(event.getPlaceName());
+        mEventView.refreshGuests(event.getGuestList());
+        mEventView.refreshThings(event.getThingList());
+    }
+
+    @Override
+    public void onDataNotAvailable() {
+
+    }
 
 }

@@ -29,4 +29,6 @@ public interface EventsDataSource {
     void getEvent(@NonNull String taskId, @NonNull GetEventCallback callback);
 
     void saveEvent(@NonNull Event event);
+
+    void updateEvent(@NonNull Event event);
 }

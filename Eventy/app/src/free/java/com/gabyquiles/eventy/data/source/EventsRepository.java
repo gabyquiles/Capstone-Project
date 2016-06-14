@@ -32,6 +32,15 @@ public class EventsRepository implements EventsDataSource {
 
     @Override
     public void saveEvent(@NonNull Event event){
-        mDataSource.saveEvent(event);
+        if (event.getKey() != null) {
+            mDataSource.updateEvent(event);
+        } else {
+            mDataSource.saveEvent(event);
+        }
+    }
+
+    @Override
+    public void updateEvent(@NonNull Event event){
+        mDataSource.updateEvent(event);
     }
 }

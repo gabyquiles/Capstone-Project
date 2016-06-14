@@ -54,6 +54,11 @@ public class EventProvider extends ContentProvider {
             EventContract.EventEntry.TABLE_NAME+
                     "." + EventContract.EventEntry._ID + " = ? ";
 
+//    guest.event_id = ?
+    public static final String sGuestByEventIdSelection =
+        EventContract.GuestEntry.TABLE_NAME + "." +
+                EventContract.GuestEntry.COLUMN_EVENT_KEY + " = ?";
+
     @Override
     public boolean onCreate() {
         mOpenHelper = new EventDBHelper(getContext());
@@ -316,5 +321,40 @@ public class EventProvider extends ContentProvider {
         matcher.addURI(EventContract.CONTENT_AUTHORITY, EventContract.PATH_THINGS+"/#", THING);
 
         return matcher;
+    }
+
+    private Uri insertEvent(ContentValues values) {
+        final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+        Uri returnUri;
+        Cursor exists = db.query(
+                EventContract.EventEntry.TABLE_NAME,
+                new String[]{EventContract.EventEntry._ID},
+                EventContract.EventEntry._ID + " = ?",
+                new String[]{values.getAsString(EventContract.EventEntry._ID)},
+                null,
+                null,
+                null
+        );
+        if (exists.moveToLast()) {
+            long _id = db.update(
+                    EventContract.EventEntry.TABLE_NAME, values,
+                    EventContract.EventEntry._ID + " = ?",
+                    new String[]{values.getAsString(EventContract.EventEntry._ID)}
+            );
+            if (_id > 0) {
+                returnUri = EventContract.EventEntry.buildEventUri(_id);
+            } else {
+                throw new android.database.SQLException("Failed to update event");
+            }
+        } else {
+            long _id = db.insert(EventContract.EventEntry.TABLE_NAME, null, values);
+            if (_id > 0) {
+                returnUri = EventContract.EventEntry.buildEventUri(_id);
+            } else {
+                throw new android.database.SQLException("Failed to insert event");
+            }
+        }
+        exists.close();
+        return returnUri;
     }
 }

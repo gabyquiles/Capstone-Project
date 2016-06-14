@@ -37,6 +37,7 @@ public class AddEditEventPresenter implements AddEditEventContract.Presenter,
     private final String LOG_TAG = AddEditEventPresenter.class.getSimpleName();
 
     public final static int EVENT_DETAIL_LOADER = 2;
+    public final static int GUESTS_LOADER = 3;
 
     @NonNull
     private final Context mContext;
@@ -125,16 +126,31 @@ public class AddEditEventPresenter implements AddEditEventContract.Presenter,
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return mLoaderProvider.createEventLoader(mEventId);
+        if(id == EVENT_DETAIL_LOADER) {
+            return mLoaderProvider.createEventLoader(mEventId);
+        } else if(id == GUESTS_LOADER) {
+            return mLoaderProvider.createGuestsLoader(mEventId);
+        }
+        return  null;
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        if (data != null && data.moveToLast()) {
-            FreeEvent event = FreeEvent.from(data);
-            onEventLoaded(event);
-        } else {
-            // NO-OP, add mode.
+        if(loader.getId() == EVENT_DETAIL_LOADER) {
+            if (data != null && data.moveToLast()) {
+                FreeEvent event = FreeEvent.from(data);
+                onEventLoaded(event);
+                mLoaderManager.initLoader(GUESTS_LOADER, null, this);
+            } else {
+                // NO-OP, add mode.
+            }
+        } else if(loader.getId() == GUESTS_LOADER) {
+            if (data != null && data.moveToFirst()) {
+                do {
+                    Guest guest = Guest.from(data);
+                    mEventView.addGuest(guest);
+                } while (data.moveToNext());
+            }
         }
     }
 

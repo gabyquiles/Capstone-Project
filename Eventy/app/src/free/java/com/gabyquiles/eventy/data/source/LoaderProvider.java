@@ -8,6 +8,7 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 
 import com.gabyquiles.eventy.data.source.local.EventContract;
+import com.gabyquiles.eventy.data.source.local.EventProvider;
 
 import static dagger.internal.Preconditions.checkNotNull;
 
@@ -44,6 +45,14 @@ public class LoaderProvider {
         return new CursorLoader(mContext,EventContract.EventEntry.buildEventUri(Long.valueOf(eventId)),
                 null,
                 null,
+                new String[]{eventId},
+                null);
+    }
+
+    public Loader<Cursor> createGuestsLoader(String eventId) {
+        return new CursorLoader(mContext,EventContract.GuestEntry.buildEventGuestsUri(Long.valueOf(eventId)),
+                null,
+                EventProvider.sGuestByEventIdSelection,
                 new String[]{eventId},
                 null);
     }

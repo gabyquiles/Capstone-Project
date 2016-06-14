@@ -31,71 +31,20 @@ import static dagger.internal.Preconditions.checkNotNull;
 public class EventsLocalDataSource implements EventsDataSource {
     private final String LOG_TAG = EventsLocalDataSource.class.getSimpleName();
 
-//    private EventDBHelper mDbHelper;
     private ContentResolver mResolver;
 
     public EventsLocalDataSource(@NonNull ContentResolver contentResolver) {
         checkNotNull(contentResolver);
-//        mDbHelper = new EventDBHelper(context);
         mResolver = contentResolver;
     }
 
     @Override
     public void getEvents(@NonNull GetEventsCallback callback) {
-//        List<Event> events = new ArrayList<>();
-//        SQLiteDatabase db = mDbHelper.getReadableDatabase();
-//
-//        Cursor c = db.query(
-//                EventContract.EventEntry.TABLE_NAME, EventContract.EventEntry.EVENT_COLUMNS, null, null, null, null, null);
-//
-//        if (c != null && c.getCount() > 0) {
-//            while (c.moveToNext()) {
-//                FreeEvent event = FreeEvent.from(c);
-//                events.add(event);
-//            }
-//        }
-//        if (c != null) {
-//            c.close();
-//        }
-//
-//        db.close();
-//
-//        if (events.isEmpty()) {
-//            // This will be called if the table is new or just empty.
-//            callback.onDataNotAvailable();
-//        } else {
-//            callback.onEventsLoaded(events);
-//        }
         // no-op since the data is loader via Cursor Loader
     }
 
     @Override
     public void getEvent(@NonNull String taskId, @NonNull GetEventCallback callback) {
-//        SQLiteDatabase db = mDbHelper.getReadableDatabase();
-//
-//        String selection = EventContract.EventEntry._ID + " LIKE ?";
-//        String[] selectionArgs = { taskId };
-//
-//        Cursor c = db.query(
-//                EventContract.EventEntry.TABLE_NAME, EventContract.EventEntry.EVENT_COLUMNS, selection, selectionArgs, null, null, null);
-//
-//        Event event = null;
-//
-//        if (c != null && c.getCount() > 0) {
-//            c.moveToFirst();
-//            event = FreeEvent.from(c);
-//        }
-//        if (c != null) {
-//            c.close();
-//        }
-//
-//        db.close();
-//
-//        if (event != null) {
-//            callback.onEventLoaded(event);
-//        } else {
-//            callback.onDataNotAvailable();
-//        }
         // no-op since the data is loader via Cursor Loader
     }
 
@@ -106,6 +55,19 @@ public class EventsLocalDataSource implements EventsDataSource {
         ContentValues values = EventValues.from(event);
         Uri insertedUri = mResolver.insert(EventContract.EventEntry.CONTENT_URI, values);
         Long id = Long.parseLong(insertedUri.getLastPathSegment());
+        saveGuests(id, event.getGuestList());
+        saveThings(id, event.getThingList());
+    }
+
+    @Override
+    public void updateEvent(@NonNull Event event) {
+        checkNotNull(event);
+
+        ContentValues values = EventValues.from(event);
+
+        Long id = Long.valueOf(event.getKey());
+        Uri updateUri = EventContract.EventEntry.buildEventUri(id);
+        mResolver.update(updateUri, values, null, null);
         saveGuests(id, event.getGuestList());
         saveThings(id, event.getThingList());
     }

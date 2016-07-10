@@ -14,7 +14,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/textlayout_margins"
             android:layout_marginBottom="@dimen/textlayout_margins">
-            <EditText
+            <android.support.design.widget.TextInputEditText
                 android:id="@+id/event_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -34,12 +34,12 @@
                 android:layout_weight="1"
                 android:layout_marginTop="@dimen/textlayout_margins"
                 android:layout_marginBottom="@dimen/textlayout_margins">
-            <EditText
-                android:id="@+id/event_date"
-                android:inputType="date"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/event_date"/>
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/event_date"
+                    android:inputType="date"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/event_date"/>
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
@@ -48,12 +48,12 @@
                 android:layout_weight="1"
                 android:layout_marginTop="@dimen/textlayout_margins"
                 android:layout_marginBottom="@dimen/textlayout_margins">
-            <EditText
-                android:id="@+id/event_time"
-                android:inputType="time"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/event_time"/>
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/event_time"
+                    android:inputType="time"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/event_time"/>
             </android.support.design.widget.TextInputLayout>
         </LinearLayout>
         <LinearLayout
@@ -67,7 +67,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/textlayout_margins"
                 android:layout_marginBottom="@dimen/textlayout_margins">
-                <EditText
+                <android.support.design.widget.TextInputEditText
                     android:id="@+id/event_address"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -124,7 +124,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/textlayout_margins"
                 android:layout_marginBottom="@dimen/textlayout_margins">
-                <EditText
+                <android.support.design.widget.TextInputEditText
                     android:id="@+id/new_thing"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

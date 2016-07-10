@@ -5,14 +5,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
-import android.util.Log;
 
 import com.gabyquiles.eventy.data.source.EventsDataSource;
 import com.gabyquiles.eventy.data.source.EventsRepository;
@@ -57,8 +54,6 @@ public class AddEditEventPresenter implements AddEditEventContract.Presenter,
     @Nullable
     private String mEventId;
 
-    private Event mEvent;
-
     @Inject
     AddEditEventPresenter(@NonNull Context context, @NonNull LoaderProvider loaderProvider, @NonNull LoaderManager manager, @Nullable String eventId, @NonNull EventsRepository eventsRepository,
                           @NonNull AddEditEventContract.View eventsView) {
@@ -69,14 +64,22 @@ public class AddEditEventPresenter implements AddEditEventContract.Presenter,
         mLoaderProvider = checkNotNull(loaderProvider);
         mLoaderManager = checkNotNull(manager);
         mEventView.setPresenter(this);
-        mEvent = new Event();
     }
 
     @Override
     public void start() {
         if (!isNewEvent()) {
             populateEvent();
+        } else {
+            loadNewEvent();
         }
+    }
+
+    private void loadNewEvent() {
+        Event event = new Event();
+        long timestamp = event.getDate();
+        mEventView.setDate(timestamp);
+        mEventView.setTime(timestamp);
     }
 
     @Override
@@ -114,7 +117,7 @@ public class AddEditEventPresenter implements AddEditEventContract.Presenter,
     @Override
     public void populateEvent() {
         if (isNewEvent()) {
-            throw new RuntimeException("populateTask() was called but task is new.");
+            throw new RuntimeException("populateEvent() was called but event is new.");
         }
         mRepository.getEvent(mEventId, this);
         if(mLoaderManager.getLoader(EVENT_DETAIL_LOADER) == null) {

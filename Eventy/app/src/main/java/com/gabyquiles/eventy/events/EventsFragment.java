@@ -2,12 +2,9 @@ package com.gabyquiles.eventy.events;
 
 import android.content.Intent;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -21,7 +18,6 @@ import com.gabyquiles.eventy.R;
 import com.gabyquiles.eventy.addeditevent.AddEditEventActivity;
 import com.gabyquiles.eventy.addeditevent.AddEditEventFragment;
 import com.gabyquiles.eventy.model.Event;
-import com.gabyquiles.eventy.ui.EventListAdapterFactory;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -114,13 +110,15 @@ public class EventsFragment extends Fragment implements EventsContract.View{
     @Override
     public void showAddEvent() {
 
-        openDetailsScreen(null);
+        showEventDetails(null);
     }
 
     @Override
     public void showEventDetails(String eventId) {
         Intent intent = new Intent(getContext(), AddEditEventActivity.class);
-        intent.putExtra(AddEditEventFragment.ARGUMENT_EDIT_EVENT_ID, eventId);
+        if (eventId != null) {
+            intent.putExtra(AddEditEventFragment.ARGUMENT_EDIT_EVENT_ID, eventId);
+        }
         startActivity(intent);
     }
 
@@ -142,14 +140,6 @@ public class EventsFragment extends Fragment implements EventsContract.View{
     private void showNoEventsView(String message) {
         mRecyclerView.setVisibility(View.GONE);
         mEmptyView.setVisibility(View.VISIBLE);
-
         mEmptyView.setText(message);
-    }
-
-    private void openDetailsScreen(Uri uri) {
-        Intent eventIntent = new Intent(getContext(), AddEditEventActivity.class);
-        eventIntent.setData(uri);
-        ActivityOptionsCompat activityOptions = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity());
-        ActivityCompat.startActivity(getActivity(), eventIntent, activityOptions.toBundle());
     }
 }

@@ -23,8 +23,11 @@ public class EventProvider extends ContentProvider {
     private EventDBHelper mOpenHelper;
 
     static final int EVENT = 100;
-    static final int GUEST = 103;
-    static final int THING = 106;
+    static final int EVENTS = 101;
+    static final int GUEST = 102;
+    static final int GUESTS = 103;
+    static final int THING = 104;
+    static final int THINGS = 105;
 
     private static final SQLiteQueryBuilder sEventWithGuestsAndThingsQueryBuilder;
 
@@ -71,12 +74,37 @@ public class EventProvider extends ContentProvider {
                         String sortOrder) {
         Cursor retCursor;
         switch (sUriMatcher.match(uri)) {
-            case EVENT: {
-//                Extract this into function and add for case including date
-                retCursor = getEvent(uri, projection, sortOrder);
+            case EVENTS: {
+                retCursor = mOpenHelper.getReadableDatabase().query(
+                        EventContract.EventEntry.TABLE_NAME,
+                        projection,
+                        selection,
+                        selectionArgs,
+                        null,
+                        null,
+                        sortOrder
+                );
                 break;
             }
-            case GUEST: {
+            case EVENT: {
+                long id = EventContract.getIdFromUri(uri);
+                if(id != 0) {
+                    selection = sEventIdSelection;
+                    selectionArgs = new String[] {Long.valueOf(id).toString()};
+                }
+
+                retCursor =  mOpenHelper.getReadableDatabase().query(
+                        EventContract.EventEntry.TABLE_NAME,
+                        projection,
+                        selection,
+                        selectionArgs,
+                        null,
+                        null,
+                        sortOrder
+                );
+                break;
+            }
+            case GUESTS: {
                 retCursor = mOpenHelper.getReadableDatabase().query(
                         EventContract.GuestEntry.TABLE_NAME,
                         projection,
@@ -88,7 +116,7 @@ public class EventProvider extends ContentProvider {
                 );
                 break;
             }
-            case THING: {
+            case THINGS: {
                 retCursor = mOpenHelper.getReadableDatabase().query(
                         EventContract.ThingEntry.TABLE_NAME,
                         projection,
@@ -116,10 +144,16 @@ public class EventProvider extends ContentProvider {
 
         switch (match) {
             case EVENT:
+                return EventContract.EventEntry.CONTENT_ITEM_TYPE;
+            case EVENTS:
                 return EventContract.EventEntry.CONTENT_TYPE;
             case GUEST:
+                return EventContract.GuestEntry.CONTENT_ITEM_TYPE;
+            case GUESTS:
                 return EventContract.GuestEntry.CONTENT_TYPE;
             case THING:
+                return EventContract.ThingEntry.CONTENT_ITEM_TYPE;
+            case THINGS:
                 return EventContract.ThingEntry.CONTENT_TYPE;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
@@ -134,7 +168,7 @@ public class EventProvider extends ContentProvider {
         Uri returnUri;
 
         switch (match) {
-            case EVENT: {
+            case EVENTS: {
                 long _id = db.insert(EventContract.EventEntry.TABLE_NAME, null, values);
                 if ( _id > 0 )
                     returnUri = EventContract.EventEntry.buildEventUri(_id);
@@ -142,7 +176,7 @@ public class EventProvider extends ContentProvider {
                     throw new android.database.SQLException("Failed to insert row into " + uri);
                 break;
             }
-            case GUEST: {
+            case GUESTS: {
                 long _id = db.insert(EventContract.GuestEntry.TABLE_NAME, null, values);
                 if ( _id > 0 ) {
                     returnUri = EventContract.GuestEntry.buildGuestUri(_id);
@@ -151,7 +185,7 @@ public class EventProvider extends ContentProvider {
                 }
                 break;
             }
-            case THING: {
+            case THINGS: {
                 long _id = db.insert(EventContract.ThingEntry.TABLE_NAME, null, values);
                 if ( _id > 0 ) {
                     returnUri = EventContract.ThingEntry.buildThingUri(_id);
@@ -173,17 +207,26 @@ public class EventProvider extends ContentProvider {
 
         final int match = sUriMatcher.match(uri);
 
-        int deletedRows = 0;
+        int deletedRows;
         switch (match) {
-            case EVENT: {
+            case EVENTS: {
                 deletedRows = db.delete(EventContract.EventEntry.TABLE_NAME, selection, selectionArgs);
                 break;
             }
-            case GUEST: {
+            case EVENT: {
+                long id = EventContract.getIdFromUri(uri);
+                if(id != 0) {
+                    selection = sEventIdSelection;
+                    selectionArgs = new String[] {Long.valueOf(id).toString()};
+                }
+                deletedRows = db.delete(EventContract.EventEntry.TABLE_NAME, selection, selectionArgs);
+                break;
+            }
+            case GUESTS: {
                 deletedRows = db.delete(EventContract.GuestEntry.TABLE_NAME, selection, selectionArgs);
                 break;
             }
-            case THING: {
+            case THINGS: {
                 deletedRows = db.delete(EventContract.ThingEntry.TABLE_NAME, selection, selectionArgs);
                 break;
             }
@@ -230,47 +273,47 @@ public class EventProvider extends ContentProvider {
         return updatedRows;
     }
 
-    @Override
-    public int bulkInsert(Uri uri, ContentValues[] values) {
-        final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
-        final int match = sUriMatcher.match(uri);
-        switch (match) {
-            case GUEST:
-                db.beginTransaction();
-                int guestCount = 0;
-                try {
-                    for (ContentValues value : values) {
-                        long _id = db.insert(EventContract.GuestEntry.TABLE_NAME, null, value);
-                        if (_id != -1) {
-                            guestCount++;
-                        }
-                    }
-                    db.setTransactionSuccessful();
-                } finally {
-                    db.endTransaction();
-                }
-                getContext().getContentResolver().notifyChange(uri, null);
-                return guestCount;
-            case THING:
-                db.beginTransaction();
-                int thingCount = 0;
-                try {
-                    for (ContentValues value : values) {
-                        long _id = db.insert(EventContract.ThingEntry.TABLE_NAME, null, value);
-                        if (_id != -1) {
-                            thingCount++;
-                        }
-                    }
-                    db.setTransactionSuccessful();
-                } finally {
-                    db.endTransaction();
-                }
-                getContext().getContentResolver().notifyChange(uri, null);
-                return thingCount;
-            default:
-                return super.bulkInsert(uri, values);
-        }
-    }
+//    @Override
+//    public int bulkInsert(Uri uri, ContentValues[] values) {
+//        final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+//        final int match = sUriMatcher.match(uri);
+//        switch (match) {
+//            case GUEST:
+//                db.beginTransaction();
+//                int guestCount = 0;
+//                try {
+//                    for (ContentValues value : values) {
+//                        long _id = db.insert(EventContract.GuestEntry.TABLE_NAME, null, value);
+//                        if (_id != -1) {
+//                            guestCount++;
+//                        }
+//                    }
+//                    db.setTransactionSuccessful();
+//                } finally {
+//                    db.endTransaction();
+//                }
+//                getContext().getContentResolver().notifyChange(uri, null);
+//                return guestCount;
+//            case THING:
+//                db.beginTransaction();
+//                int thingCount = 0;
+//                try {
+//                    for (ContentValues value : values) {
+//                        long _id = db.insert(EventContract.ThingEntry.TABLE_NAME, null, value);
+//                        if (_id != -1) {
+//                            thingCount++;
+//                        }
+//                    }
+//                    db.setTransactionSuccessful();
+//                } finally {
+//                    db.endTransaction();
+//                }
+//                getContext().getContentResolver().notifyChange(uri, null);
+//                return thingCount;
+//            default:
+//                return super.bulkInsert(uri, values);
+//        }
+//    }
 
     // You do not need to call this method. This is a method specifically to assist the testing
     // framework in running smoothly. You can read more at:
@@ -313,12 +356,12 @@ public class EventProvider extends ContentProvider {
     static UriMatcher buildUriMatcher() {
         UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
 
-        matcher.addURI(EventContract.CONTENT_AUTHORITY, EventContract.PATH_EVENT, EVENT);
+        matcher.addURI(EventContract.CONTENT_AUTHORITY, EventContract.PATH_EVENT, EVENTS);
         matcher.addURI(EventContract.CONTENT_AUTHORITY, EventContract.PATH_EVENT+"/#", EVENT);
-        matcher.addURI(EventContract.CONTENT_AUTHORITY, EventContract.PATH_GUESTS, GUEST);
-        matcher.addURI(EventContract.CONTENT_AUTHORITY, EventContract.PATH_GUESTS+"/#", GUEST);
-        matcher.addURI(EventContract.CONTENT_AUTHORITY, EventContract.PATH_THINGS, THING);
-        matcher.addURI(EventContract.CONTENT_AUTHORITY, EventContract.PATH_THINGS+"/#", THING);
+        matcher.addURI(EventContract.CONTENT_AUTHORITY, EventContract.PATH_GUESTS, GUESTS);
+//        matcher.addURI(EventContract.CONTENT_AUTHORITY, EventContract.PATH_GUESTS+"/#", GUEST);
+        matcher.addURI(EventContract.CONTENT_AUTHORITY, EventContract.PATH_THINGS, THINGS);
+//        matcher.addURI(EventContract.CONTENT_AUTHORITY, EventContract.PATH_THINGS+"/#", THING);
 
         return matcher;
     }

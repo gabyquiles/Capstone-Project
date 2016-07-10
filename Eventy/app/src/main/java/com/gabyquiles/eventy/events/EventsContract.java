@@ -32,9 +32,11 @@ public interface EventsContract {
 
         void openEventDetails(@NonNull Event event);
 
+        void deleteEvent(@NonNull Event event);
+
     }
 
-    public interface EventItemListener {
+    interface EventItemListener {
         void onEventClick(Event clickedEvent);
         void onDeleteEvent(Event deleteEvent);
     }

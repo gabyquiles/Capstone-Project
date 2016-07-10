@@ -83,6 +83,13 @@ public class EventsPresenter implements EventsContract.Presenter, LoaderManager.
     }
 
     @Override
+    public void deleteEvent(@NonNull Event event) {
+        checkNotNull(event, "event cannot be null!");
+        mRepository.deleteEvent(event);
+        loadEvents(true);
+    }
+
+    @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         return mLoaderProvider.createEventsLoader();
     }

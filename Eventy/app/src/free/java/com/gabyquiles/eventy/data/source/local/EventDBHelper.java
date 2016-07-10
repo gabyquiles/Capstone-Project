@@ -18,12 +18,21 @@ public class EventDBHelper extends SQLiteOpenHelper{
 
     private static final int DATABASE_VERSION = 1;
 
-    static final String DATABASE_NAME = "events.db";
+    public static final String DATABASE_NAME = "events.db";
 
     public EventDBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
+
+    @Override
+    public void onConfigure(SQLiteDatabase sqLiteDatabase) {
+        super.onConfigure(sqLiteDatabase);
+        if (!sqLiteDatabase.isReadOnly()) {
+            // Enable foreign key constraints
+            sqLiteDatabase.execSQL("PRAGMA foreign_keys=ON;");
+        }
+    }
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
@@ -43,7 +52,7 @@ public class EventDBHelper extends SQLiteOpenHelper{
                 GuestEntry.COLUMN_THING + " TEXT NULL," +
                 // Set up the location column as a foreign key to location table.
                 " FOREIGN KEY (" + GuestEntry.COLUMN_EVENT_KEY + ") REFERENCES " +
-                EventEntry.TABLE_NAME + " (" + EventEntry._ID + "));";
+                EventEntry.TABLE_NAME + " (" + EventEntry._ID + ") ON DELETE CASCADE);";
         sqLiteDatabase.execSQL(SQL_CREATE_GUESTS_TABLE);
 
         final String SQL_CREATE_THINGS_TABLE = "CREATE TABLE " + ThingEntry.TABLE_NAME + "(" +
@@ -52,7 +61,7 @@ public class EventDBHelper extends SQLiteOpenHelper{
                 ThingEntry.COLUMN_EVENT_KEY + " INTEGER NOT NULL, " +
                 // Set up the location column as a foreign key to location table.
                 " FOREIGN KEY (" + ThingEntry.COLUMN_EVENT_KEY + ") REFERENCES " +
-                EventEntry.TABLE_NAME + " (" + EventEntry._ID + "));";
+                EventEntry.TABLE_NAME + " (" + EventEntry._ID + ") ON DELETE CASCADE);";
         sqLiteDatabase.execSQL(SQL_CREATE_THINGS_TABLE);
     }
 

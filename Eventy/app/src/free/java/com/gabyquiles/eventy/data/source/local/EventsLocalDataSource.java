@@ -79,9 +79,11 @@ public class EventsLocalDataSource implements EventsDataSource {
 
     public void saveGuests(Long eventKey, List<Guest> guestList) {
         mResolver.delete(EventContract.GuestEntry.buildEventGuestsUri(eventKey), null, null);
-        for(Guest guest:guestList) {
-            if (guest != null) {
-                saveGuest(eventKey, guest);
+        if (guestList != null) {
+            for(Guest guest:guestList) {
+                if (guest != null) {
+                    saveGuest(eventKey, guest);
+                }
             }
         }
     }
@@ -95,10 +97,19 @@ public class EventsLocalDataSource implements EventsDataSource {
 
     public void saveThings(Long eventKey, List<String> thingList) {
         mResolver.delete(EventContract.ThingEntry.buildEventThingsUri(eventKey), null, null);
-        for(String thing:thingList) {
-            if (thing != null) {
-                saveThing(eventKey, thing);
+        if (thingList != null) {
+            for (String thing : thingList) {
+                if (thing != null) {
+                    saveThing(eventKey, thing);
+                }
             }
         }
+    }
+
+    @Override
+    public void deleteEvent(@NonNull Event event) {
+        Long id = Long.valueOf(event.getKey());
+        Uri eventUri = EventContract.EventEntry.buildEventUri(id);
+        mResolver.delete(eventUri, null, null);
     }
 }

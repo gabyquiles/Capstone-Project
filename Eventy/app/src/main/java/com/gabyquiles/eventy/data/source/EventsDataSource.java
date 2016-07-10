@@ -31,4 +31,8 @@ public interface EventsDataSource {
     void saveEvent(@NonNull Event event);
 
     void updateEvent(@NonNull Event event);
+
+    void deleteEvent(@NonNull Event event);
+
+//    TODO: Delete old events
 }

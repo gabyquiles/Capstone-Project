@@ -50,6 +50,7 @@ public class EventsFragment extends Fragment implements EventsContract.View{
 
         @Override
         public void onDeleteEvent(Event deleteEvent) {
+            mPresenter.deleteEvent(deleteEvent);
         }
     };
 

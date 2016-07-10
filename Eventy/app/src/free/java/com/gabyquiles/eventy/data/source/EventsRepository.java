@@ -43,4 +43,9 @@ public class EventsRepository implements EventsDataSource {
     public void updateEvent(@NonNull Event event){
         mDataSource.updateEvent(event);
     }
+
+    @Override
+    public void deleteEvent(@NonNull Event event) {
+        mDataSource.deleteEvent(event);
+    }
 }

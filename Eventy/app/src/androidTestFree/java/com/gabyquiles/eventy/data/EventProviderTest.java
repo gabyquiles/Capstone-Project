@@ -49,16 +49,6 @@ public class EventProviderTest {
 
     public void deleteAllRecordsFromProvider() {
         mContext.getContentResolver().delete(
-                EventContract.GuestEntry.CONTENT_URI,
-                null,
-                null
-        );
-        mContext.getContentResolver().delete(
-                EventContract.ThingEntry.CONTENT_URI,
-                null,
-                null
-        );
-        mContext.getContentResolver().delete(
                 EventContract.EventEntry.CONTENT_URI,
                 null,
                 null
@@ -126,8 +116,8 @@ public class EventProviderTest {
         // content://com.example.android.eventy.free/events/1
         type = mContext.getContentResolver().getType(EventContract.EventEntry.buildEventUri(1));
         // vnd.android.cursor.dir/com.example.android.eventy.free/events/1
-        assertThat("Error: the EventEntry CONTENT_URI with id should return EventEnty.CONTENT_TYPE", type,
-                is(EventContract.EventEntry.CONTENT_TYPE));
+        assertThat("Error: the EventEntry CONTENT_URI with id should return EventEnty.CONTENT_ITEM_TYPE", type,
+                is(EventContract.EventEntry.CONTENT_ITEM_TYPE));
 
         long testDate = 1419120000L; // December 21st, 2014
         // content://com.example.android.eventy.free/events?date=20140612
@@ -319,8 +309,7 @@ public class EventProviderTest {
         eventCursor.registerContentObserver(tco);
 
         int count = mContext.getContentResolver().update(
-                EventContract.EventEntry.CONTENT_URI, updatedValues, EventContract.EventEntry._ID + "= ?",
-                new String[] { Long.toString(eventRowId)});
+                EventContract.EventEntry.buildEventUri(eventRowId), updatedValues, null, null);
         assertThat("Error: Number of rows updated does not match expected number", count, is(1));
 
         // Test to make sure our observer is called.  If not, we throw an assertion.
@@ -431,26 +420,15 @@ public class EventProviderTest {
         TestUtilities.TestContentObserver eventObserver = TestUtilities.getTestContentObserver();
         mContext.getContentResolver().registerContentObserver(EventContract.EventEntry.CONTENT_URI, true, eventObserver);
 
-        // Register a content observer for our guests delete.
-        TestUtilities.TestContentObserver guestObserver = TestUtilities.getTestContentObserver();
-        mContext.getContentResolver().registerContentObserver(EventContract.GuestEntry.CONTENT_URI, true, guestObserver);
-
-        // Register a content observer for our things delete.
-        TestUtilities.TestContentObserver thingObserver = TestUtilities.getTestContentObserver();
-        mContext.getContentResolver().registerContentObserver(EventContract.ThingEntry.CONTENT_URI, true, thingObserver);
-
+        // Deletes all records
         deleteAllRecordsFromProvider();
 
         // Students: If either of these fail, you most-likely are not calling the
         // getContext().getContentResolver().notifyChange(uri, null); in the ContentProvider
         // delete.  (only if the insertReadProvider is succeeding)
         eventObserver.waitForNotificationOrFail();
-        guestObserver.waitForNotificationOrFail();
-        thingObserver.waitForNotificationOrFail();
 
         mContext.getContentResolver().unregisterContentObserver(eventObserver);
-        mContext.getContentResolver().unregisterContentObserver(guestObserver);
-        mContext.getContentResolver().unregisterContentObserver(thingObserver);
     }
 
 }

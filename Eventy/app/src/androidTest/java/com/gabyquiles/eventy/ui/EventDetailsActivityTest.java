@@ -12,6 +12,8 @@ import org.junit.runner.RunWith;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.matcher.ViewMatchers.withContentDescription;
+import static android.support.test.espresso.matcher.ViewMatchers.withHint;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 
@@ -30,7 +32,15 @@ public class EventDetailsActivityTest {
 
     @Test
     public void checkActivityLoaded(){
-        onView(withId(R.id.save_button)).check(matches(withText("Save")));
+        onView(withId(R.id.save_button)).check(matches(withContentDescription("Save Event Details")));
+//        onView(withId(R.id.event_title)).check(matches(withHint("Title")));
+//        onView(withId(R.id.event_date)).check(matches(withHint("Date")));
+//        onView(withId(R.id.event_time)).check(matches(withHint("Time")));
+//        onView(withId(R.id.event_address)).check(matches(withHint("Address")));
+//        TODO: Content Description Add Guest
+//        TODO: Content Description Send Invitations
+//        TODO: Content Description Add Thing Text
+//        TODO: Content Description Add Thing Button
     }
 
 }

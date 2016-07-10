@@ -48,6 +48,8 @@ public class EventListScreenTestCase {
                 .check(matches(isDisplayed()));
     }
 
+//    TODO: Opens Edit Event
 //     TODO: check that "no events message" if no events
+//    TODO: Delete Event
 //    TODO: Take into account tablets?
 }

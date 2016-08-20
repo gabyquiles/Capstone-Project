@@ -88,7 +88,7 @@ public class EventListFragment extends Fragment {
         return rootView;
     }
 
-    @OnClick(R.id.add_event_fab)
+//    @OnClick(R.id.add_event_fab)
     public void addEvent() {
         ((Callback) getActivity()).showEventDetails(null);
     }

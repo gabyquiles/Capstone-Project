@@ -52,7 +52,7 @@ public class GetContactAsyncTask extends AsyncTask<Uri, Void, Guest> {
 
     @Override
     protected void onPostExecute(Guest guest) {
-        super.onPostExecute(guest);
+//        super.onPostExecute(guest);
         if (guest != null) {
             mPresenter.addGuest(guest);
         } else {

@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.gabyquiles.eventy.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -28,6 +29,9 @@ public class ThingsAdapter extends RecyclerView.Adapter<ThingsAdapter.ThingsHold
 
     public ThingsAdapter(Context context) {
         mContext = context;
+        if (mList == null) {
+            mList = new ArrayList();
+        }
     }
 
 

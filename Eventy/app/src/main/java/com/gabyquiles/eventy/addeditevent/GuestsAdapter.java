@@ -30,6 +30,9 @@ public class GuestsAdapter extends RecyclerView.Adapter<GuestsAdapter.GuestHolde
 
     public GuestsAdapter(Context context) {
         mContext = context;
+        if (mList == null) {
+            mList = new ArrayList();
+        }
     }
 
     @Override

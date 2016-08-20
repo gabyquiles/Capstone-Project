@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -91,10 +92,23 @@ public class EventsFragment extends Fragment implements EventsContract.View{
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRecyclerView.setAdapter(mAdapter);
 
+
+        // Set up floating action button
+        FloatingActionButton fab =
+                (FloatingActionButton) getActivity().findViewById(R.id.add_event_fab);
+
+//        fab.setImageResource(R.drawable.ic_add);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mPresenter.addNewEvent();
+            }
+        });
+
         return rootView;
     }
 
-    @OnClick(R.id.add_event_fab)
+//    @OnClick(R.id.add_event_fab)
     public void addEvent() {
         mPresenter.addNewEvent();
     }
@@ -106,13 +120,13 @@ public class EventsFragment extends Fragment implements EventsContract.View{
         mEmptyView.setVisibility(View.GONE);
     }
 
-    @OnClick(R.id.add_event_fab)
-    @Override
+//    @OnClick(R.id.add_event_fab)
+//    @Override
     public void showAddEvent() {
 
         showEventDetails(null);
     }
-
+//
     @Override
     public void showEventDetails(String eventId) {
         Intent intent = new Intent(getContext(), AddEditEventActivity.class);

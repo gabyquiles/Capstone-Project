@@ -111,7 +111,14 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventHolde
                     }
                 });
             }
+
             view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    clickEvent(getAdapterPosition());
+                }
+            });
+            mToolbar.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     clickEvent(getAdapterPosition());

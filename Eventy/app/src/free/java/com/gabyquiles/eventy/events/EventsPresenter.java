@@ -119,6 +119,7 @@ public class EventsPresenter implements EventsContract.Presenter, LoaderManager.
     }
 
     private void onDataEmpty() {
+        mEventsView.showNoEvents();
     }
 
     private void onDataLoaded(Cursor data) {

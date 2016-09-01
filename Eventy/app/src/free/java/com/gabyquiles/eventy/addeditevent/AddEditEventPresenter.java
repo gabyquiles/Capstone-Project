@@ -254,8 +254,6 @@ public class AddEditEventPresenter implements AddEditEventContract.Presenter,
     public void onDataNotAvailable() {
 
     }
-
-//    TODO: Refresh view when deleting last event
 //    TODO: Delete previous events
 //    TODO: Set the Adds
 //    TODO: Set the analytics

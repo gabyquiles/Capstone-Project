@@ -60,6 +60,10 @@ public class AddEditEventPresenter implements AddEditEventContract.Presenter,
     private Cursor mGuestsCursor;
     private Cursor mThingsCursor;
 
+    private boolean mEventLoaded = false;
+    private boolean mGuestLoaded = false;
+    private boolean mThingsLoaded = false;
+
     @Inject
     AddEditEventPresenter(@NonNull Context context, @NonNull LoaderProvider loaderProvider, @NonNull LoaderManager manager, @Nullable String eventId, @NonNull EventsRepository eventsRepository,
                           @NonNull AddEditEventContract.View eventsView) {
@@ -140,10 +144,13 @@ public class AddEditEventPresenter implements AddEditEventContract.Presenter,
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         if(id == EVENT_DETAIL_LOADER) {
+            mEventLoaded = false;
             return mLoaderProvider.createEventLoader(mEventId);
         } else if(id == GUESTS_LOADER) {
+            mGuestLoaded = false;
             return mLoaderProvider.createGuestsLoader(mEventId);
         } else if(id == THINGS_LOADER) {
+            mThingsLoaded = false;
             return  mLoaderProvider.createThingsLoader(mEventId);
         }
         return  null;
@@ -152,27 +159,20 @@ public class AddEditEventPresenter implements AddEditEventContract.Presenter,
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         if(loader.getId() == EVENT_DETAIL_LOADER) {
+            mEventLoaded = true;
             if (data != null && data.moveToLast()) {
                 mEventCursor = data;
-//                FreeEvent event = FreeEvent.from(data);
-//                onEventLoaded(event);
-//                mLoaderManager.initLoader(GUESTS_LOADER, null, this);
             } else {
                 // NO-OP, add mode.
             }
         } else if(loader.getId() == GUESTS_LOADER) {
+            mGuestLoaded = true;
             if (data != null && data.moveToFirst()) {
-//                do {
-//                    Guest guest = Guest.from(data);
-//                    mEventView.addGuest(guest);
-//                } while (data.moveToNext());
                 mGuestsCursor = data;
             }
         } else if(loader.getId() == THINGS_LOADER) {
+            mThingsLoaded = true;
             if ( data != null && data.moveToFirst()) {
-//                do {
-//                    mEventView.addThing(data.getString(0));
-//                } while (data.moveToNext());
                 mThingsCursor = data;
             }
         }
@@ -180,15 +180,15 @@ public class AddEditEventPresenter implements AddEditEventContract.Presenter,
     }
 
     private void joinCursors() {
-        if(mEventCursor != null && mGuestsCursor != null && mThingsCursor != null) {
+        if(mEventLoaded && mGuestLoaded && mThingsLoaded) {
             FreeEvent event = FreeEvent.from(mEventCursor);
-            if(mGuestsCursor.moveToFirst()) {
+            if(mGuestsCursor != null && mGuestsCursor.moveToFirst()) {
                 do {
                     Guest guest = Guest.from(mGuestsCursor);
                     event.addGuest(guest);
                 } while (mGuestsCursor.moveToNext());
             }
-            if(mThingsCursor.moveToFirst()) {
+            if(mThingsCursor != null && mThingsCursor.moveToFirst()) {
                 do {
                     mEventView.addThing(mThingsCursor.getString(0));
                     event.addThing(mThingsCursor.getString(mThingsCursor.getColumnIndexOrThrow(EventContract.ThingEntry.COLUMN_THING)));
@@ -254,6 +254,7 @@ public class AddEditEventPresenter implements AddEditEventContract.Presenter,
     public void onDataNotAvailable() {
 
     }
+//    TODO: Send Emails
 //    TODO: Delete previous events
 //    TODO: Set the Adds
 //    TODO: Set the analytics

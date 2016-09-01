@@ -14,6 +14,7 @@ import android.support.v4.content.Loader;
 import com.gabyquiles.eventy.data.source.EventsDataSource;
 import com.gabyquiles.eventy.data.source.EventsRepository;
 import com.gabyquiles.eventy.data.source.LoaderProvider;
+import com.gabyquiles.eventy.data.source.local.EventContract;
 import com.gabyquiles.eventy.model.Event;
 import com.gabyquiles.eventy.model.FreeEvent;
 import com.gabyquiles.eventy.model.Guest;
@@ -35,6 +36,7 @@ public class AddEditEventPresenter implements AddEditEventContract.Presenter,
 
     public final static int EVENT_DETAIL_LOADER = 2;
     public final static int GUESTS_LOADER = 3;
+    public final static int THINGS_LOADER = 4;
 
     @NonNull
     private final Context mContext;
@@ -53,6 +55,10 @@ public class AddEditEventPresenter implements AddEditEventContract.Presenter,
 
     @Nullable
     private String mEventId;
+
+    private Cursor mEventCursor;
+    private Cursor mGuestsCursor;
+    private Cursor mThingsCursor;
 
     @Inject
     AddEditEventPresenter(@NonNull Context context, @NonNull LoaderProvider loaderProvider, @NonNull LoaderManager manager, @Nullable String eventId, @NonNull EventsRepository eventsRepository,
@@ -122,8 +128,12 @@ public class AddEditEventPresenter implements AddEditEventContract.Presenter,
         mRepository.getEvent(mEventId, this);
         if(mLoaderManager.getLoader(EVENT_DETAIL_LOADER) == null) {
             mLoaderManager.initLoader(EVENT_DETAIL_LOADER, null, this);
+            mLoaderManager.initLoader(GUESTS_LOADER, null, this);
+            mLoaderManager.initLoader(THINGS_LOADER, null, this);
         } else {
             mLoaderManager.restartLoader(EVENT_DETAIL_LOADER, null, this);
+            mLoaderManager.restartLoader(GUESTS_LOADER, null, this);
+            mLoaderManager.restartLoader(THINGS_LOADER, null, this);
         }
     }
 
@@ -133,6 +143,8 @@ public class AddEditEventPresenter implements AddEditEventContract.Presenter,
             return mLoaderProvider.createEventLoader(mEventId);
         } else if(id == GUESTS_LOADER) {
             return mLoaderProvider.createGuestsLoader(mEventId);
+        } else if(id == THINGS_LOADER) {
+            return  mLoaderProvider.createThingsLoader(mEventId);
         }
         return  null;
     }
@@ -141,19 +153,49 @@ public class AddEditEventPresenter implements AddEditEventContract.Presenter,
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         if(loader.getId() == EVENT_DETAIL_LOADER) {
             if (data != null && data.moveToLast()) {
-                FreeEvent event = FreeEvent.from(data);
-                onEventLoaded(event);
-                mLoaderManager.initLoader(GUESTS_LOADER, null, this);
+                mEventCursor = data;
+//                FreeEvent event = FreeEvent.from(data);
+//                onEventLoaded(event);
+//                mLoaderManager.initLoader(GUESTS_LOADER, null, this);
             } else {
                 // NO-OP, add mode.
             }
         } else if(loader.getId() == GUESTS_LOADER) {
             if (data != null && data.moveToFirst()) {
-                do {
-                    Guest guest = Guest.from(data);
-                    mEventView.addGuest(guest);
-                } while (data.moveToNext());
+//                do {
+//                    Guest guest = Guest.from(data);
+//                    mEventView.addGuest(guest);
+//                } while (data.moveToNext());
+                mGuestsCursor = data;
             }
+        } else if(loader.getId() == THINGS_LOADER) {
+            if ( data != null && data.moveToFirst()) {
+//                do {
+//                    mEventView.addThing(data.getString(0));
+//                } while (data.moveToNext());
+                mThingsCursor = data;
+            }
+        }
+        joinCursors();
+    }
+
+    private void joinCursors() {
+        if(mEventCursor != null && mGuestsCursor != null && mThingsCursor != null) {
+            FreeEvent event = FreeEvent.from(mEventCursor);
+            if(mGuestsCursor.moveToFirst()) {
+                do {
+                    Guest guest = Guest.from(mGuestsCursor);
+                    event.addGuest(guest);
+                } while (mGuestsCursor.moveToNext());
+            }
+            if(mThingsCursor.moveToFirst()) {
+                do {
+                    mEventView.addThing(mThingsCursor.getString(0));
+                    event.addThing(mThingsCursor.getString(mThingsCursor.getColumnIndexOrThrow(EventContract.ThingEntry.COLUMN_THING)));
+                } while (mThingsCursor.moveToNext());
+            }
+
+            onEventLoaded(event);
         }
     }
 
@@ -176,7 +218,7 @@ public class AddEditEventPresenter implements AddEditEventContract.Presenter,
         if(event.isValid()) {
             mRepository.saveEvent(event);
         }
-//        TODO
+//        TODO:
 //        Task newTask = new Task(title, description);
 //        if (newTask.isEmpty()) {
 //            mAddTaskView.showEmptyTaskError();
@@ -213,4 +255,9 @@ public class AddEditEventPresenter implements AddEditEventContract.Presenter,
 
     }
 
+//    TODO: Refresh view when deleting last event
+//    TODO: Delete previous events
+//    TODO: Set the Adds
+//    TODO: Set the analytics
+//    TODO: Still dropping frames
 }

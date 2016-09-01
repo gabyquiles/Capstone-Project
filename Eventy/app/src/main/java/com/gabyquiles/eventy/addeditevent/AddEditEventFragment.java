@@ -233,8 +233,12 @@ public class AddEditEventFragment extends Fragment implements AddEditEventContra
     @OnClick(R.id.add_things_button)
     public void addNewThing() {
         String newThing = mNewThing.getText().toString();
-        mThingsAdapter.addToList(newThing);
+        addThing(newThing);
 
+    }
+
+    public void addThing(String thing) {
+        mThingsAdapter.addToList(thing);
     }
 
     public void saveEvent() {

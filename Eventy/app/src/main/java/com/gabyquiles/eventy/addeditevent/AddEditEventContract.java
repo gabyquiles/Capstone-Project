@@ -25,6 +25,7 @@ public interface AddEditEventContract {
         void refreshGuests(List<Guest> guestsList);
         void refreshThings(List<String> thingsList);
         void addGuest(Guest guest);
+        void addThing(String thing);
     }
 
     interface Presenter extends BasePresenter {

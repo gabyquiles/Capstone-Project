@@ -56,4 +56,12 @@ public class LoaderProvider {
                 new String[]{eventId},
                 null);
     }
+
+    public Loader<Cursor> createThingsLoader(String eventId) {
+        return new CursorLoader(mContext,EventContract.ThingEntry.buildEventThingsUri(Long.valueOf(eventId)),
+                null,
+                EventProvider.sThingsByEventIdSelection,
+                new String[]{eventId},
+                null);
+    }
 }

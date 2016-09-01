@@ -62,6 +62,10 @@ public class EventProvider extends ContentProvider {
         EventContract.GuestEntry.TABLE_NAME + "." +
                 EventContract.GuestEntry.COLUMN_EVENT_KEY + " = ?";
 
+    public static final String sThingsByEventIdSelection =
+        EventContract.ThingEntry.TABLE_NAME + "." +
+                EventContract.ThingEntry.COLUMN_EVENT_KEY + " = ?";
+
     @Override
     public boolean onCreate() {
         mOpenHelper = new EventDBHelper(getContext());

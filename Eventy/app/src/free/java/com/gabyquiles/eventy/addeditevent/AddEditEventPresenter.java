@@ -18,6 +18,7 @@ import com.gabyquiles.eventy.data.source.local.EventContract;
 import com.gabyquiles.eventy.model.Event;
 import com.gabyquiles.eventy.model.FreeEvent;
 import com.gabyquiles.eventy.model.Guest;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.util.List;
 
@@ -51,10 +52,13 @@ public class AddEditEventPresenter implements AddEditEventContract.Presenter,
     private final LoaderProvider mLoaderProvider;
 
     @NonNull
-    private final LoaderManager mLoaderManager;
+    private LoaderManager mLoaderManager;
 
     @Nullable
     private String mEventId;
+
+    @NonNull
+    private FirebaseAnalytics mAnalytics;
 
     private Cursor mEventCursor;
     private Cursor mGuestsCursor;
@@ -65,23 +69,29 @@ public class AddEditEventPresenter implements AddEditEventContract.Presenter,
     private boolean mThingsLoaded = false;
 
     @Inject
-    AddEditEventPresenter(@NonNull Context context, @NonNull LoaderProvider loaderProvider, @NonNull LoaderManager manager, @Nullable String eventId, @NonNull EventsRepository eventsRepository,
-                          @NonNull AddEditEventContract.View eventsView) {
+    AddEditEventPresenter(@NonNull Context context, @NonNull LoaderProvider loaderProvider, @Nullable String eventId, @NonNull EventsRepository eventsRepository,
+                          @NonNull AddEditEventContract.View eventsView, @NonNull FirebaseAnalytics analytics) {
         mEventId = eventId;
         mContext = checkNotNull(context);
         mRepository = checkNotNull(eventsRepository);
         mEventView = checkNotNull(eventsView);
         mLoaderProvider = checkNotNull(loaderProvider);
-        mLoaderManager = checkNotNull(manager);
         mEventView.setPresenter(this);
+        mAnalytics = analytics;
+    }
+
+    public void setLoaderManager(@NonNull LoaderManager manager) {
+        mLoaderManager = manager;
     }
 
     @Override
     public void start() {
         if (!isNewEvent()) {
             populateEvent();
+            logEvent("Load existing event");
         } else {
             loadNewEvent();
+            logEvent("Creating new event");
         }
     }
 
@@ -96,8 +106,10 @@ public class AddEditEventPresenter implements AddEditEventContract.Presenter,
     public void saveEvent(String title, long date, String place, List<Guest> guests, List<String> things) {
         if (isNewEvent()) {
             createEvent(title, date, place, guests, things);
+            logEvent("New event saved");
         } else {
             updateEvent(title, date, place, guests, things);
+            logEvent("Event updated");
         }
     }
 
@@ -254,9 +266,23 @@ public class AddEditEventPresenter implements AddEditEventContract.Presenter,
     public void onDataNotAvailable() {
 
     }
+
+
+
+    public void logEvent(String eventDescription) {
+
+        Bundle bundle = new Bundle();
+        bundle.putString(FirebaseAnalytics.Param.ITEM_ID, LOG_TAG);
+        bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, eventDescription);
+
+        mAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
+    }
 //    TODO: Send Emails
 //    TODO: Delete previous events
 //    TODO: Set the Adds
-//    TODO: Set the analytics
+/**
+ * It is recommended to move the Analytics creation to the Application class so that only one
+ * instance is used across the project.
+ */
 //    TODO: Still dropping frames
 }

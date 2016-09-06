@@ -2,6 +2,10 @@ package com.gabyquiles.eventy;
 
 import android.content.Context;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
+
+import javax.inject.Singleton;
+
 import dagger.Module;
 import dagger.Provides;
 
@@ -22,7 +26,14 @@ public class ApplicationModule {
     }
 
     @Provides
+    @Singleton
     Context provideContext() {
         return mContext;
+    }
+
+    @Provides
+    @Singleton
+    public FirebaseAnalytics getAnalytics(Context context) {
+        return FirebaseAnalytics.getInstance(context);
     }
 }

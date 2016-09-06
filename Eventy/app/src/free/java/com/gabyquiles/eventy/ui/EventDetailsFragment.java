@@ -136,8 +136,8 @@ public class EventDetailsFragment extends Fragment  implements LoaderManager.Loa
         requestNewInterstitial();
 
         // Obtain the FirebaseAnalytics instance.
-        mFirebaseAnalytics = ((EventyApplication) getActivity().getApplication()).getAnalytics();
-        logEvent("Event Details");
+//        mFirebaseAnalytics = ((EventyApplication) getActivity().getApplication()).getAnalytics();
+//        logEvent("Event Details");
 
         return rootView;
     }
@@ -408,6 +408,6 @@ public class EventDetailsFragment extends Fragment  implements LoaderManager.Loa
         bundle.putString(FirebaseAnalytics.Param.ITEM_ID, getActivity().getClass().getSimpleName());
         bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, event);
 
-        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
+//        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
     }
 }

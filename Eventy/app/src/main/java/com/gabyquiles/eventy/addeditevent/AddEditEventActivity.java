@@ -6,10 +6,9 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
-import com.gabyquiles.eventy.ApplicationModule;
 import com.gabyquiles.eventy.EventyApplication;
 import com.gabyquiles.eventy.R;
-import com.gabyquiles.eventy.data.DataModule;
+import com.gabyquiles.eventy.data.source.EventsRepositoryModule;
 import com.gabyquiles.eventy.events.EventsActivity;
 import com.gabyquiles.eventy.util.ActivityUtils;
 
@@ -59,13 +58,9 @@ public class AddEditEventActivity extends AppCompatActivity {
         }
 
         // Create the presenter
-        DaggerAddEditEventComponent.builder()
-                .eventsRepositoryComponent(((EventyApplication) getApplication()).getEventsRepositoryComponent())
-                .applicationModule(new ApplicationModule(this))
-                .dataModule(new DataModule(this, getSupportLoaderManager()))
-                .addEditEventPresenterModule(
-                        new AddEditEventPresenterModule(mAddEditEventFragment, eventId)).build()
-                .inject(this);
+        EventyApplication.get(this).getAppComponent()
+                .plus(new AddEditEventPresenterModule(mAddEditEventFragment, eventId), new EventsRepositoryModule()).inject(this);
+        mPresenter.setLoaderManager(getSupportLoaderManager());
     }
 
     @OnClick(R.id.save_button)

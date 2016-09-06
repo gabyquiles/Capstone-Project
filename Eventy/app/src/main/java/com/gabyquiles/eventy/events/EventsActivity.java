@@ -7,11 +7,8 @@ import android.support.v7.widget.Toolbar;
 
 import com.gabyquiles.eventy.EventyApplication;
 import com.gabyquiles.eventy.R;
-import com.gabyquiles.eventy.data.DataModule;
 import com.gabyquiles.eventy.data.source.EventsRepositoryModule;
-import com.gabyquiles.eventy.model.Event;
 import com.gabyquiles.eventy.util.ActivityUtils;
-import com.google.firebase.analytics.FirebaseAnalytics;
 
 import javax.inject.Inject;
 
@@ -57,18 +54,16 @@ public class EventsActivity extends AppCompatActivity {
         }
 
         // Create the presenter
-        DaggerEventsComponent.builder()
-                .dataModule(new DataModule(this, getSupportLoaderManager()))
-                .eventsRepositoryComponent(((EventyApplication) getApplication()).getEventsRepositoryComponent())
-                .eventsPresenterModule(new EventsPresenterModule(eventsFragment))
-                .build().inject(this);
+        EventyApplication.get(this).getAppComponent()
+                .plus(new EventsPresenterModule(eventsFragment), new EventsRepositoryModule()).inject(this);
+        mPresenter.setLoaderManager(getSupportLoaderManager());
 
 //        TODO: This should be here????
-        FirebaseAnalytics firebaseAnalytics = ((EventyApplication) getApplication()).getAnalytics();
-        Bundle bundle = new Bundle();
-        bundle.putString(FirebaseAnalytics.Param.ITEM_ID, LOG_TAG);
-        bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "Event List");
-
-        firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
+//        FirebaseAnalytics firebaseAnalytics = ((EventyApplication) getApplication()).getAnalytics();
+//        Bundle bundle = new Bundle();
+//        bundle.putString(FirebaseAnalytics.Param.ITEM_ID, LOG_TAG);
+//        bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "Event List");
+//
+//        firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
     }
 }

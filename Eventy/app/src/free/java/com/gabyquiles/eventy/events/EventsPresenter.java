@@ -1,16 +1,18 @@
 package com.gabyquiles.eventy.events;
 
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 
+import com.gabyquiles.eventy.EventyApplication;
 import com.gabyquiles.eventy.data.source.LoaderProvider;
 import com.gabyquiles.eventy.data.source.EventsDataSource;
 import com.gabyquiles.eventy.data.source.EventsRepository;
 import com.gabyquiles.eventy.model.Event;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.util.List;
 
@@ -36,13 +38,15 @@ public class EventsPresenter implements EventsContract.Presenter, LoaderManager.
 
     private EventsRepository mRepository;
 
+    private FirebaseAnalytics mAnalytics;
+
     @Inject
-    public EventsPresenter(@NonNull LoaderProvider provider, @NonNull LoaderManager manager, @NonNull EventsRepository eventsRepository, @NonNull EventsContract.View eventsView) {
+    public EventsPresenter(@NonNull LoaderProvider provider, @NonNull EventsRepository eventsRepository, @NonNull EventsContract.View eventsView, @NonNull FirebaseAnalytics analytics) {
         mLoaderProvider = checkNotNull(provider, "loaderProvider can not be null");
-        mLoaderManager = checkNotNull(manager, "loaderManager can not be null");
         mEventsView = checkNotNull(eventsView, "eventsView can not be null");
         mRepository = checkNotNull(eventsRepository, "eventsRepository can not be null");
         mEventsView.setPresenter(this);
+        mAnalytics = analytics;
     }
 
     @Inject
@@ -57,6 +61,7 @@ public class EventsPresenter implements EventsContract.Presenter, LoaderManager.
     @Override
     public void start() {
         loadEvents(true);
+        logEvent("Event List");
     }
 
     public void loadEvents(boolean forceUpdate) {
@@ -130,5 +135,14 @@ public class EventsPresenter implements EventsContract.Presenter, LoaderManager.
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
 
+    }
+
+    public void logEvent(String eventDescription) {
+
+        Bundle bundle = new Bundle();
+        bundle.putString(FirebaseAnalytics.Param.ITEM_ID, LOG_TAG);
+        bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, eventDescription);
+
+        mAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
     }
 }

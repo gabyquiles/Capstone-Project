@@ -10,6 +10,8 @@ import android.support.v4.content.Loader;
 import com.gabyquiles.eventy.data.source.local.EventContract;
 import com.gabyquiles.eventy.data.source.local.EventProvider;
 
+import javax.inject.Inject;
+
 import static dagger.internal.Preconditions.checkNotNull;
 
 /**
@@ -23,6 +25,7 @@ public class LoaderProvider {
     @NonNull
     private final Context mContext;
 
+    @Inject
     public LoaderProvider(@NonNull Context context) {
         mContext = checkNotNull(context, "context cannot be null");
     }

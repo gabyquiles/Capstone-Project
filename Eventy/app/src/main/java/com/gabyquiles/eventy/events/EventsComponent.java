@@ -1,20 +1,23 @@
 package com.gabyquiles.eventy.events;
 
-import com.gabyquiles.eventy.data.DataModule;
-import com.gabyquiles.eventy.data.source.EventsRepositoryComponent;
-import com.gabyquiles.eventy.util.FragmentScoped;
+import com.gabyquiles.eventy.data.source.EventsRepositoryModule;
+import com.gabyquiles.eventy.util.ActivityScope;
 
-
-import dagger.Component;
+import dagger.Subcomponent;
 
 /**
  * Description
  *
  * @author gabrielquiles-perez
  */
-@FragmentScoped
-@Component(dependencies = EventsRepositoryComponent.class, modules = {DataModule.class, EventsPresenterModule.class})
+@ActivityScope
+@Subcomponent(
+        modules = {
+                EventsPresenterModule.class,
+                EventsRepositoryModule.class
+        }
+)
 public interface EventsComponent {
 
-    void inject(EventsActivity activity);
+    EventsActivity inject(EventsActivity activity);
 }

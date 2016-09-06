@@ -18,7 +18,7 @@ import dagger.Provides;
 public class EventsRepositoryModule {
     private final String LOG_TAG = EventsRepositoryModule.class.getSimpleName();
 
-    @Singleton
+//    @Singleton
     @Provides
     EventsDataSource provideLocalDataSource(Context context) {
         return new EventsLocalDataSource(context.getContentResolver());

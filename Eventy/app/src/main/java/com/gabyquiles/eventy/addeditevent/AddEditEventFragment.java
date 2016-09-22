@@ -4,7 +4,6 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
@@ -22,7 +21,6 @@ import android.widget.TimePicker;
 
 import com.gabyquiles.eventy.R;
 import com.gabyquiles.eventy.Utility;
-import com.gabyquiles.eventy.model.Event;
 import com.gabyquiles.eventy.model.Guest;
 
 import java.util.ArrayList;
@@ -237,6 +235,15 @@ public class AddEditEventFragment extends Fragment implements AddEditEventContra
 
     }
 
+    @OnClick(R.id.send_invites_button)
+    public void sendInvites() {
+        String title = mTitle.getText().toString();
+        String place = mAddress.getText().toString();
+        List things = mThingsAdapter.getList();
+        List guests = mGuestAdapter.getList();
+        mPresenter.sendInvites(title, mTimestamp, place, guests, things );
+    }
+
     public void addThing(String thing) {
         mThingsAdapter.addToList(thing);
     }
@@ -248,5 +255,4 @@ public class AddEditEventFragment extends Fragment implements AddEditEventContra
         List guests = mGuestAdapter.getList();
         mPresenter.saveEvent(title, mTimestamp, place, guests, things );
     }
-
 }

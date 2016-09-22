@@ -30,9 +30,8 @@ public interface AddEditEventContract {
 
     interface Presenter extends BasePresenter {
         void saveEvent(String title, long date, String place, List<Guest> guests, List<String> things);
-        void sendInvites();
+        void sendInvites(String title, long date, String place, List<Guest> guests, List<String> things);
         void addGuest(Guest guest);
-
         void result(int requestCode, int resultCode, Intent data);
         void populateEvent();
         void errorSelectingGuest();

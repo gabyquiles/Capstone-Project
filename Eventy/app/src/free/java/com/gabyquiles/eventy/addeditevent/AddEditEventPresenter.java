@@ -5,12 +5,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
+import android.text.TextUtils;
 
+import com.gabyquiles.eventy.R;
+import com.gabyquiles.eventy.Utility;
+import com.gabyquiles.eventy.analytics.AnalyticsManager;
+import com.gabyquiles.eventy.analytics.AnalyticsManagerInterface;
 import com.gabyquiles.eventy.data.source.EventsDataSource;
 import com.gabyquiles.eventy.data.source.EventsRepository;
 import com.gabyquiles.eventy.data.source.LoaderProvider;
@@ -18,8 +24,8 @@ import com.gabyquiles.eventy.data.source.local.EventContract;
 import com.gabyquiles.eventy.model.Event;
 import com.gabyquiles.eventy.model.FreeEvent;
 import com.gabyquiles.eventy.model.Guest;
-import com.google.firebase.analytics.FirebaseAnalytics;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -58,7 +64,7 @@ public class AddEditEventPresenter implements AddEditEventContract.Presenter,
     private String mEventId;
 
     @NonNull
-    private FirebaseAnalytics mAnalytics;
+    private AnalyticsManagerInterface mAnalytics;
 
     private Cursor mEventCursor;
     private Cursor mGuestsCursor;
@@ -70,7 +76,7 @@ public class AddEditEventPresenter implements AddEditEventContract.Presenter,
 
     @Inject
     AddEditEventPresenter(@NonNull Context context, @NonNull LoaderProvider loaderProvider, @Nullable String eventId, @NonNull EventsRepository eventsRepository,
-                          @NonNull AddEditEventContract.View eventsView, @NonNull FirebaseAnalytics analytics) {
+                          @NonNull AddEditEventContract.View eventsView, @NonNull AnalyticsManager analytics) {
         mEventId = eventId;
         mContext = checkNotNull(context);
         mRepository = checkNotNull(eventsRepository);
@@ -88,10 +94,10 @@ public class AddEditEventPresenter implements AddEditEventContract.Presenter,
     public void start() {
         if (!isNewEvent()) {
             populateEvent();
-            logEvent("Load existing event");
+            mAnalytics.logEvent("Load existing event");
         } else {
             loadNewEvent();
-            logEvent("Creating new event");
+            mAnalytics.logEvent("Creating new event");
         }
     }
 
@@ -106,16 +112,53 @@ public class AddEditEventPresenter implements AddEditEventContract.Presenter,
     public void saveEvent(String title, long date, String place, List<Guest> guests, List<String> things) {
         if (isNewEvent()) {
             createEvent(title, date, place, guests, things);
-            logEvent("New event saved");
+            mAnalytics.logEvent("New event saved");
         } else {
             updateEvent(title, date, place, guests, things);
-            logEvent("Event updated");
+            mAnalytics.logEvent("Event updated");
         }
     }
 
     @Override
-    public void sendInvites() {
+    public void sendInvites(String title, long date, String place, List<Guest> guests, List<String> things) {
+        Intent sendIntent = createEmailIntent(title, date, place, guests, things);
+        Intent intentChoser = Intent.createChooser(sendIntent, "Select how to send email invites");
+        mContext.startActivity(intentChoser);
 
+        mAnalytics.logEvent("Sending invites");
+    }
+
+    private Intent createEmailIntent(String title, long date, String place, List<Guest> guests, List<String> things) {
+        Intent emailIntent = new Intent(Intent.ACTION_SEND);
+
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            emailIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT);
+        }
+        emailIntent.setType("text/plain");
+        String[] emails = getGuestsEmail(guests);
+
+        String dateStr = Utility.formatFullDate(date);
+        String inviteText = mContext.getString(R.string.invite_text, title, dateStr, place);
+        String requestText = mContext.getString(R.string.attribution);
+        if(!things.isEmpty()) {
+            String thingsStr = TextUtils.join(",", things);
+            requestText = mContext.getString(R.string.things_text, thingsStr) + requestText;
+        }
+
+        emailIntent.setType("text/email");
+        emailIntent.putExtra(Intent.EXTRA_EMAIL, emails);
+        emailIntent.putExtra(Intent.EXTRA_SUBJECT, title);
+        emailIntent.putExtra(Intent.EXTRA_TEXT, inviteText + requestText);
+        return emailIntent;
+    }
+
+    private String[] getGuestsEmail(List<Guest> guestList) {
+        ArrayList<String> emails = new ArrayList<>();
+        for (Guest guest: guestList) {
+            emails.add(guest.getEmail());
+        }
+        return emails.toArray(new String[emails.size()]);
     }
 
     @Override
@@ -265,17 +308,6 @@ public class AddEditEventPresenter implements AddEditEventContract.Presenter,
     @Override
     public void onDataNotAvailable() {
 
-    }
-
-
-
-    public void logEvent(String eventDescription) {
-
-        Bundle bundle = new Bundle();
-        bundle.putString(FirebaseAnalytics.Param.ITEM_ID, LOG_TAG);
-        bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, eventDescription);
-
-        mAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
     }
 //    TODO: Send Emails
 //    TODO: Delete previous events

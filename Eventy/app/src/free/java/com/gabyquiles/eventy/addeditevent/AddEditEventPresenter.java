@@ -15,6 +15,8 @@ import android.text.TextUtils;
 
 import com.gabyquiles.eventy.R;
 import com.gabyquiles.eventy.Utility;
+import com.gabyquiles.eventy.admob.AdHost;
+import com.gabyquiles.eventy.admob.AdsManager;
 import com.gabyquiles.eventy.analytics.AnalyticsManager;
 import com.gabyquiles.eventy.analytics.AnalyticsManagerInterface;
 import com.gabyquiles.eventy.data.source.EventsDataSource;
@@ -30,6 +32,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 import static dagger.internal.Preconditions.checkNotNull;
 
 /**
@@ -38,7 +41,7 @@ import static dagger.internal.Preconditions.checkNotNull;
  * @author gabrielquiles-perez
  */
 public class AddEditEventPresenter implements AddEditEventContract.Presenter,
-        LoaderManager.LoaderCallbacks<Cursor>, EventsDataSource.GetEventCallback {
+        LoaderManager.LoaderCallbacks<Cursor>, EventsDataSource.GetEventCallback, AdHost {
     private final String LOG_TAG = AddEditEventPresenter.class.getSimpleName();
 
     public final static int EVENT_DETAIL_LOADER = 2;
@@ -66,6 +69,9 @@ public class AddEditEventPresenter implements AddEditEventContract.Presenter,
     @NonNull
     private AnalyticsManagerInterface mAnalytics;
 
+    @NonNull
+    private AdsManager mAds;
+
     private Cursor mEventCursor;
     private Cursor mGuestsCursor;
     private Cursor mThingsCursor;
@@ -76,7 +82,7 @@ public class AddEditEventPresenter implements AddEditEventContract.Presenter,
 
     @Inject
     AddEditEventPresenter(@NonNull Context context, @NonNull LoaderProvider loaderProvider, @Nullable String eventId, @NonNull EventsRepository eventsRepository,
-                          @NonNull AddEditEventContract.View eventsView, @NonNull AnalyticsManager analytics) {
+                          @NonNull AddEditEventContract.View eventsView, @NonNull AnalyticsManager analytics, @NonNull AdsManager adsManager) {
         mEventId = eventId;
         mContext = checkNotNull(context);
         mRepository = checkNotNull(eventsRepository);
@@ -84,6 +90,7 @@ public class AddEditEventPresenter implements AddEditEventContract.Presenter,
         mLoaderProvider = checkNotNull(loaderProvider);
         mEventView.setPresenter(this);
         mAnalytics = analytics;
+        mAds = adsManager;
     }
 
     public void setLoaderManager(@NonNull LoaderManager manager) {
@@ -99,6 +106,8 @@ public class AddEditEventPresenter implements AddEditEventContract.Presenter,
             loadNewEvent();
             mAnalytics.logEvent("Creating new event");
         }
+//        Request new ad
+        mAds.requestNewInterstitial();
     }
 
     private void loadNewEvent() {
@@ -122,8 +131,9 @@ public class AddEditEventPresenter implements AddEditEventContract.Presenter,
     @Override
     public void sendInvites(String title, long date, String place, List<Guest> guests, List<String> things) {
         Intent sendIntent = createEmailIntent(title, date, place, guests, things);
-        Intent intentChoser = Intent.createChooser(sendIntent, "Select how to send email invites");
-        mContext.startActivity(intentChoser);
+        Intent intentChooser = Intent.createChooser(sendIntent, "Select how to send email invites");
+        intentChooser.addFlags(FLAG_ACTIVITY_NEW_TASK);
+        mContext.startActivity(intentChooser);
 
         mAnalytics.logEvent("Sending invites");
     }
@@ -292,7 +302,10 @@ public class AddEditEventPresenter implements AddEditEventContract.Presenter,
         if(event.isValid()) {
             mRepository.saveEvent(event);
         }
-        mEventView.showEventsList(); // After an edit, go back to the list.
+
+//        Show Interstitial Ad
+        mAds.showInterstitial(this);
+        mEventView.showEventsList();
     }
 
     @Override
@@ -309,12 +322,10 @@ public class AddEditEventPresenter implements AddEditEventContract.Presenter,
     public void onDataNotAvailable() {
 
     }
-//    TODO: Send Emails
+
+    @Override
+    public void onClosedAd() {
+    }
 //    TODO: Delete previous events
-//    TODO: Set the Adds
-/**
- * It is recommended to move the Analytics creation to the Application class so that only one
- * instance is used across the project.
- */
 //    TODO: Still dropping frames
 }

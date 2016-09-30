@@ -3,3 +3,5 @@
 cp ${BUDDYBUILD_SECURE_FILES}/base-google-services.json ${BUDDYBUILD_WORKSPACE}/Eventy/app/google-services.json
 
 cp ${BUDDYBUILD_SECURE_FILES}/free-google-services.json ${BUDDYBUILD_WORKSPACE}/Eventy/app/src/free/google-services.json
+
+cp ${BUDDYBUILD_SECURE_FILES}/debug_google_maps_api.xml ${BUDDYBUILD_WORKSPACE}/Eventy/app/src/debug/res/values/google_maps_api.xml

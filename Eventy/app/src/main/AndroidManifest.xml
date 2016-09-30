@@ -29,6 +29,7 @@
             android:name=".addeditevent.AddEditEventActivity"
             android:label="@string/title_activity_event_details"
             android:parentActivityName=".events.EventsActivity"
+            android:windowSoftInputMode="adjustPan"
             android:theme="@style/AppTheme.Details">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

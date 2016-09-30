@@ -10,16 +10,16 @@ import java.util.List;
  * @author gabrielquiles-perez
  */
 
-public class Event {
+public class BaseEvent {
     protected String mKey;
 
     protected String mTitle;
     protected long mDate;
     protected String mPlaceName;
-    protected List<Guest> mGuestList;
+    protected List<BaseGuest> mGuestList;
     protected List<String> mThingList;
 
-    public Event() {
+    public BaseEvent() {
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DATE, 1);
         mDate = cal.getTimeInMillis();
@@ -29,21 +29,21 @@ public class Event {
         mPlaceName = "";
     }
 
-    public Event(String title, long date, String placeName, List<Guest> guestList, List<String> thingList) {
+    public BaseEvent(String title, long date, String placeName, List<? extends BaseGuest> guestList, List<String> thingList) {
         mTitle = title;
         mDate = date;
         mPlaceName = placeName;
-        mGuestList = guestList;
+        mGuestList = (List<BaseGuest>) guestList;
         mThingList = thingList;
 
     }
 
-    public Event(String key, String title, long date, String placeName, List<Guest> guestList, List<String> thingList) {
+    public BaseEvent(String key, String title, long date, String placeName, List<? extends BaseGuest> guestList, List<String> thingList) {
         mKey = key;
         mTitle = title;
         mDate = date;
         mPlaceName = placeName;
-        mGuestList = guestList;
+        mGuestList = (List<BaseGuest>) guestList;
         mThingList = thingList;
 
     }
@@ -94,11 +94,11 @@ public class Event {
             return true;
         }
 
-        if(!(o instanceof Event)) {
+        if(!(o instanceof BaseEvent)) {
             return false;
         }
 
-        Event e = (Event) o;
+        BaseEvent e = (BaseEvent) o;
 //        TODO: Check that all properties are being checked
         if(!mTitle.equals(e.mTitle)) {
             return false;
@@ -124,15 +124,15 @@ public class Event {
         return result;
     }
 
-    public List<Guest> getGuestList() {
+    public List<BaseGuest> getGuestList() {
         return mGuestList;
     }
 
-    public void setGuestList(List<Guest> guestList) {
+    public void setGuestList(List<BaseGuest> guestList) {
         this.mGuestList = guestList;
     }
 
-    public void addGuest(Guest guest) {
+    public void addGuest(BaseGuest guest) {
         // Add a guest if it is not already on the list
         if(mGuestList.indexOf(guest) == -1) {
             mGuestList.add(guest);
@@ -157,7 +157,7 @@ public class Event {
 
     public int getGuestsCountByStatus(int status) {
         int counter = 0;
-        for (Guest guest : mGuestList) {
+        for (BaseGuest guest : mGuestList) {
             if(guest.getStatus() == status) {
                 counter++;
             }

@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.gabyquiles.eventy.R;
-import com.gabyquiles.eventy.model.Guest;
+import com.gabyquiles.eventy.model.BaseGuest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,7 +49,7 @@ public class GuestsAdapter extends RecyclerView.Adapter<GuestsAdapter.GuestHolde
 
     @Override
     public void onBindViewHolder(GuestHolder holder, int position) {
-        Guest guest = (Guest) mList.get(position);
+        BaseGuest guest = (BaseGuest) mList.get(position);
         holder.mGuestName.setText(guest.getName());
     }
 

@@ -23,8 +23,9 @@ import com.gabyquiles.eventy.data.source.EventsDataSource;
 import com.gabyquiles.eventy.data.source.EventsRepository;
 import com.gabyquiles.eventy.data.source.LoaderProvider;
 import com.gabyquiles.eventy.data.source.local.EventContract;
+import com.gabyquiles.eventy.model.BaseEvent;
+import com.gabyquiles.eventy.model.BaseGuest;
 import com.gabyquiles.eventy.model.Event;
-import com.gabyquiles.eventy.model.FreeEvent;
 import com.gabyquiles.eventy.model.Guest;
 
 import java.util.ArrayList;
@@ -118,7 +119,7 @@ public class AddEditEventPresenter implements AddEditEventContract.Presenter,
     }
 
     @Override
-    public void saveEvent(String title, long date, String place, List<Guest> guests, List<String> things) {
+    public void saveEvent(String title, long date, String place, List<BaseGuest> guests, List<String> things) {
         if (isNewEvent()) {
             createEvent(title, date, place, guests, things);
             mAnalytics.logEvent("New event saved");
@@ -129,7 +130,7 @@ public class AddEditEventPresenter implements AddEditEventContract.Presenter,
     }
 
     @Override
-    public void sendInvites(String title, long date, String place, List<Guest> guests, List<String> things) {
+    public void sendInvites(String title, long date, String place, List<BaseGuest> guests, List<String> things) {
         Intent sendIntent = createEmailIntent(title, date, place, guests, things);
         Intent intentChooser = Intent.createChooser(sendIntent, "Select how to send email invites");
         intentChooser.addFlags(FLAG_ACTIVITY_NEW_TASK);
@@ -138,7 +139,7 @@ public class AddEditEventPresenter implements AddEditEventContract.Presenter,
         mAnalytics.logEvent("Sending invites");
     }
 
-    private Intent createEmailIntent(String title, long date, String place, List<Guest> guests, List<String> things) {
+    private Intent createEmailIntent(String title, long date, String place, List<BaseGuest> guests, List<String> things) {
         Intent emailIntent = new Intent(Intent.ACTION_SEND);
 
 
@@ -163,16 +164,16 @@ public class AddEditEventPresenter implements AddEditEventContract.Presenter,
         return emailIntent;
     }
 
-    private String[] getGuestsEmail(List<Guest> guestList) {
+    private String[] getGuestsEmail(List<BaseGuest> guestList) {
         ArrayList<String> emails = new ArrayList<>();
-        for (Guest guest: guestList) {
+        for (BaseGuest guest: guestList) {
             emails.add(guest.getEmail());
         }
         return emails.toArray(new String[emails.size()]);
     }
 
     @Override
-    public void addGuest(Guest guest) {
+    public void addGuest(BaseGuest guest) {
         mEventView.addGuest(guest);
     }
 
@@ -246,7 +247,7 @@ public class AddEditEventPresenter implements AddEditEventContract.Presenter,
 
     private void joinCursors() {
         if(mEventLoaded && mGuestLoaded && mThingsLoaded) {
-            FreeEvent event = FreeEvent.from(mEventCursor);
+            Event event = Event.from(mEventCursor);
             if(mGuestsCursor != null && mGuestsCursor.moveToFirst()) {
                 do {
                     Guest guest = Guest.from(mGuestsCursor);
@@ -278,8 +279,8 @@ public class AddEditEventPresenter implements AddEditEventContract.Presenter,
         return mEventId == null;
     }
 
-    private void createEvent(String title, long date, String place, List<Guest> guests, List<String> things) {
-        FreeEvent event = new FreeEvent(title, date, place, guests, things);
+    private void createEvent(String title, long date, String place, List<BaseGuest> guests, List<String> things) {
+        Event event = new Event(title, date, place, guests, things);
         if(event.isValid()) {
             mRepository.saveEvent(event);
         }
@@ -293,12 +294,12 @@ public class AddEditEventPresenter implements AddEditEventContract.Presenter,
 //        }
     }
 
-    private void updateEvent(String title, long date, String place, List<Guest> guests, List<String> things) {
+    private void updateEvent(String title, long date, String place, List<BaseGuest> guests, List<String> things) {
         if (isNewEvent()) {
             throw new RuntimeException("updateTask() was called but task is new.");
         }
 
-        FreeEvent event = new FreeEvent(mEventId, title, date, place, guests, things);
+        Event event = new Event(mEventId, title, date, place, guests, things);
         if(event.isValid()) {
             mRepository.saveEvent(event);
         }

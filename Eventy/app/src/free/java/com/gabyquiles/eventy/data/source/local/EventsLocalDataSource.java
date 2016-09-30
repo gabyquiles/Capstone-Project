@@ -2,20 +2,16 @@ package com.gabyquiles.eventy.data.source.local;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
-import android.content.Context;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 
 import com.gabyquiles.eventy.data.source.EventValues;
 import com.gabyquiles.eventy.data.source.EventsDataSource;
 import com.gabyquiles.eventy.data.source.GuestValues;
+import com.gabyquiles.eventy.model.BaseGuest;
 import com.gabyquiles.eventy.model.Event;
-import com.gabyquiles.eventy.model.FreeEvent;
 import com.gabyquiles.eventy.model.Guest;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Singleton;
@@ -77,12 +73,12 @@ public class EventsLocalDataSource implements EventsDataSource {
         mResolver.insert(EventContract.GuestEntry.CONTENT_URI, contentValues);
     }
 
-    public void saveGuests(Long eventKey, List<Guest> guestList) {
+    public void saveGuests(Long eventKey, List<BaseGuest> guestList) {
         mResolver.delete(EventContract.GuestEntry.buildEventGuestsUri(eventKey), null, null);
         if (guestList != null) {
-            for(Guest guest:guestList) {
+            for(BaseGuest guest:guestList) {
                 if (guest != null) {
-                    saveGuest(eventKey, guest);
+                    saveGuest(eventKey, (Guest) guest);
                 }
             }
         }

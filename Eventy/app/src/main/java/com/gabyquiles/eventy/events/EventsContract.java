@@ -5,7 +5,7 @@ import android.support.annotation.NonNull;
 
 import com.gabyquiles.eventy.BasePresenter;
 import com.gabyquiles.eventy.BaseView;
-import com.gabyquiles.eventy.model.Event;
+import com.gabyquiles.eventy.model.BaseEvent;
 
 /**
  * Description
@@ -30,14 +30,14 @@ public interface EventsContract {
     interface Presenter extends BasePresenter{
         void addNewEvent();
 
-        void openEventDetails(@NonNull Event event);
+        void openEventDetails(@NonNull BaseEvent event);
 
-        void deleteEvent(@NonNull Event event);
+        void deleteEvent(@NonNull BaseEvent event);
 
     }
 
     interface EventItemListener {
-        void onEventClick(Event clickedEvent);
-        void onDeleteEvent(Event deleteEvent);
+        void onEventClick(BaseEvent clickedEvent);
+        void onDeleteEvent(BaseEvent deleteEvent);
     }
 }

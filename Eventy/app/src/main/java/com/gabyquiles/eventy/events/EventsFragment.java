@@ -18,11 +18,10 @@ import android.widget.TextView;
 import com.gabyquiles.eventy.R;
 import com.gabyquiles.eventy.addeditevent.AddEditEventActivity;
 import com.gabyquiles.eventy.addeditevent.AddEditEventFragment;
-import com.gabyquiles.eventy.model.Event;
+import com.gabyquiles.eventy.model.BaseEvent;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 import static dagger.internal.Preconditions.checkNotNull;
 
@@ -41,12 +40,12 @@ public class EventsFragment extends Fragment implements EventsContract.View{
      */
     EventsContract.EventItemListener mItemListener = new EventsContract.EventItemListener() {
         @Override
-        public void onEventClick(Event clickedEvent) {
+        public void onEventClick(BaseEvent clickedEvent) {
             mPresenter.openEventDetails(clickedEvent);
         }
 
         @Override
-        public void onDeleteEvent(Event deleteEvent) {
+        public void onDeleteEvent(BaseEvent deleteEvent) {
             mPresenter.deleteEvent(deleteEvent);
         }
     };

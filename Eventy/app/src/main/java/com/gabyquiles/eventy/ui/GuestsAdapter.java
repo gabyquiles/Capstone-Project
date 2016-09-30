@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.gabyquiles.eventy.R;
-import com.gabyquiles.eventy.model.Guest;
+import com.gabyquiles.eventy.model.BaseGuest;
 
 import java.util.List;
 
@@ -16,7 +16,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
- * {@link GuestsAdapter} exposes a list of {@link Guest} that are invited to an event
+ * {@link GuestsAdapter} exposes a list of {@link BaseGuest} that are invited to an event
  *
  * @author gabrielquiles-perez
  */
@@ -29,7 +29,7 @@ public class GuestsAdapter extends RecyclerView.Adapter<GuestsAdapter.GuestHolde
     private Context mContext;
 
 
-    public GuestsAdapter(Context context, List<Guest> list, View emptyView) {
+    public GuestsAdapter(Context context, List<BaseGuest> list, View emptyView) {
         mContext = context;
         mList = list;
         mEmptyView = emptyView;
@@ -48,7 +48,7 @@ public class GuestsAdapter extends RecyclerView.Adapter<GuestsAdapter.GuestHolde
 
     @Override
     public void onBindViewHolder(GuestHolder holder, int position) {
-        Guest guest = (Guest) mList.get(position);
+        BaseGuest guest = (BaseGuest) mList.get(position);
         holder.mGuestName.setText(guest.getName());
     }
 
@@ -61,7 +61,7 @@ public class GuestsAdapter extends RecyclerView.Adapter<GuestsAdapter.GuestHolde
         return count;
     }
 
-    public void updateList(List<Guest> list) {
+    public void updateList(List<BaseGuest> list) {
         mList = list;
         notifyDataSetChanged();
     }

@@ -2,6 +2,7 @@ package com.gabyquiles.eventy.data.source;
 
 import android.support.annotation.NonNull;
 
+import com.gabyquiles.eventy.model.BaseEvent;
 import com.gabyquiles.eventy.model.Event;
 
 import java.util.List;

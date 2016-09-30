@@ -25,12 +25,11 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TimePicker;
 
-import com.gabyquiles.eventy.EventyApplication;
 import com.gabyquiles.eventy.R;
 import com.gabyquiles.eventy.Utility;
 import com.gabyquiles.eventy.data.source.local.EventContract;
 import com.gabyquiles.eventy.data.EventManager;
-import com.gabyquiles.eventy.model.FreeEvent;
+import com.gabyquiles.eventy.model.Event;
 import com.gabyquiles.eventy.model.Guest;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
@@ -94,7 +93,7 @@ public class EventDetailsFragment extends Fragment  implements LoaderManager.Loa
 
     private Uri mUri;
 
-    private FreeEvent mEvent;
+    private Event mEvent;
     private GuestsAdapter mGuestAdapter;
     private ThingsAdapter mThingsAdapter;
 
@@ -106,7 +105,7 @@ public class EventDetailsFragment extends Fragment  implements LoaderManager.Loa
 
         mManager = new EventManager(getContext());
 
-        mEvent = new FreeEvent();
+        mEvent = new Event();
         Bundle arguments = getArguments();
         if(arguments != null && arguments.getParcelable(EVENT_URI) != null) {
             mUri = arguments.getParcelable(EVENT_URI);

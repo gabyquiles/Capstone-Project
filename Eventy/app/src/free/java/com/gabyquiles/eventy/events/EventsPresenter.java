@@ -12,6 +12,7 @@ import com.gabyquiles.eventy.analytics.AnalyticsManagerInterface;
 import com.gabyquiles.eventy.data.source.LoaderProvider;
 import com.gabyquiles.eventy.data.source.EventsDataSource;
 import com.gabyquiles.eventy.data.source.EventsRepository;
+import com.gabyquiles.eventy.model.BaseEvent;
 import com.gabyquiles.eventy.model.Event;
 
 import java.util.List;
@@ -82,15 +83,15 @@ public class EventsPresenter implements EventsContract.Presenter, LoaderManager.
     }
 
     @Override
-    public void openEventDetails(@NonNull Event event) {
+    public void openEventDetails(@NonNull BaseEvent event) {
         checkNotNull(event, "event cannot be null!");
         mEventsView.showEventDetails(event.getKey());
     }
 
     @Override
-    public void deleteEvent(@NonNull Event event) {
+    public void deleteEvent(@NonNull BaseEvent event) {
         checkNotNull(event, "event cannot be null!");
-        mRepository.deleteEvent(event);
+        mRepository.deleteEvent((Event) event);
         loadEvents(true);
     }
 

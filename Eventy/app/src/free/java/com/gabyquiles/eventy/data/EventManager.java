@@ -6,7 +6,8 @@ import android.content.Context;
 import android.net.Uri;
 
 import com.gabyquiles.eventy.data.source.local.EventContract;
-import com.gabyquiles.eventy.model.FreeEvent;
+import com.gabyquiles.eventy.model.BaseGuest;
+import com.gabyquiles.eventy.model.Event;
 import com.gabyquiles.eventy.model.Guest;
 
 import java.util.List;
@@ -25,7 +26,7 @@ public class EventManager {
         mResolver = context.getContentResolver();
     }
 
-    public FreeEvent saveEvent(Uri uri, FreeEvent event) {
+    public Event saveEvent(Uri uri, Event event) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(EventContract.EventEntry.COLUMN_TITLE, event.getTitle());
         contentValues.put(EventContract.EventEntry.COLUMN_PLACE_NAME, event.getPlaceName());
@@ -55,11 +56,11 @@ public class EventManager {
         mResolver.insert(EventContract.GuestEntry.CONTENT_URI, contentValues);
     }
 
-    public void saveGuests(Long eventKey, List<Guest> guestList) {
+    public void saveGuests(Long eventKey, List<BaseGuest> guestList) {
         mResolver.delete(EventContract.GuestEntry.buildEventGuestsUri(eventKey), null, null);
-        for(Guest guest:guestList) {
+        for(BaseGuest guest:guestList) {
             if (guest != null) {
-                saveGuest(eventKey, guest);
+                saveGuest(eventKey, (Guest) guest);
             }
         }
     }

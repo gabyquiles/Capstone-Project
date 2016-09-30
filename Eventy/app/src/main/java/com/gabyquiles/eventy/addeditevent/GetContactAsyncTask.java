@@ -6,14 +6,14 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.provider.ContactsContract;
 
-import com.gabyquiles.eventy.model.Guest;
+import com.gabyquiles.eventy.model.BaseGuest;
 
 /**
  * Description
  *
  * @author gabrielquiles-perez
  */
-public class GetContactAsyncTask extends AsyncTask<Uri, Void, Guest> {
+public class GetContactAsyncTask extends AsyncTask<Uri, Void, BaseGuest> {
     private final String LOG_TAG = GetContactAsyncTask.class.getSimpleName();
 
     private Context mContext;
@@ -25,14 +25,14 @@ public class GetContactAsyncTask extends AsyncTask<Uri, Void, Guest> {
     }
 
     @Override
-    protected Guest doInBackground(Uri... uris) {
+    protected BaseGuest doInBackground(Uri... uris) {
         int count = uris.length;
 
         String fullNameIdx = ContactsContract.Contacts.DISPLAY_NAME;
         String emailIdx = ContactsContract.CommonDataKinds.Email.ADDRESS;
         String[] fields = { emailIdx, fullNameIdx};
 
-        Guest guest = null;
+        BaseGuest guest = null;
         for (int i = 0; i < count; i++) {
             Cursor cursor = mContext.getContentResolver().query(uris[i], fields, null, null, null);
             if(cursor != null) {
@@ -42,7 +42,7 @@ public class GetContactAsyncTask extends AsyncTask<Uri, Void, Guest> {
                     int emailColumn = cursor.getColumnIndex(emailIdx);
                     String email = cursor.getString(emailColumn);
 
-                    guest = new Guest(fullName, email);
+                    guest = new BaseGuest(fullName, email);
                 }
                 cursor.close();
             }
@@ -51,7 +51,7 @@ public class GetContactAsyncTask extends AsyncTask<Uri, Void, Guest> {
     }
 
     @Override
-    protected void onPostExecute(Guest guest) {
+    protected void onPostExecute(BaseGuest guest) {
 //        super.onPostExecute(guest);
         if (guest != null) {
             mPresenter.addGuest(guest);

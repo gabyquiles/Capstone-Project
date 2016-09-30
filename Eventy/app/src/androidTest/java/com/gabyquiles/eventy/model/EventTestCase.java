@@ -1,11 +1,9 @@
 package com.gabyquiles.eventy.model;
 
-import android.os.Parcel;
 import android.support.test.runner.AndroidJUnit4;
 import android.test.suitebuilder.annotation.SmallTest;
 
 import org.junit.Before;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -20,7 +18,7 @@ public class EventTestCase {
     protected static final String TITLE = "This is the tile of the event";
     protected static final String PLACE = "Venue to hold the event";
 
-    private FreeEvent eventUnderTest;
+    private Event eventUnderTest;
 
     @Before
     public void setUp() {
@@ -37,8 +35,8 @@ public class EventTestCase {
 //        assertThat(eventUnderTest, is(unparcelled));
 //    }
 
-    private FreeEvent getEvent() {
-        FreeEvent event = new FreeEvent();
+    private Event getEvent() {
+        Event event = new Event();
         event.setTitle(TITLE);
         event.setPlaceName(PLACE);
 

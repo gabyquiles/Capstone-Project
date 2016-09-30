@@ -4,15 +4,13 @@ import android.database.Cursor;
 
 import com.gabyquiles.eventy.data.source.local.EventContract;
 
-import java.util.ArrayList;
-
 /**
  * Represents an invited guest
  *
  * @author gabrielquiles-perez
  */
-public class Guest {
-    private final String LOG_TAG = Guest.class.getSimpleName();
+public class BaseGuest {
+    private final String LOG_TAG = BaseGuest.class.getSimpleName();
 
     public static int INVITED = 1;
     public static int GOING = 2;
@@ -24,19 +22,19 @@ public class Guest {
     private int mStatus;
     private String mThing;
 
-    public Guest() {
+    public BaseGuest() {
         mStatus = INVITED;
         mThing = null;
     }
 
-    public Guest(String name, String email, String thing, int status) {
+    public BaseGuest(String name, String email, String thing, int status) {
         mName = name;
         mEmail = email;
         mThing = thing;
         mStatus = status;
     }
 
-    public Guest(String name, String email) {
+    public BaseGuest(String name, String email) {
         mName = name;
         mEmail = email;
         mStatus = INVITED;
@@ -75,13 +73,6 @@ public class Guest {
         this.mThing = thing;
     }
 
-    public static Guest from(Cursor cursor) {
-        String name = cursor.getString(cursor.getColumnIndexOrThrow(EventContract.GuestEntry.COLUMN_NAME));
-        String email = cursor.getString(cursor.getColumnIndexOrThrow(EventContract.GuestEntry.COLUMN_EMAIL));
-        String thing = cursor.getString(cursor.getColumnIndexOrThrow(EventContract.GuestEntry.COLUMN_THING));
-        int status = cursor.getInt(cursor.getColumnIndexOrThrow(EventContract.GuestEntry.COLUMN_STATUS));
-        return new Guest(name, email, thing, status);
-    }
 
     @Override
     public boolean equals(Object o) {
@@ -89,11 +80,11 @@ public class Guest {
             return true;
         }
 
-        if(!(o instanceof Guest)) {
+        if(!(o instanceof BaseGuest)) {
             return false;
         }
 
-        Guest guest = (Guest) o;
+        BaseGuest guest = (BaseGuest) o;
         if(!mName.equals(guest.mName)) {
             return false;
         }

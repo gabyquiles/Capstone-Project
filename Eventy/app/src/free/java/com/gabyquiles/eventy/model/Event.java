@@ -12,29 +12,29 @@ import java.util.List;
  *
  * @author gabrielquiles-perez
  */
-public class FreeEvent extends Event {
-    private final String LOG_TAG = FreeEvent.class.getSimpleName();
+public class Event extends BaseEvent {
+    private final String LOG_TAG = Event.class.getSimpleName();
 
-    public FreeEvent() {
+    public Event() {
         super();
     }
 
-    public FreeEvent(String title, long date, String placeName, List<Guest> guests, List<String> things) {
+    public Event(String title, long date, String placeName, List<BaseGuest> guests, List<String> things) {
         super(title, date, placeName, guests, things);
     }
 
-    public FreeEvent(String key, String title, long date, String placeName, List<Guest> guests, List<String> things) {
+    public Event(String key, String title, long date, String placeName, List<BaseGuest> guests, List<String> things) {
         super(key, title, date, placeName, guests, things);
     }
 
-    public static FreeEvent from(Cursor cursor) {
+    public static Event from(Cursor cursor) {
         String key = cursor.getString(cursor.getColumnIndexOrThrow(EventContract.EventEntry._ID));
         String title = cursor.getString(cursor.getColumnIndexOrThrow(EventContract.EventEntry.COLUMN_TITLE));
         long date = cursor.getLong(cursor.getColumnIndexOrThrow(EventContract.EventEntry.COLUMN_DATE));
         String placeName = cursor.getString(cursor.getColumnIndexOrThrow(EventContract.EventEntry.COLUMN_PLACE_NAME));
-        ArrayList<Guest> guests = new ArrayList<>();
+        ArrayList<BaseGuest> guests = new ArrayList<>();
         ArrayList<String> things = new ArrayList<>();
-        return new FreeEvent(key, title, date, placeName, guests, things);
+        return new Event(key, title, date, placeName, guests, things);
     }
 
     public String[] getGuestsEmail() {

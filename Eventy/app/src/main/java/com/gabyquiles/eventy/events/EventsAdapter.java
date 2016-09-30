@@ -12,8 +12,8 @@ import android.widget.TextView;
 
 import com.gabyquiles.eventy.R;
 import com.gabyquiles.eventy.Utility;
+import com.gabyquiles.eventy.model.BaseEvent;
 import com.gabyquiles.eventy.model.Event;
-import com.gabyquiles.eventy.model.FreeEvent;
 import com.gabyquiles.eventy.ui.ItemChoiceManager;
 
 import butterknife.BindView;
@@ -54,7 +54,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventHolde
     @Override
     public void onBindViewHolder(EventHolder eventHolder, int position) {
         if(mCursor.moveToPosition(position)) {
-            Event event = FreeEvent.from(mCursor);
+            BaseEvent event = Event.from(mCursor);
             eventHolder.mTitle.setText(event.getTitle());
             String dateStr = Utility.formatFullDate(event.getDate());
             eventHolder.mDateTime.setText(dateStr);
@@ -76,13 +76,13 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventHolde
 
     public void deleteEvent(int position) {
         mCursor.moveToPosition(position);
-        Event event = FreeEvent.from(mCursor);
+        BaseEvent event = Event.from(mCursor);
         mListener.onDeleteEvent(event);
     }
 
     public void clickEvent(int position) {
         mCursor.moveToPosition(position);
-        Event event = FreeEvent.from(mCursor);
+        BaseEvent event = Event.from(mCursor);
         mListener.onEventClick(event);
     }
 

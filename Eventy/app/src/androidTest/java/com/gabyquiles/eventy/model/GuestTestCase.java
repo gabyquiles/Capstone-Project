@@ -21,8 +21,8 @@ public class GuestTestCase {
 
     @Test
     public void checkEquality() {
-        Guest guest1 = new Guest(NAME, EMAIL);
-        Guest guest2 = new Guest(NAME, EMAIL);
+        BaseGuest guest1 = new BaseGuest(NAME, EMAIL);
+        BaseGuest guest2 = new BaseGuest(NAME, EMAIL);
 
         assertThat(guest1, is(guest2));
     }

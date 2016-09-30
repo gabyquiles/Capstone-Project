@@ -21,9 +21,8 @@ import android.widget.TimePicker;
 
 import com.gabyquiles.eventy.R;
 import com.gabyquiles.eventy.Utility;
-import com.gabyquiles.eventy.model.Guest;
+import com.gabyquiles.eventy.model.BaseGuest;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -166,7 +165,7 @@ public class AddEditEventFragment extends Fragment implements AddEditEventContra
     }
 
     @Override
-    public void refreshGuests(List<Guest> guests) {
+    public void refreshGuests(List<BaseGuest> guests) {
         mGuestAdapter.updateList(guests);
 
     }
@@ -177,7 +176,7 @@ public class AddEditEventFragment extends Fragment implements AddEditEventContra
     }
 
     @Override
-    public void addGuest(Guest guest) {
+    public void addGuest(BaseGuest guest) {
         mGuestAdapter.addToList(guest);
     }
 

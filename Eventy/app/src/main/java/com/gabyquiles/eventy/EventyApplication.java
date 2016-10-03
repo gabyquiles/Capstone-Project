@@ -3,14 +3,8 @@ package com.gabyquiles.eventy;
 import android.app.Application;
 import android.content.Context;
 
-//import com.gabyquiles.eventy.data.source.DaggerEventsRepositoryComponent;
-import com.gabyquiles.eventy.data.source.EventsRepositoryComponent;
-import com.gabyquiles.eventy.data.source.EventsRepositoryModule;
-import com.google.firebase.analytics.FirebaseAnalytics;
-
 /**
- * This is a subclass of {@link Application} used to provide shared objects for this app, such as
- * the {@link FirebaseAnalytics}.
+ * This is a subclass of {@link Application} used to provide shared objects for this app.
  */
 public class EventyApplication extends Application {
 

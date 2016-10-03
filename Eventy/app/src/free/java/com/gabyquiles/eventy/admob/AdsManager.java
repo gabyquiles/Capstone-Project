@@ -3,6 +3,7 @@ package com.gabyquiles.eventy.admob;
 import android.content.Context;
 
 import com.gabyquiles.eventy.BuildConfig;
+import com.gabyquiles.eventy.R;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
@@ -24,9 +25,11 @@ public class AdsManager implements AdsManagerInterface {
 
     @Inject
     @Singleton
-    public AdsManager(Context context, InterstitialAd interstitialAd) {
-        mInterstitialAd = interstitialAd;
+    public AdsManager(Context context) {
         mContext = context;
+        InterstitialAd interstitialAd = new InterstitialAd(context);
+        interstitialAd.setAdUnitId(mContext.getString(R.string.admob_unit_id));
+        mInterstitialAd = interstitialAd;
     }
 
     @Override

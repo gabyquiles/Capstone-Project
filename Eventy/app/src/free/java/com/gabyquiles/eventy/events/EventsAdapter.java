@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.TextView;
 
 import com.gabyquiles.eventy.R;
@@ -16,21 +17,23 @@ import com.gabyquiles.eventy.model.BaseEvent;
 import com.gabyquiles.eventy.model.Event;
 import com.gabyquiles.eventy.ui.ItemChoiceManager;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
  * Description
- *
  * @author gabrielquiles-perez
  */
 public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventHolder>  {
     private final String LOG_TAG = EventsAdapter.class.getSimpleName();
 
-    private Context mContext;
     private Cursor mCursor;
     private EventsContract.EventItemListener mListener;
     final private ItemChoiceManager mICM;
+
+    Context mContext;
 
     public EventsAdapter(Context context,
                          EventsContract.EventItemListener handler, int choiceMode) {

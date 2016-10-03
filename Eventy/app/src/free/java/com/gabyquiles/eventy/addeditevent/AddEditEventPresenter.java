@@ -9,6 +9,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.text.TextUtils;
@@ -94,10 +95,6 @@ public class AddEditEventPresenter implements AddEditEventContract.Presenter,
         mAds = adsManager;
     }
 
-    public void setLoaderManager(@NonNull LoaderManager manager) {
-        mLoaderManager = manager;
-    }
-
     @Override
     public void start() {
         if (!isNewEvent()) {
@@ -109,6 +106,13 @@ public class AddEditEventPresenter implements AddEditEventContract.Presenter,
         }
 //        Request new ad
         mAds.requestNewInterstitial();
+        loadManager();
+    }
+
+    private void loadManager() {
+        if (mLoaderManager == null) {
+            mLoaderManager = ((Fragment) mEventView).getLoaderManager();
+        }
     }
 
     private void loadNewEvent() {
@@ -192,6 +196,7 @@ public class AddEditEventPresenter implements AddEditEventContract.Presenter,
 
     @Override
     public void populateEvent() {
+        loadManager();
         if (isNewEvent()) {
             throw new RuntimeException("populateEvent() was called but event is new.");
         }

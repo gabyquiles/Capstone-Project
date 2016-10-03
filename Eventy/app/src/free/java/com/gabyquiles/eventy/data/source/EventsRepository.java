@@ -1,7 +1,9 @@
 package com.gabyquiles.eventy.data.source;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 
+import com.gabyquiles.eventy.data.source.local.EventsLocalDataSource;
 import com.gabyquiles.eventy.model.Event;
 
 import javax.inject.Inject;
@@ -15,9 +17,10 @@ public class EventsRepository implements EventsDataSource {
     private final String LOG_TAG = EventsRepository.class.getSimpleName();
     EventsDataSource mDataSource;
 
+//    TODO: Should inject EventsLocalDataSource
     @Inject
-    EventsRepository(@NonNull EventsDataSource dataSource) {
-        mDataSource = dataSource;
+    EventsRepository(@NonNull Context context) {
+        mDataSource = new EventsLocalDataSource(context);
     }
 
     @Override

@@ -1,6 +1,5 @@
 package com.gabyquiles.eventy.events;
 
-import com.gabyquiles.eventy.data.source.EventsRepositoryModule;
 import com.gabyquiles.eventy.util.ActivityScope;
 
 import dagger.Subcomponent;
@@ -13,8 +12,7 @@ import dagger.Subcomponent;
 @ActivityScope
 @Subcomponent(
         modules = {
-                EventsPresenterModule.class,
-                EventsRepositoryModule.class
+                EventsPresenterModule.class
         }
 )
 public interface EventsComponent {

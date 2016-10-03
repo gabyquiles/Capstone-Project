@@ -8,7 +8,6 @@ import android.support.v7.widget.Toolbar;
 
 import com.gabyquiles.eventy.EventyApplication;
 import com.gabyquiles.eventy.R;
-import com.gabyquiles.eventy.data.source.EventsRepositoryModule;
 import com.gabyquiles.eventy.events.EventsActivity;
 import com.gabyquiles.eventy.util.ActivityUtils;
 
@@ -18,6 +17,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+//TODO: Create EventsPresenter in Paid Version
 public class AddEditEventActivity extends AppCompatActivity {
 
     @BindView(R.id.toolbar) Toolbar mToolbar;
@@ -59,8 +59,7 @@ public class AddEditEventActivity extends AppCompatActivity {
 
         // Create the presenter
         EventyApplication.get(this).getAppComponent()
-                .plus(new AddEditEventPresenterModule(mAddEditEventFragment, eventId), new EventsRepositoryModule()).inject(this);
-        mPresenter.setLoaderManager(getSupportLoaderManager());
+                .plus(new AddEditEventPresenterModule(mAddEditEventFragment, eventId)).inject(this);
     }
 
     @OnClick(R.id.save_button)

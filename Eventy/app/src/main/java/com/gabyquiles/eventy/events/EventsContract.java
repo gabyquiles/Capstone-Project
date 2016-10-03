@@ -24,7 +24,9 @@ public interface EventsContract {
 
         void showSuccessfullySavedMessage();
 
-        EventItemListener getItemListener();
+//        EventItemListener getItemListener();
+
+        void setAdapter(EventsAdapter adapter);
     }
 
     interface Presenter extends BasePresenter{

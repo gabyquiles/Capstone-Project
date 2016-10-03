@@ -109,24 +109,6 @@ public class AddEditEventFragment extends Fragment implements AddEditEventContra
         mThingsAdapter = new ThingsAdapter(getActivity());
         mThingsList.setAdapter((RecyclerView.Adapter) mThingsAdapter);
 
-
-//        TODO: move to presenter??
-//        mInterstitialAd = new InterstitialAd(getActivity());
-//        mInterstitialAd.setAdUnitId(getString(R.string.admob_unit_id));
-//
-//        mInterstitialAd.setAdListener(new AdListener() {
-//            @Override
-//            public void onAdClosed() {
-//                requestNewInterstitial();
-//            }
-//        });
-
-//        requestNewInterstitial();
-
-//        // Obtain the FirebaseAnalytics instance.
-//        mFirebaseAnalytics = ((EventyApplication) getActivity().getApplication()).getAnalytics();
-//        logEvent("Event Details");
-
         return rootView;
     }
 

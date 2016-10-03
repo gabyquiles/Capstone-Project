@@ -1,8 +1,6 @@
 package com.gabyquiles.eventy.util;
 
 
-import com.gabyquiles.eventy.data.source.EventsRepositoryComponent;
-
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

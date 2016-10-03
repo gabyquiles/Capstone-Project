@@ -1,9 +1,5 @@
 package com.gabyquiles.eventy.model;
 
-import android.database.Cursor;
-
-import com.gabyquiles.eventy.data.source.local.EventContract;
-
 /**
  * Represents an invited guest
  *

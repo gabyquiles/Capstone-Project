@@ -2,6 +2,7 @@ package com.gabyquiles.eventy.data.source.local;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.Context;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 
@@ -11,9 +12,11 @@ import com.gabyquiles.eventy.data.source.GuestValues;
 import com.gabyquiles.eventy.model.BaseGuest;
 import com.gabyquiles.eventy.model.Event;
 import com.gabyquiles.eventy.model.Guest;
+import com.gabyquiles.eventy.util.ActivityScope;
 
 import java.util.List;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import static dagger.internal.Preconditions.checkNotNull;
@@ -23,13 +26,14 @@ import static dagger.internal.Preconditions.checkNotNull;
  *
  * @author gabrielquiles-perez
  */
-@Singleton
 public class EventsLocalDataSource implements EventsDataSource {
     private final String LOG_TAG = EventsLocalDataSource.class.getSimpleName();
 
     private ContentResolver mResolver;
 
-    public EventsLocalDataSource(@NonNull ContentResolver contentResolver) {
+    @Inject
+    public EventsLocalDataSource(@NonNull Context context) {
+        ContentResolver contentResolver = context.getContentResolver();
         checkNotNull(contentResolver);
         mResolver = contentResolver;
     }

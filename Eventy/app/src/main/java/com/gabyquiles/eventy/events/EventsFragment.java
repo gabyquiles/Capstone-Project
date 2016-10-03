@@ -12,13 +12,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.TextView;
 
 import com.gabyquiles.eventy.R;
 import com.gabyquiles.eventy.addeditevent.AddEditEventActivity;
 import com.gabyquiles.eventy.addeditevent.AddEditEventFragment;
-import com.gabyquiles.eventy.model.BaseEvent;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -35,21 +33,6 @@ public class EventsFragment extends Fragment implements EventsContract.View{
 
     private EventsContract.Presenter mPresenter;
 
-    /**
-     * Listener for clicks on tasks in the ListView.
-     */
-    EventsContract.EventItemListener mItemListener = new EventsContract.EventItemListener() {
-        @Override
-        public void onEventClick(BaseEvent clickedEvent) {
-            mPresenter.openEventDetails(clickedEvent);
-        }
-
-        @Override
-        public void onDeleteEvent(BaseEvent deleteEvent) {
-            mPresenter.deleteEvent(deleteEvent);
-        }
-    };
-
     //Views
     @BindView(R.id.empty_textview)
     TextView mEmptyView;
@@ -65,7 +48,6 @@ public class EventsFragment extends Fragment implements EventsContract.View{
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-        mAdapter = new EventsAdapter(getActivity(), mItemListener, AbsListView.CHOICE_MODE_NONE);
     }
 
     @Override
@@ -89,14 +71,11 @@ public class EventsFragment extends Fragment implements EventsContract.View{
         ButterKnife.bind(this, rootView);
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mRecyclerView.setAdapter(mAdapter);
-
 
         // Set up floating action button
         FloatingActionButton fab =
                 (FloatingActionButton) getActivity().findViewById(R.id.add_event_fab);
 
-//        fab.setImageResource(R.drawable.ic_add);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -107,20 +86,12 @@ public class EventsFragment extends Fragment implements EventsContract.View{
         return rootView;
     }
 
-//    @OnClick(R.id.add_event_fab)
-    public void addEvent() {
-        mPresenter.addNewEvent();
-    }
-
     @Override
     public void showEvents(Cursor events) {
-        mAdapter.swapCursor(events);
         mRecyclerView.setVisibility(View.VISIBLE);
         mEmptyView.setVisibility(View.GONE);
     }
 
-//    @OnClick(R.id.add_event_fab)
-//    @Override
     public void showAddEvent() {
 
         showEventDetails(null);
@@ -146,8 +117,9 @@ public class EventsFragment extends Fragment implements EventsContract.View{
     }
 
     @Override
-    public EventsContract.EventItemListener getItemListener() {
-        return mItemListener;
+    public void setAdapter(EventsAdapter adapter) {
+        mAdapter = adapter;
+        mRecyclerView.setAdapter(mAdapter);
     }
 
     private void showNoEventsView(String message) {

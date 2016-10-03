@@ -21,6 +21,6 @@ public class EventsRepositoryModule {
 //    @Singleton
     @Provides
     EventsDataSource provideLocalDataSource(Context context) {
-        return new EventsLocalDataSource(context.getContentResolver());
+        return new EventsLocalDataSource(context);
     }
 }

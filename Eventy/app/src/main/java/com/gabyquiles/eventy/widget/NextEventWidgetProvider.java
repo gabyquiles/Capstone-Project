@@ -16,12 +16,12 @@ public class NextEventWidgetProvider extends AppWidgetProvider {
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        context.startService(new Intent(context, NextEventWidgetIntentService.class));
+//        context.startService(new Intent(context, NextEventWidgetIntentService.class));
     }
 
     @Override
     public void onAppWidgetOptionsChanged(Context context, AppWidgetManager appWidgetManager,
                                           int appWidgetId, Bundle newOptions) {
-        context.startService(new Intent(context, NextEventWidgetIntentService.class));
+//        context.startService(new Intent(context, NextEventWidgetIntentService.class));
     }
 }

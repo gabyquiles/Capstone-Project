@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.gabyquiles.eventy.R;
 import com.gabyquiles.eventy.addeditevent.AddEditEventActivity;
 import com.gabyquiles.eventy.addeditevent.AddEditEventFragment;
+import com.gabyquiles.eventy.signin.SignInActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -126,5 +127,12 @@ public class EventsFragment extends Fragment implements EventsContract.View{
         mRecyclerView.setVisibility(View.GONE);
         mEmptyView.setVisibility(View.VISIBLE);
         mEmptyView.setText(message);
+    }
+
+    @Override
+    public void showLoginActivity() {
+        Intent signinIntent = new Intent(getActivity(), SignInActivity.class);
+        startActivity(signinIntent);
+        getActivity().finish();
     }
 }

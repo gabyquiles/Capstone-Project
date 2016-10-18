@@ -25,13 +25,13 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <activity android:name="com.gabyquiles.eventy.ui.SignInActivity"  android:theme="@style/AppTheme.Dark">
+        <activity android:name="com.gabyquiles.eventy.signin.SignInActivity"  android:theme="@style/AppTheme.Dark">
 
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.MAIN" />-->
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--</intent-filter>-->
         </activity>
         <activity android:name="com.gabyquiles.eventy.ui.SignUpActivity"  android:theme="@style/AppTheme.Dark" />
     </application>

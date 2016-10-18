@@ -10,7 +10,7 @@ import com.google.firebase.database.Exclude;
  * @author gabrielquiles-perez
  */
 public class Event extends BaseEvent {
-    private final String LOG_TAG = Event.class.getSimpleName();
+    private final String LOG_TAG = BaseEvent.class.getSimpleName();
 
     private Double mLat;
     private Double mLon;

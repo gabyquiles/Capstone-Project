@@ -27,6 +27,8 @@ public interface EventsContract {
 //        EventItemListener getItemListener();
 
         void setAdapter(EventsAdapter adapter);
+
+        void showLoginActivity();
     }
 
     interface Presenter extends BasePresenter{

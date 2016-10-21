@@ -28,12 +28,14 @@ import butterknife.ButterKnife;
 public class EventsAdapter extends FirebaseRecyclerAdapter<BaseEvent, EventsAdapter.EventHolder> {
     private final String LOG_TAG = EventsAdapter.class.getSimpleName();
     private EventsContract.EventItemListener mListener;
+    private LoaderSubscriber mLoaderSubscriber;
 
     @Inject Context mContext;
 
-    public EventsAdapter(Query ref, EventsContract.EventItemListener clickHandler) {
+    public EventsAdapter(Query ref, EventsContract.EventItemListener clickHandler, LoaderSubscriber subscriber) {
         super(BaseEvent.class, R.layout.event_list_item, EventHolder.class, ref);
         mListener = clickHandler;
+        mLoaderSubscriber = subscriber;
     }
 
     @Override
@@ -54,6 +56,7 @@ public class EventsAdapter extends FirebaseRecyclerAdapter<BaseEvent, EventsAdap
     @Override
     public int getItemCount() {
         int count = super.getItemCount();
+        mLoaderSubscriber.loadedEvents(count);
         return count;
     }
 
@@ -107,5 +110,9 @@ public class EventsAdapter extends FirebaseRecyclerAdapter<BaseEvent, EventsAdap
             mHandler.onClick(getAdapterPosition());
 
         }
+    }
+
+    interface LoaderSubscriber {
+        void loadedEvents(int eventsCount);
     }
 }

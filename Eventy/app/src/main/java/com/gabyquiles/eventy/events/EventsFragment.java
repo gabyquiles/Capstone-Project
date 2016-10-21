@@ -88,7 +88,7 @@ public class EventsFragment extends Fragment implements EventsContract.View{
     }
 
     @Override
-    public void showEvents(Cursor events) {
+    public void showEvents() {
         mRecyclerView.setVisibility(View.VISIBLE);
         mEmptyView.setVisibility(View.GONE);
     }

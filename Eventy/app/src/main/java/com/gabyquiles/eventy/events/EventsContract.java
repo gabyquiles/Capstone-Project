@@ -14,7 +14,7 @@ import com.gabyquiles.eventy.model.BaseEvent;
  */
 public interface EventsContract {
     interface View extends BaseView<Presenter> {
-        void showEvents(Cursor events);
+        void showEvents();
 
         void showAddEvent();
 

@@ -65,13 +65,19 @@ public class EventsPresenter implements EventsContract.Presenter, EventsContract
     @Override
     public void start() {
         showLoginForm();
-//        loadEvents(true);
         mAnalytics.logEvent("Event List");
 
-        mAdapter = new EventsAdapter(mDBManager.getEventsList(), this);
-//        public EventsAdapter(Query ref, View emptyView, RecyclerViewAdapterFactory.AdapterOnClickHandler clickHandler) {
+        mAdapter = new EventsAdapter(mDBManager.getEventsList(), this, new EventsAdapter.LoaderSubscriber() {
+            @Override
+            public void loadedEvents(int eventsCount) {
+                if(eventsCount > 0) {
+                    mEventsView.showEvents();
+                } else {
+                    mEventsView.showNoEvents();
+                }
+            }
+        });
         mEventsView.setAdapter(mAdapter);
-//        mEmptyView.setVisibility(count == 0 ? View.VISIBLE : View.GONE);
     }
 
     protected void showLoginForm() {

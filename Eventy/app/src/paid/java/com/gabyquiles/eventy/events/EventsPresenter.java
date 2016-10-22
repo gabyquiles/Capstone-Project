@@ -2,6 +2,7 @@ package com.gabyquiles.eventy.events;
 
 import android.support.annotation.NonNull;
 
+import com.gabyquiles.eventy.R;
 import com.gabyquiles.eventy.analytics.AnalyticsManager;
 import com.gabyquiles.eventy.analytics.AnalyticsManagerInterface;
 import com.gabyquiles.eventy.firebase.authentication.AuthenticationManager;
@@ -63,26 +64,32 @@ public class EventsPresenter implements EventsContract.Presenter, EventsContract
     }
 
     @Override
-    public void start() {
-        showLoginForm();
-        mAnalytics.logEvent("Event List");
-
-        mAdapter = new EventsAdapter(mDBManager.getEventsList(), this, new EventsAdapter.LoaderSubscriber() {
-            @Override
-            public void loadedEvents(int eventsCount) {
-                if(eventsCount > 0) {
-                    mEventsView.showEvents();
-                } else {
-                    mEventsView.showNoEvents();
-                }
-            }
-        });
-        mEventsView.setAdapter(mAdapter);
+    public void menuSelected(int itemId) {
+        //Logout from the app
+        if (itemId == R.id.action_logout) {
+            mAuthManager.signOut();
+            mEventsView.showLoginActivity();
+        }
     }
 
-    protected void showLoginForm() {
+    @Override
+    public void start() {
         if(!mAuthManager.isSignedIn()) {
             mEventsView.showLoginActivity();
+        } else {
+            mAnalytics.logEvent("Event List");
+
+            mAdapter = new EventsAdapter(mDBManager.getEventsList(), this, new EventsAdapter.LoaderSubscriber() {
+                @Override
+                public void loadedEvents(int eventsCount) {
+                    if (eventsCount > 0) {
+                        mEventsView.showEvents();
+                    } else {
+                        mEventsView.showNoEvents();
+                    }
+                }
+            });
+            mEventsView.setAdapter(mAdapter);
         }
     }
 

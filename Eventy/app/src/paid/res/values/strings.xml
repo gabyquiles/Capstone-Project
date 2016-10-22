@@ -11,7 +11,8 @@
     <string name="password_mismatch_error">passwords must match</string>
     <string name="invalid_password">password must be longer than 5 characters</string>
     <string name="cannot_create_account">Cannot create account now. Try again later.</string>
-    <string name="authentication_error">email and password don\'t match our records</string>
+    <string name="authentication_error">Email and password don\'t match our records</string>
+    <string name="network_error">Can not connect to network at this time.</string>
     <string name="login_error">There was an error in the login process.</string>
     <string name="login">Login</string>
     <string name="logout">Logout</string>

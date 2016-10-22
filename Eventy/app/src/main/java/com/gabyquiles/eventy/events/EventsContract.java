@@ -38,6 +38,7 @@ public interface EventsContract {
 
         void deleteEvent(@NonNull BaseEvent event);
 
+        void menuSelected(int itemId);
     }
 
     interface EventItemListener {

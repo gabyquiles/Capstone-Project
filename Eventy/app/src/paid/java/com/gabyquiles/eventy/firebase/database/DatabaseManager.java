@@ -24,14 +24,14 @@ public class DatabaseManager implements DatabaseManagerInterface {
 
     private Context mContext;
     private AuthenticationManager mAuthManager;
-    private FirebaseDatabase mDB;
+    private FirebaseDatabase mDatabase;
 
     @Inject
     @Singleton
     public DatabaseManager(Context context, AuthenticationManager authManager) {
         mContext = context;
         mAuthManager = authManager;
-        mDB = FirebaseDatabase.getInstance();
+        mDatabase = FirebaseDatabase.getInstance();
     }
 
     @Override
@@ -41,7 +41,7 @@ public class DatabaseManager implements DatabaseManagerInterface {
         FirebaseUser user = mAuthManager.getUser();
 
         if (user != null) {
-            DatabaseReference dbRef = mDB.getReference().child(mContext.getString(R.string.firebase_users_path));
+            DatabaseReference dbRef = mDatabase.getReference().child(mContext.getString(R.string.firebase_users_path));
             dbRef = dbRef.child(user.getUid()).child("events");
 //            TODO: uncomment the startAt to show only the future events
             return dbRef.orderByChild("date");//.startAt(today);

@@ -33,8 +33,8 @@ public class GetContactAsyncTask extends AsyncTask<Uri, Void, BaseGuest> {
         String[] fields = { emailIdx, fullNameIdx};
 
         BaseGuest guest = null;
-        for (int i = 0; i < count; i++) {
-            Cursor cursor = mContext.getContentResolver().query(uris[i], fields, null, null, null);
+        for (Uri uri: uris) {
+            Cursor cursor = mContext.getContentResolver().query(uri, fields, null, null, null);
             if(cursor != null) {
                 if (cursor.moveToFirst()) {
                     int fullnameColumn = cursor.getColumnIndex(fullNameIdx);

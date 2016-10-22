@@ -157,7 +157,7 @@ public class EventsPresenter implements EventsContract.Presenter, LoaderManager.
 
     private void onDataLoaded(Cursor data) {
         mAdapter.swapCursor(data);
-        mEventsView.showEvents(data);
+        mEventsView.showEvents();
 
     }
 

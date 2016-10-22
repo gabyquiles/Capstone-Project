@@ -12,8 +12,8 @@ import com.google.firebase.database.Exclude;
 public class Event extends BaseEvent {
     private final String LOG_TAG = BaseEvent.class.getSimpleName();
 
-    private Double mLat;
-    private Double mLon;
+    private Double mLatitude;
+    private Double mLongitude;
 
     @Exclude
     protected String mKey;
@@ -24,36 +24,36 @@ public class Event extends BaseEvent {
 
     public void setCoords(LatLng coords) {
         if (coords != null) {
-            this.mLat = coords.latitude;
-            this.mLon = coords.longitude;
+            this.mLatitude = coords.latitude;
+            this.mLongitude = coords.longitude;
         } else {
-            mLat = null;
-            mLon = null;
+            mLatitude = null;
+            mLongitude = null;
         }
     }
 
     @Exclude
     public LatLng getCoordinates() {
-        if (mLat != null && mLon != null) {
-            return new LatLng(mLat, mLon);
+        if (mLatitude != null && mLongitude != null) {
+            return new LatLng(mLatitude, mLongitude);
         }
         return null;
     }
 
     public void setLatitude(double lat) {
-        this.mLat = lat;
+        this.mLatitude = lat;
     }
 
     public Double getLatitude() {
-        return mLat;
+        return mLatitude;
     }
 
     public void setLongitude(double lon) {
-        this.mLon = lon;
+        this.mLongitude = lon;
     }
 
     public Double getLongitude() {
-        return mLon;
+        return mLongitude;
     }
 
 

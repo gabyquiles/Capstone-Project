@@ -1,6 +1,7 @@
 package com.gabyquiles.eventy.events;
 
 import android.support.annotation.NonNull;
+import android.support.v7.widget.RecyclerView;
 
 import com.gabyquiles.eventy.R;
 import com.gabyquiles.eventy.analytics.AnalyticsManager;
@@ -79,27 +80,46 @@ public class EventsPresenter implements EventsContract.Presenter, EventsContract
         } else {
             mAnalytics.logEvent("Event List");
 
-            mAdapter = new EventsAdapter(mDBManager.getEventsList(), this, new EventsAdapter.LoaderSubscriber() {
-                @Override
-                public void loadedEvents(int eventsCount) {
-                    if (eventsCount > 0) {
-                        mEventsView.showEvents();
-                    } else {
-                        mEventsView.showNoEvents();
+            try {
+                mAdapter = new EventsAdapter(mDBManager.getEventsList(), this);
+                mAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+                    @Override
+                    public void onItemRangeInserted(int positionStart, int itemCount) {
+                        super.onItemRangeInserted(positionStart, itemCount);
+                        listModified(itemCount);
                     }
-                }
-            });
-            mEventsView.setAdapter(mAdapter);
+
+                    @Override
+                    public void onItemRangeRemoved(int positionStart, int itemCount) {
+                        super.onItemRangeRemoved(positionStart, itemCount);
+                        listModified(itemCount);
+                    }
+                });
+                mEventsView.setAdapter(mAdapter);
+            } catch (Exception e) {
+//                TODO: Fix to real exception
+            }
         }
     }
 
     @Override
-    public void onEventClick(BaseEvent clickedEvent) {
-
+    public void onEventClick(String key) {
+        mDBManager.getEvent(key);
     }
 
     @Override
     public void onDeleteEvent(BaseEvent deleteEvent) {
 
     }
+
+    private void listModified(int count) {
+        if (count > 0) {
+            mEventsView.showEvents();
+        } else {
+            mEventsView.showNoEvents();
+        }
+    }
+
+//    TODO: Add Swipe Refresh
+//    TODO: Add loading when sign in
 }

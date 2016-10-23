@@ -8,6 +8,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.Calendar;
 
@@ -35,25 +36,33 @@ public class DatabaseManager implements DatabaseManagerInterface {
     }
 
     @Override
-    public Query getEventsList() {
+    public Query getEventsList() throws Exception {
         long today = Calendar.getInstance().getTimeInMillis();
 
-        FirebaseUser user = mAuthManager.getUser();
+        DatabaseReference dbRef = userEventsReference();
 
-        if (user != null) {
-            DatabaseReference dbRef = mDatabase.getReference().child(mContext.getString(R.string.firebase_users_path));
-            dbRef = dbRef.child(user.getUid()).child("events");
+        if (dbRef != null) {
 //            TODO: uncomment the startAt to show only the future events
             return dbRef.orderByChild("date");//.startAt(today);
         } else {
 //            TODO: throw not logged exception
+            throw new Exception("Weba");
         }
-//        TODO: This can be removed once the exception has been added
-        return null;
     }
 
     @Override
-    public Query getEvent() {
+    public void getEvent(String key, ValueEventListener listener) {
+        DatabaseReference dbRef = userEventsReference();
+        dbRef.child(key).addValueEventListener(listener);
+    }
+
+    private DatabaseReference userEventsReference() {
+        FirebaseUser user = mAuthManager.getUser();
+        if(user != null) {
+            DatabaseReference dbRef = mDatabase.getReference().child(mContext.getString(R.string.firebase_users_path));
+            dbRef = dbRef.child(user.getUid()).child("events");
+            return dbRef;
+        }
         return null;
     }
 }

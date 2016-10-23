@@ -110,9 +110,10 @@ public class EventsPresenter implements EventsContract.Presenter, LoaderManager.
     }
 
     @Override
-    public void openEventDetails(@NonNull BaseEvent event) {
-        checkNotNull(event, "event cannot be null!");
-        mEventsView.showEventDetails(event.getKey());
+    public void openEventDetails(@NonNull String key) {
+//        TODO: Refactor to use only key
+        checkNotNull(key, "event cannot be null!");
+        mEventsView.showEventDetails(key);
     }
 
     @Override

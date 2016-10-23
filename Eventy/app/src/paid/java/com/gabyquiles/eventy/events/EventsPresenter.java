@@ -104,7 +104,7 @@ public class EventsPresenter implements EventsContract.Presenter, EventsContract
 
     @Override
     public void onEventClick(String key) {
-        mDBManager.getEvent(key);
+        mEventsView.showEventDetails(key);
     }
 
     @Override

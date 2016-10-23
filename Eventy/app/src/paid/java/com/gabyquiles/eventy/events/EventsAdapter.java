@@ -59,7 +59,7 @@ public class EventsAdapter extends FirebaseRecyclerAdapter<BaseEvent, EventsAdap
 
     public void onClick(int position) {
         String key = getRef(position).getKey();
-        mListener.onEventClick(null);
+        mListener.onEventClick(key);
     }
 
     public void onDeleteMenu(int position) {

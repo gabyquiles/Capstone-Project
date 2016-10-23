@@ -86,7 +86,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventHolde
     public void clickEvent(int position) {
         mCursor.moveToPosition(position);
         BaseEvent event = Event.from(mCursor);
-        mListener.onEventClick(event);
+        mListener.onEventClick(event.getKey());
     }
 
     public class EventHolder extends RecyclerView.ViewHolder {

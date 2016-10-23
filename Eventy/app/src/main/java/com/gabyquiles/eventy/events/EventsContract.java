@@ -42,7 +42,7 @@ public interface EventsContract {
     }
 
     interface EventItemListener {
-        void onEventClick(BaseEvent clickedEvent);
+        void onEventClick(String key);
         void onDeleteEvent(BaseEvent deleteEvent);
     }
 }
